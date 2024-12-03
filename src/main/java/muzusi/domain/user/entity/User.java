@@ -37,6 +37,7 @@ public class User {
     private int attemptCount;
 
     @ColumnDefault("NULL")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @Builder
