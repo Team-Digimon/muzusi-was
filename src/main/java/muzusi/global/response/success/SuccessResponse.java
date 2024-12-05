@@ -1,0 +1,43 @@
+package muzusi.global.response.success;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
+import org.springframework.http.HttpStatus;
+
+@Builder
+public record SuccessResponse<T>(
+        int code,
+        String message,
+        @JsonIgnore
+        T data
+){
+    public static SuccessResponse<?> ok() {
+        return SuccessResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("요청이 성공하였습니다.")
+                .build();
+    }
+
+    public static SuccessResponse<?> from(SuccessType success) {
+        return SuccessResponse.builder()
+                .code(success.getStatusCode())
+                .message(success.getMessage())
+                .build();
+    }
+
+    public static <T> SuccessResponse<?> from(T data) {
+        return SuccessResponse.builder()
+                .code(HttpStatus.OK.value())
+                .message("요청이 성공하였습니다.")
+                .data(data)
+                .build();
+    }
+
+    public static <T> SuccessResponse<?> of(SuccessType success, T data) {
+        return SuccessResponse.builder()
+                .code(success.getStatusCode())
+                .message(success.getMessage())
+                .data(data)
+                .build();
+    }
+}
