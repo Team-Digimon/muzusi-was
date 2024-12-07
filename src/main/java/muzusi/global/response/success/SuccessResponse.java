@@ -2,6 +2,7 @@ package muzusi.global.response.success;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
+import muzusi.global.response.success.type.SuccessType;
 import org.springframework.http.HttpStatus;
 
 @Builder

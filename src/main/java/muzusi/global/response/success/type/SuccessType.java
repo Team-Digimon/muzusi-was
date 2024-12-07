@@ -1,4 +1,4 @@
-package muzusi.global.response.success;
+package muzusi.global.response.success.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
