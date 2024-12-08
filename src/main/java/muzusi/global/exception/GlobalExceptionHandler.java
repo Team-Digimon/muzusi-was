@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<?> handleCustomException(final CustomException e) {
         BaseErrorType error = e.getErrorType();
-        log.error("[Error Occurred] {}\n<<Stack Trace 5 lines>>\n{}", e.getMessage(), getStackTrace(e));
+        log.error("[Error Occurred] {}", e.getMessage());
         return ResponseEntity.status(error.getStatus()).body(ErrorResponse.from(error));
     }
 
@@ -34,25 +34,16 @@ public class GlobalExceptionHandler {
         for(FieldError fieldError : e.getBindingResult().getFieldErrors() ){
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        log.error("[Error occured] {}",errors);
+        log.error("[Error occurred] {}", errors);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errors);
     }
 
     /* 일반 예외 처리 */
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<?> handleException(final Exception e) {
-        log.error("[Error Occurred] {}\n<<Stack Trace 5 lines>>\n{}", e.getMessage(), getStackTrace(e));
+        log.error("[Error Occurred] {}", e.getMessage());
         BaseErrorType error = CommonErrorType.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(error.getStatus()).body(ErrorResponse.from(error));
     }
 
-    /* StackTrace 5줄 출력 */
-    public String getStackTrace(Exception ex) {
-        StackTraceElement[] stackTrace = ex.getStackTrace();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < Math.min(stackTrace.length, 5); i++) {
-            sb.append(stackTrace[i].toString()).append("\n");
-        }
-        return sb.toString();
-    }
 }
