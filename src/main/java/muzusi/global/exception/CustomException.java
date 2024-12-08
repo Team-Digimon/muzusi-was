@@ -7,6 +7,6 @@ import muzusi.global.response.error.type.BaseErrorType;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomException extends RuntimeException{
+public class CustomException extends RuntimeException {
     private final BaseErrorType errorType;
 }

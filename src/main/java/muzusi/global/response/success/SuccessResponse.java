@@ -11,7 +11,7 @@ public record SuccessResponse<T>(
         String message,
         @JsonIgnore
         T data
-){
+) {
     public static SuccessResponse<?> ok() {
         return SuccessResponse.builder()
                 .code(HttpStatus.OK.value())
