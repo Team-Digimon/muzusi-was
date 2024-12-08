@@ -1,13 +1,14 @@
-package muzusi.global.response.error.type;
+package muzusi.domain.stock.exception;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.global.response.error.type.BaseErrorType;
 import org.springframework.http.HttpStatus;
 
 /**
- * Post ErrorCode: 3xxx
+ * Stock ErrorCode: 2xxx
  */
 @RequiredArgsConstructor
-public enum PostErrorType implements BaseErrorType {
+public enum StockErrorType implements BaseErrorType {
     ;
 
     private final HttpStatus status;

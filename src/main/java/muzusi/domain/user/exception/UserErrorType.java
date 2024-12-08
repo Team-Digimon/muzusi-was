@@ -1,6 +1,7 @@
-package muzusi.global.response.error.type;
+package muzusi.domain.user.exception;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.global.response.error.type.BaseErrorType;
 import org.springframework.http.HttpStatus;
 
 /**
