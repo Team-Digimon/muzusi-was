@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 /**
- * Auth ErrorCode: 1xxx
+ * User ErrorCode: 1xxx
  */
 @RequiredArgsConstructor
-public enum AuthErrorType implements BaseErrorType {
+public enum UserErrorType implements BaseErrorType {
 
     TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, 1001, "사용 기한이 만료된 토큰입니다."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, 1002, "사용 기한이 만료된 토큰입니다."),
