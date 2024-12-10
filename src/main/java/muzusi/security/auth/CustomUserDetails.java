@@ -13,7 +13,7 @@ public class CustomUserDetails implements UserDetails {
     private final Long userId;
     private final String username;
 
-    public CustomUserDetails(Long userId, String username) {
+    private CustomUserDetails(Long userId, String username) {
         this.userId = userId;
         this.username = username;
     }
