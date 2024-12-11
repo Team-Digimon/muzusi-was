@@ -1,4 +1,4 @@
-package muzusi.security.auth;
+package muzusi.global.security.auth;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.domain.user.service.UserService;
