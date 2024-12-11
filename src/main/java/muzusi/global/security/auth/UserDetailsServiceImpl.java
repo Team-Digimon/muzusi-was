@@ -14,7 +14,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return userService.getUser(Long.parseLong(userId))
+        return userService.readById(Long.parseLong(userId))
                 .map(CustomUserDetails::from)
                 .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
     }
