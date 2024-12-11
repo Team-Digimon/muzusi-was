@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityFilterConfig {
-
     private final UserDetailsService userDetailsService;
     private final JwtProvider jwtProvider;
     private final ObjectMapper objectMapper;
