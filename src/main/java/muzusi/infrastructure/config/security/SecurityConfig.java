@@ -1,4 +1,4 @@
-package muzusi.config.security;
+package muzusi.infrastructure.config.security;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.global.security.filter.JwtAuthenticationFilter;
