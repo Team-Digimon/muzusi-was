@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.global.response.error.ErrorResponse;
-import muzusi.global.response.error.type.BaseErrorType;
 import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.global.security.jwt.JwtProvider;
 import muzusi.global.util.jwt.AuthConstants;
