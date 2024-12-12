@@ -1,6 +1,7 @@
 package muzusi.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,10 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = resolveAccessToken(response, authToken);
-
-        if (accessToken.isEmpty())
-            return;
+        String accessToken = resolveAccessToken(authToken);
 
         Authentication auth = getAuthentication(accessToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -57,12 +55,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      *
      * @throws : 토큰이 만료되었다면 예외 발생
      */
-    private String resolveAccessToken(HttpServletResponse response, String authToken) throws IOException {
+    private String resolveAccessToken(String authToken) {
         String accessToken = JwtUtil.resolveToken(authToken);
 
         if (jwtProvider.isExpired(accessToken)) {
-            handleExceptionToken(response, CommonErrorType.ACCESS_TOKEN_EXPIRED);
-            return "";
+            throw new ExpiredJwtException(null, null, CommonErrorType.ACCESS_TOKEN_EXPIRED.getMessage());
         }
 
         return accessToken;
@@ -77,20 +74,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
-
-    /**
-     * Jwt 인증 과정 중, 예외가 발생했을 때 예외를 처리하는 메서드
-     */
-    private void handleExceptionToken(HttpServletResponse response, BaseErrorType errorType) throws IOException {
-        ErrorResponse error = ErrorResponse.from(errorType);
-        String messageBody = objectMapper.writeValueAsString(error);
-
-        log.error("[Error occurred] {}", error.message());
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write(messageBody);
     }
 }

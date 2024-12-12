@@ -1,7 +1,10 @@
 package muzusi.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +29,20 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
-        } catch (JwtException e) {
+        } catch (ExpiredJwtException e) {
+            handleExceptionToken(response, CommonErrorType.ACCESS_TOKEN_EXPIRED);
+        } catch (MalformedJwtException e) {
             handleExceptionToken(response, CommonErrorType.INVALID_ACCESS_TOKEN);
+        } catch (SignatureException e) {
+            handleExceptionToken(response, CommonErrorType.INVALID_TOKEN_SIGNATURE);
+        } catch (JwtException e) {
+            handleExceptionToken(response, CommonErrorType.UNKNOWN_TOKEN_ERROR);
         }
     }
 
+    /**
+     * Jwt 인증 과정 중, 예외가 발생했을 때 예외를 처리하는 메서드
+     */
     private void handleExceptionToken(HttpServletResponse response, BaseErrorType errorType) throws IOException {
         ErrorResponse error = ErrorResponse.from(errorType);
         String messageBody = objectMapper.writeValueAsString(error);
