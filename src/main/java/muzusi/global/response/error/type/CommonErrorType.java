@@ -14,7 +14,9 @@ public enum CommonErrorType implements BaseErrorType {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 0003, "서버 내부 에러입니다. 관리자에게 문의하세요."),
 
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, 0004, "Access Token이 만료되었습니다."),
-    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 0005, "Access Token이 잘못되었습니다.")
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, 0005, "Access Token이 잘못되었습니다."),
+    INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, 0006, "Access Token의 서명이 잘못되었습니다."),
+    UNKNOWN_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, 0007, "알 수 없는 토큰 에러입니다.")
     ;
 
     private final HttpStatus status;
