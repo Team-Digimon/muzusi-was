@@ -1,4 +1,4 @@
-package muzusi.config.security;
+package muzusi.infrastructure.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
