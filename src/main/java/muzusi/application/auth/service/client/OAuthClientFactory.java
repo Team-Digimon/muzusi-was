@@ -1,4 +1,4 @@
-package muzusi.application.auth.service;
+package muzusi.application.auth.service.client;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.domain.user.exception.UserErrorType;
