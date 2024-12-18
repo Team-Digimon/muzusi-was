@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/swagger-resources/**", "/swagger-ui/**",
-            "/v3/api-docs/**", "/webjars/**", "/error"
+            "/v3/api-docs/**", "/webjars/**", "/error", "/auth/**"
     };
 
     @Bean
