@@ -1,9 +1,13 @@
-package muzusi.application.auth.service;
+package muzusi.application.auth.service.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.UserInfoDto;
+import muzusi.domain.user.entity.User;
+import muzusi.domain.user.service.UserService;
+import muzusi.domain.user.type.OAuthPlatform;
 import muzusi.global.exception.CustomException;
 import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.infrastructure.properties.NaverProperties;
@@ -20,12 +24,12 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class NaverClient extends OAuthClient{
+    private final UserService userService;
     private final NaverProperties naverProperties;
     private final ObjectMapper objectMapper;
 
     @Override
     public String getAccessToken(String code) {
-
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -55,7 +59,6 @@ public class NaverClient extends OAuthClient{
 
     @Override
     public UserInfoDto getUserInfo(String accessToken) {
-
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
 
@@ -77,5 +80,23 @@ public class NaverClient extends OAuthClient{
         } catch (Exception e) {
             throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public LoginDto getOAuthUser(String platformId) {
+        String platformUserId = OAuthPlatform.NAVER + "_" + platformId;
+
+        return userService.readByUsername(platformUserId)
+                .map(user -> LoginDto.of(user, true))
+                .orElseGet(() -> new LoginDto(createOAuthUser(platformUserId), false));
+    }
+
+    private User createOAuthUser(String platformUserId) {
+        return userService.save(User.builder()
+                .username(platformUserId)
+                .nickname(platformUserId)
+                .platform(OAuthPlatform.NAVER)
+                .build()
+        );
     }
 }
