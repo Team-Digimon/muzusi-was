@@ -15,7 +15,8 @@ public enum UserErrorType implements BaseErrorType {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, 1003, "유효하지 않은 토큰입니다."),
     MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, 1004, "형식이 잘못된 토큰입니다."),
 
-    UN_AUTHORIZED(HttpStatus.FORBIDDEN, 1005, "허용되지 않은 접근입니다.")
+    UN_AUTHORIZED(HttpStatus.FORBIDDEN, 1005, "허용되지 않은 접근입니다."),
+    UNSUPPORTED_SOCIAL_LOGIN(HttpStatus.BAD_REQUEST, 1006, "지원하지 않는 소셜 로그인입니다.")
     ;
 
     private final HttpStatus status;
