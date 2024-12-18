@@ -2,7 +2,6 @@ package muzusi.application.auth.service.client;
 
 import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.UserInfoDto;
-import muzusi.domain.user.entity.User;
 
 public abstract class OAuthClient {
 
