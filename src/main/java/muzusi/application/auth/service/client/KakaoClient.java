@@ -49,7 +49,8 @@ public class KakaoClient extends OAuthClient {
                     kakaoProperties.getTokenUri(),
                     HttpMethod.POST,
                     requestInfo,
-                    String.class);
+                    String.class
+            );
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
             return rootNode.path("access_token").asText();
@@ -71,7 +72,8 @@ public class KakaoClient extends OAuthClient {
                     kakaoProperties.getGetUserInfoUri(),
                     HttpMethod.GET,
                     requestInfo,
-                    String.class);
+                    String.class
+            );
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 

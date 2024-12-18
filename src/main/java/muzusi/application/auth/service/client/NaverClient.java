@@ -24,7 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class NaverClient extends OAuthClient{
+public class NaverClient extends OAuthClient {
     private final UserService userService;
     private final NaverProperties naverProperties;
     private final ObjectMapper objectMapper;
@@ -49,7 +49,8 @@ public class NaverClient extends OAuthClient{
                     naverProperties.getTokenUri(),
                     HttpMethod.POST,
                     requestInfo,
-                    String.class);
+                    String.class
+            );
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
             return rootNode.path("access_token").asText();
@@ -71,7 +72,8 @@ public class NaverClient extends OAuthClient{
                     naverProperties.getGetUserInfoUri(),
                     HttpMethod.GET,
                     requestInfo,
-                    String.class);
+                    String.class
+            );
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
