@@ -2,6 +2,8 @@ package muzusi.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import muzusi.domain.user.type.OAuthPlatform;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SQLDelete;
@@ -40,9 +43,13 @@ public class User {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    private OAuthPlatform platform;
+
     @Builder
-    public User(String username, String nickname) {
+    public User(String username, String nickname, OAuthPlatform platform) {
         this.username = username;
         this.nickname = nickname;
+        this.platform = platform;
     }
 }
