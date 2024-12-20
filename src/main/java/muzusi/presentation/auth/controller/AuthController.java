@@ -1,4 +1,4 @@
-package muzusi.presentation.auth.Controller;
+package muzusi.presentation.auth.controller;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.OAuthCodeDto;
