@@ -1,6 +1,6 @@
 package muzusi.application.auth.service.client;
 
-import muzusi.application.auth.dto.LoginDto;
+import muzusi.application.auth.dto.UserStatusDto;
 import muzusi.application.auth.dto.UserInfoDto;
 
 public abstract class OAuthClient {
@@ -27,9 +27,9 @@ public abstract class OAuthClient {
      * @param platformId : 플랫폼의 id
      * @return : 사용자 정보
      */
-    public abstract LoginDto getOAuthUser(String platformId);
+    public abstract UserStatusDto getOAuthUser(String platformId);
 
-    public LoginDto login(String code) {
+    public UserStatusDto login(String code) {
         String accessToken = getAccessToken(code);
         UserInfoDto userInfoDto = getUserInfo(accessToken);
 

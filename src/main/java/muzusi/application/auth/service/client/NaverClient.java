@@ -3,7 +3,7 @@ package muzusi.application.auth.service.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.auth.dto.LoginDto;
+import muzusi.application.auth.dto.UserStatusDto;
 import muzusi.application.auth.dto.UserInfoDto;
 import muzusi.domain.user.entity.User;
 import muzusi.domain.user.service.UserService;
@@ -87,12 +87,12 @@ public class NaverClient extends OAuthClient {
 
     @Override
     @Transactional
-    public LoginDto getOAuthUser(String platformId) {
+    public UserStatusDto getOAuthUser(String platformId) {
         String platformUserId = OAuthPlatform.NAVER + "_" + platformId;
 
         return userService.readByUsername(platformUserId)
-                .map(user -> LoginDto.of(user, true))
-                .orElseGet(() -> new LoginDto(createOAuthUser(platformUserId), false));
+                .map(user -> UserStatusDto.of(user, true))
+                .orElseGet(() -> new UserStatusDto(createOAuthUser(platformUserId), false));
     }
 
     private User createOAuthUser(String platformUserId) {
