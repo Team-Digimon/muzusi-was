@@ -1,12 +1,10 @@
 package muzusi.application.auth.dto;
 
-import muzusi.domain.user.entity.User;
-
 public record LoginDto(
-        User user,
+        TokenDto tokenDto,
         boolean isRegistered
 ) {
-    public static LoginDto of(User user, boolean isRegistered) {
-        return new LoginDto(user, isRegistered);
+    public static LoginDto of(TokenDto tokenDto, boolean isRegistered) {
+        return new LoginDto(tokenDto, isRegistered);
     }
 }
