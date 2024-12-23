@@ -5,7 +5,7 @@ import muzusi.global.response.error.type.BaseErrorType;
 
 @Builder
 public record ErrorResponse(
-        int code,
+        String code,
         String message
 ) {
     public static ErrorResponse from(BaseErrorType error){

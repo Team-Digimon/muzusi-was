@@ -12,7 +12,7 @@ public enum StockErrorType implements BaseErrorType {
     ;
 
     private final HttpStatus status;
-    private final int code;
+    private final String code;
     private final String message;
 
     @Override
@@ -21,7 +21,7 @@ public enum StockErrorType implements BaseErrorType {
     }
 
     @Override
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
