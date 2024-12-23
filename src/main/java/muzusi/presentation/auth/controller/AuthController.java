@@ -8,6 +8,7 @@ import muzusi.domain.user.type.OAuthPlatform;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.global.util.cookie.CookieUtil;
 import muzusi.global.util.jwt.AuthConstants;
+import muzusi.presentation.auth.api.AuthApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +23,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthApi {
     private final AuthService authService;
 
+    @Override
     @PostMapping("/sign-in/{platform}")
     public ResponseEntity<?> signIn(@RequestBody OAuthCodeDto oAuthCodeDto,
                                     @PathVariable OAuthPlatform platform) {
