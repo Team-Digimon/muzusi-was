@@ -42,3 +42,7 @@ oauth2:
     redirectUri: ${NAVER_REDIRECT_URL}
     getUserInfoUri: https://openapi.naver.com/v1/nid/me
 
+api:
+  checker:
+    storage:
+      filepath: ${user.home}/api-status.json
