@@ -16,6 +16,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
 jwt:
   secret: ${JWT_KEY:exampleSecretKeyForMuzusiSystemAccessSecretKeyTestForPadding}
   access-expiration: ${JWT_ACCESS_EXPIRATION:1800000}
@@ -36,3 +41,4 @@ oauth2:
     clientSecret: ${NAVER_CLIENT_SECRET}
     redirectUri: ${NAVER_REDIRECT_URL}
     getUserInfoUri: https://openapi.naver.com/v1/nid/me
+
