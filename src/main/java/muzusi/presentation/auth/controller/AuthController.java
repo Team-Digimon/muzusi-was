@@ -41,6 +41,7 @@ public class AuthController implements AuthApi {
         return createTokenRes(authService.signIn(platform, oAuthCodeDto.code()));
     }
 
+    @Override
     @GetMapping("/reissue")
     public ResponseEntity<?> reIssueToken(@CookieValue(name = "refreshToken", required = false) String refreshToken) {
         if (refreshToken == null)
@@ -49,6 +50,7 @@ public class AuthController implements AuthApi {
         return createTokenRes(authService.reissueAccessToken(refreshToken));
     }
 
+    @Override
     @GetMapping("/sign-out")
     public ResponseEntity<?> signOut(@CookieValue(name = "refreshToken", required = false) String refreshToken,
                                      HttpServletResponse response) {
