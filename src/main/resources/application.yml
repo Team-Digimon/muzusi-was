@@ -46,3 +46,7 @@ api:
   checker:
     storage:
       filepath: ${user.home}/api-status.json
+
+token:
+  refresh:
+    in-redis: ${REDIS_REFRESH_EXPIRATION:648000}
