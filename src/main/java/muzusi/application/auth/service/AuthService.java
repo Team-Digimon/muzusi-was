@@ -1,5 +1,6 @@
 package muzusi.application.auth.service;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.TokenDto;
@@ -30,5 +31,25 @@ public class AuthService {
         TokenDto tokenDto = jwtHelper.createToken(userStatusDto.user());
 
         return LoginDto.of(tokenDto, userStatusDto.isRegistered());
+    }
+
+    /**
+     * access token 재발급 메서드
+     *
+     * @param refreshToken : access token 재발급을 위한 refresh token
+     * @return : jwt token
+     */
+    public TokenDto reissueAccessToken(String refreshToken) {
+        return jwtHelper.reissueToken(refreshToken);
+    }
+
+    /**
+     * 서비스 로그아웃 메서드
+     *
+     * @param refreshToken : refresh token
+     * @param response : 쿠키 값 제거를 위한 response
+     */
+    public void signOut(String refreshToken, HttpServletResponse response) {
+        jwtHelper.removeToken(refreshToken, response);
     }
 }
