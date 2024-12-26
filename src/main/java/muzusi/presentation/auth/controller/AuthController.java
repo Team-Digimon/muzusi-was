@@ -85,8 +85,7 @@ public class AuthController implements AuthApi {
         if (dto instanceof TokenDto tokenDto) {
             return tokenDto;
         }
-
-        return null;
+        throw new IllegalArgumentException("잘못된 형변환입니다. " + dto.getClass().getName());
     }
 
 }
