@@ -3,11 +3,7 @@ package muzusi.application.auth.service.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.auth.dto.UserStatusDto;
 import muzusi.application.auth.dto.UserInfoDto;
-import muzusi.domain.user.entity.User;
-import muzusi.domain.user.service.UserService;
-import muzusi.domain.user.type.OAuthPlatform;
 import muzusi.global.exception.CustomException;
 import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.infrastructure.properties.KakaoProperties;
@@ -17,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 public class KakaoClient extends OAuthClient {
-    private final UserService userService;
     private final KakaoProperties kakaoProperties;
     private final ObjectMapper objectMapper;
 
@@ -83,24 +77,5 @@ public class KakaoClient extends OAuthClient {
         }catch (Exception e) {
             throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    @Transactional
-    public UserStatusDto getOAuthUser(String platformId) {
-        String platformUserId = OAuthPlatform.KAKAO + "_" + platformId;
-
-        return userService.readByUsername(platformUserId)
-                .map(user -> UserStatusDto.of(user, true))
-                .orElseGet(() -> new UserStatusDto(createOAuthUser(platformUserId), false));
-    }
-
-    private User createOAuthUser(String platformUserId) {
-        return userService.save(User.builder()
-                .username(platformUserId)
-                .nickname(platformUserId)
-                .platform(OAuthPlatform.KAKAO)
-                .build()
-        );
     }
 }
