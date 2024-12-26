@@ -23,5 +23,9 @@ public class UserService {
     public Optional<User> readByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+    public void update(User user, String nickname) {
+        user.updateNickname(nickname);
+    }
 }
 
