@@ -11,8 +11,8 @@ import java.time.Duration;
 public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void set(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    public void set(String key, Object value, Duration duration) {
+        redisTemplate.opsForValue().set(key, value, duration);
     }
 
     public void del(String key) {
@@ -21,9 +21,5 @@ public class RedisService {
 
     public boolean existed(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
-    }
-
-    public void expire(String key, long seconds) {
-        redisTemplate.expire(key, Duration.ofSeconds(seconds));
     }
 }

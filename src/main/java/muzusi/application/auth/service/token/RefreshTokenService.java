@@ -6,6 +6,8 @@ import muzusi.global.util.jwt.AuthConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
@@ -16,8 +18,7 @@ public class RefreshTokenService {
 
     public void saveRefreshToken(String username, String refreshToken) {
         String key = AuthConstants.REFRESH_TOKEN_KEY.getValue() + ":" + username;
-        redisService.set(key, refreshToken);
-        redisService.expire(key, REDIS_REFRESH_EXPIRATION);
+        redisService.set(key, refreshToken, Duration.ofSeconds(REDIS_REFRESH_EXPIRATION));
     }
 
     public boolean existedRefreshToken(String username) {
