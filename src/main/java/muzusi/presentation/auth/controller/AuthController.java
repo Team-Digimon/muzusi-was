@@ -36,6 +36,7 @@ import java.util.Map;
 public class AuthController implements AuthApi {
     private final AuthService authService;
 
+    @Override
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     @RequestBody SignUpDto signUpDto) {

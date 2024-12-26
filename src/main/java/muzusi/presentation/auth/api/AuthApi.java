@@ -10,8 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import muzusi.application.auth.dto.OAuthCodeDto;
+import muzusi.application.auth.dto.SignUpDto;
 import muzusi.domain.user.type.OAuthPlatform;
+import muzusi.global.security.auth.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +22,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 @ApiGroup(value = "[인증 API]")
 @Tag(name = "[인증 API]", description = "인증 관련 API")
 public interface AuthApi {
+
+    @TrackApi(description = "회원가입")
+    @Operation(summary = "회원가입", description = "최초 로그인 시 회원 정보를 추가하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "회원가입 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
+                             @RequestBody SignUpDto signUpDto);
 
     @TrackApi(description = "소셜 로그인")
     @Operation(summary = "소셜 로그인", description = "서비스를 이용하기 위해 로그인하는 API입니다.")
@@ -72,6 +91,7 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
+                                            "code": 200,
                                             "message": "요청이 성공하였습니다."
                                         }
                                     """)
