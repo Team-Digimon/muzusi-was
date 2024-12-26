@@ -3,6 +3,7 @@ package muzusi.application.auth.service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.LoginDto;
+import muzusi.application.auth.dto.SignUpDto;
 import muzusi.application.auth.dto.TokenDto;
 import muzusi.application.auth.dto.UserInfoDto;
 import muzusi.application.auth.dto.UserStatusDto;
@@ -10,8 +11,10 @@ import muzusi.application.auth.helper.JwtHelper;
 import muzusi.application.auth.service.client.OAuthClient;
 import muzusi.application.auth.service.client.OAuthClientFactory;
 import muzusi.domain.user.entity.User;
+import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;
 import muzusi.domain.user.type.OAuthPlatform;
+import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +74,14 @@ public class AuthService {
                         .build()
         );
         return UserStatusDto.of(newUser, false);
+    }
+
+    @Transactional
+    public void signUp(Long userId, SignUpDto signUpDto) {
+        User foundUser = userService.readById(userId)
+                .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
+
+        userService.update(foundUser, signUpDto.nickname());
     }
 
     /**
