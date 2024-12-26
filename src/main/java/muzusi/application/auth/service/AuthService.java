@@ -76,6 +76,12 @@ public class AuthService {
         return UserStatusDto.of(newUser, false);
     }
 
+    /**
+     * 회원가입 메서드
+     *
+     * @param userId : 사용자 PK값
+     * @param signUpDto : 회원정보 dto
+     */
     @Transactional
     public void signUp(Long userId, SignUpDto signUpDto) {
         User foundUser = userService.readById(userId)
