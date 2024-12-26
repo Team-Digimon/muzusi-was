@@ -52,4 +52,8 @@ public class User {
         this.nickname = nickname;
         this.platform = platform;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

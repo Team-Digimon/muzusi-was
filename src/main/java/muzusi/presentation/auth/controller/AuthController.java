@@ -4,17 +4,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.OAuthCodeDto;
+import muzusi.application.auth.dto.SignUpDto;
 import muzusi.application.auth.dto.TokenDto;
 import muzusi.application.auth.service.AuthService;
 import muzusi.domain.user.type.OAuthPlatform;
 import muzusi.global.exception.CustomException;
 import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.global.response.success.SuccessResponse;
+import muzusi.global.security.auth.CustomUserDetails;
 import muzusi.global.util.cookie.CookieUtil;
 import muzusi.global.util.jwt.AuthConstants;
 import muzusi.presentation.auth.api.AuthApi;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController implements AuthApi {
     private final AuthService authService;
+
+    @Override
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                    @RequestBody SignUpDto signUpDto) {
+        authService.signUp(userDetails.getUserId(), signUpDto);
+        return ResponseEntity.ok(SuccessResponse.ok());
+    }
 
     @Override
     @PostMapping("/sign-in/{platform}")
