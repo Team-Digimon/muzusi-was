@@ -1,6 +1,9 @@
-package muzusi.application.auth.service.client;
+package muzusi.application.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.infrastructure.client.KakaoClient;
+import muzusi.infrastructure.client.NaverClient;
+import muzusi.infrastructure.client.OAuthClient;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.type.OAuthPlatform;
 import muzusi.global.exception.CustomException;
