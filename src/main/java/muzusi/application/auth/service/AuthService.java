@@ -8,7 +8,7 @@ import muzusi.application.auth.dto.TokenDto;
 import muzusi.application.auth.dto.UserInfoDto;
 import muzusi.application.auth.dto.UserStatusDto;
 import muzusi.application.auth.helper.JwtHelper;
-import muzusi.infrastructure.client.OAuthClient;
+import muzusi.infrastructure.oauth.OAuthClient;
 import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;

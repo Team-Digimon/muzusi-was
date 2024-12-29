@@ -1,4 +1,4 @@
-package muzusi.infrastructure.client;
+package muzusi.infrastructure.oauth;
 
 import muzusi.application.auth.dto.UserInfoDto;
 

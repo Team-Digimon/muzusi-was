@@ -1,4 +1,4 @@
-package muzusi.infrastructure.client;
+package muzusi.infrastructure.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
