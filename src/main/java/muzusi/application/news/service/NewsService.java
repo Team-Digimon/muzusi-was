@@ -18,7 +18,7 @@ public class NewsService {
     private final static List<String> keywords = List.of("금융", "증권");
 
     @Transactional
-    public void searchNewsByKeyword() {
+    public void createPostsFromNews() {
         keywords.forEach(keyword ->
                 newsApiClient.fetchNews(keyword).stream()
                         .filter(content -> !postService.existsByTitle(content.get("title")))

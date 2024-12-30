@@ -14,6 +14,6 @@ public class NewsScheduler {
 
     @Scheduled(cron = "0 */30 7-22 * * *")
     public void runDailyNewsProcessJob() {
-        newsService.searchNewsByKeyword();
+        newsService.createPostsFromNews();
     }
 }
