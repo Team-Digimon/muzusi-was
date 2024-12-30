@@ -17,6 +17,10 @@ public class NewsService {
 
     private final static List<String> keywords = List.of("금융", "증권");
 
+    /**
+     * 뉴스 API 호출 및 저장 메서드
+     * 키워드에 맞게 뉴스 API를 호출한 후, DB에 존재 여부를 확인하고 저장을 진행한다.
+     */
     @Transactional
     public void createPostsFromNews() {
         keywords.forEach(keyword ->
