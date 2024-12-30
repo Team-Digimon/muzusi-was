@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class NewsScheduler {
     private final NewsService newsService;
 
-    @Scheduled(cron = "0 */30 7-22 * * *")
+    @Scheduled(cron = "0 */10 7-22 * * *")
     public void runDailyNewsProcessJob() {
         newsService.createPostsFromNews();
     }
