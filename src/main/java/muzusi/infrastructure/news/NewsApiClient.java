@@ -15,12 +15,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
 public class NewsApiClient {
     private final NewsProperties newsProperties;
     private final ObjectMapper objectMapper;
+
+    private static final Pattern HTML_TAG_PATTERN = Pattern.compile("<[^>]*>");
 
     public List<Map<String, String>> fetchNews(String query) {
         HttpHeaders headers = new HttpHeaders();
@@ -49,7 +52,7 @@ public class NewsApiClient {
 
             return items.stream()
                     .map(item -> Map.of(
-                            "title", (String) item.get("title"),
+                            "title", stripHtml((String) item.get("title")),
                             "link", (String) item.get("link"),
                             "pubDate", (String) item.get("pubDate")
                     ))
@@ -57,6 +60,13 @@ public class NewsApiClient {
         } catch (Exception e) {
             throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private String stripHtml(String input) {
+        if (input == null) {
+            return null;
+        }
+        return HTML_TAG_PATTERN.matcher(input).replaceAll("");
     }
 }
 
