@@ -3,6 +3,7 @@ package muzusi.application.news.service;
 import lombok.RequiredArgsConstructor;
 import muzusi.domain.post.entity.Post;
 import muzusi.domain.post.service.PostService;
+import muzusi.global.util.datetime.DateTimeFormatterUtil;
 import muzusi.infrastructure.news.NewsApiClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class NewsService {
                                         .title(content.get("title"))
                                         .link(content.get("link"))
                                         .keyword(keyword)
-                                        .pubDate(content.get("pubDate"))
+                                        .pubDate(DateTimeFormatterUtil.parseToLocalDateTime(content.get("pubDate")))
                                         .build()
                         )
                         .forEach(postService::save)
