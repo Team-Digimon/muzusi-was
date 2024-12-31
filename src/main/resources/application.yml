@@ -58,3 +58,8 @@ api:
 token:
   refresh:
     in-redis: ${REDIS_REFRESH_EXPIRATION:648000}
+
+news:
+  clientId: ${NEWS_CLIENT_ID}
+  clientSecret: ${NEWS_CLIENT_SECRET}
+  newsApiUrl: ${NEWS_API_URL}

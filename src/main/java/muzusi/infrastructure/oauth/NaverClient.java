@@ -1,4 +1,4 @@
-package muzusi.application.auth.service.client;
+package muzusi.infrastructure.oauth;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,21 +6,21 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.UserInfoDto;
 import muzusi.global.exception.CustomException;
 import muzusi.global.response.error.type.CommonErrorType;
-import muzusi.infrastructure.properties.KakaoProperties;
+import muzusi.infrastructure.properties.NaverProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class KakaoClient extends OAuthClient {
-    private final KakaoProperties kakaoProperties;
+public class NaverClient extends OAuthClient {
+    private final NaverProperties naverProperties;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -30,9 +30,9 @@ public class KakaoClient extends OAuthClient {
 
         MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
         param.add("grant_type", "authorization_code");
-        param.add("client_id", kakaoProperties.getClientId());
-        param.add("client_secret", kakaoProperties.getClientSecret());
-        param.add("redirect_uri", kakaoProperties.getRedirectUri());
+        param.add("client_id", naverProperties.getClientId());
+        param.add("client_secret", naverProperties.getClientSecret());
+        param.add("redirect_uri", naverProperties.getRedirectUri());
         param.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> requestInfo = new HttpEntity<>(param, headers);
@@ -40,7 +40,7 @@ public class KakaoClient extends OAuthClient {
         RestTemplate req = new RestTemplate();
         try {
             ResponseEntity<String> response = req.exchange(
-                    kakaoProperties.getTokenUri(),
+                    naverProperties.getTokenUri(),
                     HttpMethod.POST,
                     requestInfo,
                     String.class
@@ -48,7 +48,7 @@ public class KakaoClient extends OAuthClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
             return rootNode.path("access_token").asText();
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
         }
     }
@@ -63,7 +63,7 @@ public class KakaoClient extends OAuthClient {
         RestTemplate req = new RestTemplate();
         try {
             ResponseEntity<String> response = req.exchange(
-                    kakaoProperties.getGetUserInfoUri(),
+                    naverProperties.getGetUserInfoUri(),
                     HttpMethod.GET,
                     requestInfo,
                     String.class
@@ -71,10 +71,10 @@ public class KakaoClient extends OAuthClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            String id = rootNode.path("id").asText();
+            String id = rootNode.path("response").get("id").asText();
 
             return UserInfoDto.of(id);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
         }
     }

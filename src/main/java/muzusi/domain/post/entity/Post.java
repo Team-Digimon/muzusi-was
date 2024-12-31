@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "post")
@@ -20,18 +22,18 @@ public class Post {
 
     private String title;
 
-    private String publisher;
+    private String link;
 
-    private String image;
+    private String keyword;
 
-    @Column(name = "target_url")
-    private String targetUrl;
+    @Column(name = "pub_date")
+    private LocalDateTime pubDate;
 
     @Builder
-    public Post(String title, String publisher, String image, String targetUrl) {
+    public Post(String title, String link, String keyword, LocalDateTime pubDate) {
         this.title = title;
-        this.publisher = publisher;
-        this.image = image;
-        this.targetUrl = targetUrl;
+        this.link = link;
+        this.keyword = keyword;
+        this.pubDate = pubDate;
     }
 }
