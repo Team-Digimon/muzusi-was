@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "post")
@@ -25,10 +27,10 @@ public class Post {
     private String keyword;
 
     @Column(name = "pub_date")
-    private String pubDate;
+    private LocalDateTime pubDate;
 
     @Builder
-    public Post(String title, String link, String keyword, String pubDate) {
+    public Post(String title, String link, String keyword, LocalDateTime pubDate) {
         this.title = title;
         this.link = link;
         this.keyword = keyword;
