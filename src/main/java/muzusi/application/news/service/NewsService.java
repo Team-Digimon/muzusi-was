@@ -16,7 +16,7 @@ public class NewsService {
     private final NewsApiClient newsApiClient;
     private final PostService postService;
 
-    private final static List<String> keywords = List.of("금융", "증권");
+    private final static List<String> keywords = List.of("코스피", "코스닥");
 
     /**
      * 뉴스 API 호출 및 저장 메서드
