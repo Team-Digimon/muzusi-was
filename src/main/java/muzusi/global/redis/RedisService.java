@@ -11,6 +11,10 @@ import java.time.Duration;
 public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
 
+    public Object get(String key){
+        return redisTemplate.opsForValue().get(key);
+    }
+
     public void set(String key, Object value, Duration duration) {
         redisTemplate.opsForValue().set(key, value, duration);
     }
