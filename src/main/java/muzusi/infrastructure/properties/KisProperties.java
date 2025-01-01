@@ -14,7 +14,7 @@ public class KisProperties {
     private String appKey;
     private String appSecret;
 
-    public String getUrl(KisUrlConstant kisUrlConstant){
+    public String getUrl(KisUrlConstant kisUrlConstant) {
         return domain + kisUrlConstant.getUrl();
     }
 }

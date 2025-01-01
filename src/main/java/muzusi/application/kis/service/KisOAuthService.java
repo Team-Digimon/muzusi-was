@@ -17,7 +17,7 @@ public class KisOAuthService {
     private final RedisService redisService;
 
     @PostConstruct
-    public void issueWebSocketKey(){
+    public void issueWebSocketKey() {
         this.saveWebSocketKey();
     }
 
@@ -25,10 +25,10 @@ public class KisOAuthService {
      * 한국투자증권 접근토큰 발급 API 호출 및 저장 메서드
      * 접근토큰 발급 오류 발생 시, DB 데이터 갱신 미실시
      */
-    public void saveAccessToken(){
+    public void saveAccessToken() {
         String accessToken = kisOAuthClient.getAccessToken();
 
-        if(accessToken != null)
+        if (accessToken != null)
             redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
     }
 
@@ -36,10 +36,10 @@ public class KisOAuthService {
      * 한국투자증권 웹소켓 접속키 발급 API 호출 및 저장 메서드
      * 웹소켓 접속키 발급 오류 발생 시, DB 데이터 갱신 미실시
      */
-    public void saveWebSocketKey(){
+    public void saveWebSocketKey() {
         String webSocketKey = kisOAuthClient.getWebSocketKey();
 
-        if(webSocketKey != null)
+        if (webSocketKey != null)
             redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
     }
 }

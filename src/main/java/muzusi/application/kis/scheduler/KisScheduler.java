@@ -13,12 +13,12 @@ public class KisScheduler {
     private final KisOAuthService kisOAuthService;
 
     @Scheduled(cron = "0 0 7 * * ?")
-    public void runIssueAccessTokenJob(){
+    public void runIssueAccessTokenJob() {
         kisOAuthService.saveAccessToken();
     }
 
     @Scheduled(cron = "0 0 0 1 1 ?")
-    public void runIssueWebSocketKeyJob(){
+    public void runIssueWebSocketKeyJob() {
         kisOAuthService.saveWebSocketKey();
     }
 }

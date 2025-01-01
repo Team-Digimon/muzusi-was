@@ -57,7 +57,7 @@ public class KisOAuthClient {
      * 한국투자증권 웹소켓 접속키 발급 메서드
      * @return String : 한국투자증권 웹소켓 접속키
      */
-    public String getWebSocketKey(){
+    public String getWebSocketKey() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
