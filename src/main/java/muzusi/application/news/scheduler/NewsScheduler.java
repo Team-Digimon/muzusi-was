@@ -1,7 +1,7 @@
 package muzusi.application.news.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.news.service.NewsService;
+import muzusi.application.news.service.NewsManagementService;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 @RequiredArgsConstructor
 public class NewsScheduler {
-    private final NewsService newsService;
+    private final NewsManagementService newsManagementService;
 
     @Scheduled(cron = "0 */10 7-22 * * *")
     public void runDailyNewsProcessJob() {
-        newsService.createPostsFromNews();
+        newsManagementService.createPostsFromNews();
     }
 }

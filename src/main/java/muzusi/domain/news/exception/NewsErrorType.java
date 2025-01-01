@@ -1,14 +1,15 @@
-package muzusi.domain.post.exception;
+package muzusi.domain.news.exception;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.global.response.error.type.BaseErrorType;
 import org.springframework.http.HttpStatus;
 
 /**
- * Post ErrorCode: 3xxx
+ * News ErrorCode: 3xxx
  */
 @RequiredArgsConstructor
-public enum PostErrorType implements BaseErrorType {
+public enum NewsErrorType implements BaseErrorType {
+    INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "3001", "키워드가 올바르지 않습니다.");
     ;
 
     private final HttpStatus status;
