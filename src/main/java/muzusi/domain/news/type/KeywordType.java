@@ -10,6 +10,12 @@ public enum KeywordType {
 
     private final String name;
 
+    /**
+     * 키워드 유효성 검사 메서드
+     *
+     * @param keyword : 클라이언트에서 요청한 키워드
+     * @return : 키워드 일치 여부
+     */
     public static boolean containsKeyword(String keyword) {
         for (KeywordType type : KeywordType.values()) {
             if (type.name.equalsIgnoreCase(keyword)) {
