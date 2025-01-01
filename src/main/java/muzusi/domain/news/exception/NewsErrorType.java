@@ -5,7 +5,7 @@ import muzusi.global.response.error.type.BaseErrorType;
 import org.springframework.http.HttpStatus;
 
 /**
- * Post ErrorCode: 3xxx
+ * News ErrorCode: 3xxx
  */
 @RequiredArgsConstructor
 public enum NewsErrorType implements BaseErrorType {
