@@ -1,6 +1,5 @@
 package muzusi.global.response.success;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import muzusi.global.response.success.type.SuccessType;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 public record SuccessResponse<T>(
         int code,
         String message,
-        @JsonIgnore
         T data
 ) {
     public static SuccessResponse<?> ok() {
