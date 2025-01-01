@@ -63,3 +63,8 @@ news:
   clientId: ${NEWS_CLIENT_ID}
   clientSecret: ${NEWS_CLIENT_SECRET}
   newsApiUrl: ${NEWS_API_URL}
+
+kis:
+  domain: ${KIS_DOMAIN:https://openapi.koreainvestment.com:9443}
+  appkey: ${KIS_APPKEY:appkey}
+  appsecret: ${KIS_APPSECRET:appsecret}
