@@ -3,6 +3,7 @@ package muzusi.presentation.news.controller;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.news.service.NewsSearchService;
 import muzusi.global.response.success.SuccessResponse;
+import muzusi.presentation.news.api.NewsApi;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -13,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/news")
+@RequestMapping("/auth/news")
 @RequiredArgsConstructor
-public class NewsController {
+public class NewsController implements NewsApi {
     private final NewsSearchService newsSearchService;
 
+    @Override
     @GetMapping
     public ResponseEntity<?> getAllNews(
             @PageableDefault(sort = "pubDate", direction = Sort.Direction.DESC) Pageable pageable
@@ -25,6 +27,7 @@ public class NewsController {
         return ResponseEntity.ok(SuccessResponse.from(newsSearchService.getAllNews(pageable)));
     }
 
+    @Override
     @GetMapping("/search")
     public ResponseEntity<?> searchNewsByKeyword(
             @PageableDefault(sort = "pubDate", direction = Sort.Direction.DESC) Pageable pageable,
