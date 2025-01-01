@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name = "post")
-public class Post {
+@Entity(name = "news")
+public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +30,7 @@ public class Post {
     private LocalDateTime pubDate;
 
     @Builder
-    public Post(String title, String link, String keyword, LocalDateTime pubDate) {
+    public News(String title, String link, String keyword, LocalDateTime pubDate) {
         this.title = title;
         this.link = link;
         this.keyword = keyword;

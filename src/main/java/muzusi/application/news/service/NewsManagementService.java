@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class NewsService {
+public class NewsManagementService {
     private final NewsApiClient newsApiClient;
     private final PostService postService;
 
