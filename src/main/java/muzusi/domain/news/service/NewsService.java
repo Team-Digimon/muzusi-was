@@ -1,8 +1,8 @@
-package muzusi.domain.post.service;
+package muzusi.domain.news.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.domain.post.entity.News;
-import muzusi.domain.post.repository.NewsRepository;
+import muzusi.domain.news.entity.News;
+import muzusi.domain.news.repository.NewsRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

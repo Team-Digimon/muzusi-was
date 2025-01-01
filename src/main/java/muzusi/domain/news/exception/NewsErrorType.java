@@ -1,4 +1,4 @@
-package muzusi.domain.post.exception;
+package muzusi.domain.news.exception;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.global.response.error.type.BaseErrorType;
@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
  * Post ErrorCode: 3xxx
  */
 @RequiredArgsConstructor
-public enum PostErrorType implements BaseErrorType {
+public enum NewsErrorType implements BaseErrorType {
     ;
 
     private final HttpStatus status;

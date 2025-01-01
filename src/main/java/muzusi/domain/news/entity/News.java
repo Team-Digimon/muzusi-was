@@ -1,4 +1,4 @@
-package muzusi.domain.post.entity;
+package muzusi.domain.news.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

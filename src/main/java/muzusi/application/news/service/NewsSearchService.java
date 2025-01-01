@@ -2,7 +2,7 @@ package muzusi.application.news.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.news.dto.NewsInfoDto;
-import muzusi.domain.post.service.NewsService;
+import muzusi.domain.news.service.NewsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

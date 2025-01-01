@@ -1,6 +1,6 @@
 package muzusi.application.news.dto;
 
-import muzusi.domain.post.entity.News;
+import muzusi.domain.news.entity.News;
 
 import java.time.LocalDateTime;
 

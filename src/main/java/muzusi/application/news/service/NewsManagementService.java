@@ -1,8 +1,8 @@
 package muzusi.application.news.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.domain.post.entity.News;
-import muzusi.domain.post.service.NewsService;
+import muzusi.domain.news.entity.News;
+import muzusi.domain.news.service.NewsService;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
 import muzusi.infrastructure.news.NewsApiClient;
 import org.springframework.stereotype.Service;
