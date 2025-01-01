@@ -40,6 +40,6 @@ public class KisOAuthService {
         String webSocketKey = kisOAuthClient.getWebSocketKey();
 
         if(webSocketKey != null)
-            redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(1));
+            redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
     }
 }
