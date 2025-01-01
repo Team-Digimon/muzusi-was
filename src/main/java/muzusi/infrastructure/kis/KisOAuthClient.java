@@ -19,6 +19,10 @@ public class KisOAuthClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
 
+    /**
+     * 한국투자증권 접근 토큰 발급 메서드
+     * @return String : 한국투자증권 API 접속토큰
+     */
     public String getAccessToken() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -49,6 +53,10 @@ public class KisOAuthClient {
         }
     }
 
+    /**
+     * 한국투자증권 웹소켓 접속키 발급 메서드
+     * @return String : 한국투자증권 웹소켓 접속키
+     */
     public String getWebSocketKey(){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
