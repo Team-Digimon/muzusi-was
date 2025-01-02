@@ -13,7 +13,12 @@ public class NewsScheduler {
     private final NewsManagementService newsManagementService;
 
     @Scheduled(cron = "0 */10 7-22 * * *")
-    public void runDailyNewsProcessJob() {
+    public void runNewsSyncJob() {
         newsManagementService.createPostsFromNews();
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void runNewsDeleteJob() {
+        newsManagementService.deleteNews();
     }
 }
