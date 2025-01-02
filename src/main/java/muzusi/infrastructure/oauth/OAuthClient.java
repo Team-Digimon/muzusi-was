@@ -23,7 +23,7 @@ public abstract class OAuthClient {
     );
 
     /**
-     * 플랫폼의 사용자 정보을 추출하는 메서드.
+     * 플랫폼의 사용자 정보를 추출하는 메서드.
      *
      * @param rootNode : 플랫폼의 사용자 정보 json
      * @return : 추출한 사용자 정보

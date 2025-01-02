@@ -47,10 +47,10 @@ public class OAuthService {
     }
 
     /**
-     * 플랫폼의 AccessToken을 통해 사용자 정보 불러오는 메서드
+     * 플랫폼의 access token을 통해 사용자 정보 불러오는 메서드
      *
      * @param userInfoUri : 사용자 정보를 받아오기 위한 uri
-     * @param accessToken : 플랫폼의 AccessToken
+     * @param accessToken : 플랫폼의 access token
      * @return : 플랫폼 사용자 정보
      */
     JsonNode getUserInfo(String userInfoUri, String accessToken) {
