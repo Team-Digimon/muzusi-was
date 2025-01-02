@@ -13,5 +13,5 @@ public class NaverProperties {
     private String clientId;
     private String clientSecret;
     private String redirectUri;
-    private String getUserInfoUri;
+    private String userInfoUri;
 }
