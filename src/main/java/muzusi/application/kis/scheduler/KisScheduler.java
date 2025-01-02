@@ -2,13 +2,11 @@ package muzusi.application.kis.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.service.KisOAuthService;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@EnableScheduling
 public class KisScheduler {
     private final KisOAuthService kisOAuthService;
 
