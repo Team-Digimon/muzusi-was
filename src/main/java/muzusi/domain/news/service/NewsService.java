@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NewsService {
@@ -24,7 +27,15 @@ public class NewsService {
         return newsRepository.findByKeyword(keyword, pageable);
     }
 
+    public List<Long> readIdsByDate(LocalDateTime dateTime) {
+        return newsRepository.findIdsByPubDateBefore(dateTime);
+    }
+
     public boolean existsByTitle(String title) {
         return newsRepository.existsByTitle(title);
+    }
+
+    public void deleteByIds(List<Long> ids) {
+        newsRepository.deleteByIds(ids);
     }
 }

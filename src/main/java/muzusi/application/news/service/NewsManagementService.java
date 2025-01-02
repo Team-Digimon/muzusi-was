@@ -8,6 +8,7 @@ import muzusi.infrastructure.news.NewsApiClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,5 +38,16 @@ public class NewsManagementService {
                         )
                         .forEach(newsService::save)
         );
+    }
+
+    /**
+     * 오래된 뉴스를 삭제하는 메서드.
+     * 2일이 지난 뉴스들을 삭제한다.
+     */
+    @Transactional
+    public void deleteNews() {
+        LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
+        List<Long> newsIds = newsService.readIdsByDate(twoDaysAgo);
+        newsService.deleteByIds(newsIds);
     }
 }
