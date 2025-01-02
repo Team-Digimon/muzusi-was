@@ -35,7 +35,7 @@ public class NewsService {
         return newsRepository.existsByTitle(title);
     }
 
-    public void deleteIds(List<Long> ids) {
+    public void deleteByIds(List<Long> ids) {
         newsRepository.deleteByIds(ids);
     }
 }

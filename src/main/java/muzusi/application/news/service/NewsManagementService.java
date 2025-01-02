@@ -48,6 +48,6 @@ public class NewsManagementService {
     public void deleteNews() {
         LocalDateTime twoDaysAgo = LocalDateTime.now().minusDays(2);
         List<Long> newsIds = newsService.readIdsByDate(twoDaysAgo);
-        newsService.deleteIds(newsIds);
+        newsService.deleteByIds(newsIds);
     }
 }
