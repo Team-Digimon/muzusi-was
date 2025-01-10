@@ -23,7 +23,7 @@ public class KisAuthDto {
         private String value;
 
         @Builder
-        public  WebSocketKey(String value) {
+        public WebSocketKey(String value) {
             this.value = value;
         }
     }

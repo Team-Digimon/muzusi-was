@@ -21,7 +21,7 @@ public class KisRankingService {
     public void saveVolumeRank() {
         List<RankStock> rankStocks = kisRankingClient.getVolumeRank();
 
-        for(RankStock rankStock : rankStocks) {
+        for (RankStock rankStock : rankStocks) {
             redisService.setList(KisConstant.VOLUME_RANK_PREFIX.getValue(), rankStock);
         }
     }
