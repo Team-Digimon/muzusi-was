@@ -19,8 +19,6 @@ public class KisOAuthService {
 
     @PostConstruct
     public void issueWebSocketKey() {
-        // 0109 테스트용 수정
-//        saveAccessToken();
 
         this.saveWebSocketKey();
     }
