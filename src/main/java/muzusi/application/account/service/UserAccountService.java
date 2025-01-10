@@ -24,6 +24,7 @@ public class UserAccountService {
         User foundUser = userService.readById(userId)
                 .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
+        foundUser.incrementAttemptCount();
         accountManagementService.createAndLinkAccount(foundUser);
     }
 }
