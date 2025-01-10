@@ -19,7 +19,6 @@ public class KisOAuthService {
 
     @PostConstruct
     public void issueWebSocketKey() {
-
         this.saveWebSocketKey();
     }
 
