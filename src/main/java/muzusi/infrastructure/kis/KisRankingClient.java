@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
-import muzusi.application.stock.StockService;
+import muzusi.application.stock.service.StockService;
 import muzusi.domain.stock.entity.RankStock;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
@@ -28,15 +28,7 @@ public class KisRankingClient {
     private final StockService stockService;
 
     public List<RankStock> getVolumeRank() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
-        headers.add("authorization", accessToken.getValue());
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
-        headers.add("tr_id", "FHPST01710000");
-        headers.add("custtype", "P");
+        HttpHeaders headers = getHttpHeaders();
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")
@@ -72,6 +64,20 @@ public class KisRankingClient {
             log.error("[KIS ERROR] " + e.getMessage());
             return null;
         }
+    }
+
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
+        headers.add("authorization", accessToken.getValue());
+        headers.add("appkey", kisProperties.getAppKey());
+        headers.add("appsecret", kisProperties.getAppSecret());
+        headers.add("tr_id", "FHPST01710000");
+        headers.add("custtype", "P");
+
+        return headers;
     }
 
     private List<RankStock> getRankStocks(JsonNode node) {
