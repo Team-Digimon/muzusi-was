@@ -37,7 +37,7 @@ public class User {
     private String nickname;
 
     @Column(name = "attempt_count")
-    private int attemptCount;
+    private Integer attemptCount;
 
     @ColumnDefault("NULL")
     @Column(name = "deleted_at")
@@ -50,10 +50,15 @@ public class User {
     public User(String username, String nickname, OAuthPlatform platform) {
         this.username = username;
         this.nickname = nickname;
+        this.attemptCount = 1;
         this.platform = platform;
     }
 
     public void updateNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void incrementAttemptCount() {
+        this.attemptCount++;
     }
 }
