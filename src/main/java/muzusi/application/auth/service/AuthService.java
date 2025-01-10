@@ -2,6 +2,7 @@ package muzusi.application.auth.service;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import muzusi.application.account.service.AccountManagementService;
 import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.SignUpDto;
 import muzusi.application.auth.dto.TokenDto;
@@ -23,6 +24,7 @@ public class AuthService {
     private final OAuthClientFactory oAuthClientFactory;
     private final JwtHelper jwtHelper;
     private final UserService userService;
+    private final AccountManagementService accountManagementService;
 
     /**
      * 서비스 로그인을 위한 메서드
@@ -72,6 +74,9 @@ public class AuthService {
                         .platform(platform)
                         .build()
         );
+
+        accountManagementService.createAndLinkAccount(newUser);
+
         return UserStatusDto.of(newUser, false);
     }
 
