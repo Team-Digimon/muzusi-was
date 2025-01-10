@@ -1,4 +1,4 @@
-package muzusi.application.stock;
+package muzusi.application.stock.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.domain.stock.entity.Stock;
