@@ -30,4 +30,59 @@ public interface AccountApi {
                     }))
     })
     ResponseEntity<?> createNewAccount(@AuthenticationPrincipal CustomUserDetails userDetails);
+
+    @TrackApi(description = "사용자 전체 계좌 불러오기")
+    @Operation(summary = "사용자 전체 계좌 불러오기", description = "사용자 전체 계좌를 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "계좌 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "content": [
+                                                    {
+                                                        "id": 1,
+                                                        "balance": 10000000,
+                                                        "rateOfReturn": 0.0
+                                                    },
+                                                    {
+                                                        "id": 2,
+                                                        "balance": 20000000,
+                                                        "rateOfReturn": 100.0
+                                                    }
+                                                ],
+                                                "page": {
+                                                    "size": 10,
+                                                    "number": 0,
+                                                    "totalElements": 2,
+                                                    "totalPages": 1
+                                                }
+                                            }
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> getAllAccounts(@AuthenticationPrincipal CustomUserDetails userDetails);
+
+    @TrackApi(description = "사용자 최신 계좌 불러오기")
+    @Operation(summary = "사용자 최신 계좌 불러오기", description = "사용자 최신 계좌를 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "계좌 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "id": 2,
+                                                "balance": 20000000,
+                                                "rateOfReturn": 100.0
+                                            }
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> getAccount(@AuthenticationPrincipal CustomUserDetails userDetails);
 }

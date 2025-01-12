@@ -26,6 +26,7 @@ public class AccountController implements AccountApi {
         return ResponseEntity.ok(SuccessResponse.ok());
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<?> getAllAccounts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(
@@ -33,6 +34,7 @@ public class AccountController implements AccountApi {
         );
     }
 
+    @Override
     @GetMapping("/current")
     public ResponseEntity<?> getAccount(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(
