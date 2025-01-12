@@ -7,6 +7,7 @@ import muzusi.global.security.auth.CustomUserDetails;
 import muzusi.presentation.account.api.AccountApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,5 +24,12 @@ public class AccountController implements AccountApi {
         userAccountService.connectNewAccount(userDetails.getUserId());
 
         return ResponseEntity.ok(SuccessResponse.ok());
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllAccounts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(
+                SuccessResponse.from(userAccountService.getAllAccounts(userDetails.getUserId()))
+        );
     }
 }
