@@ -32,4 +32,11 @@ public class AccountController implements AccountApi {
                 SuccessResponse.from(userAccountService.getAllAccounts(userDetails.getUserId()))
         );
     }
+
+    @GetMapping("/current")
+    public ResponseEntity<?> getAccount(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(
+                SuccessResponse.from(userAccountService.getAccount(userDetails.getUserId()))
+        );
+    }
 }
