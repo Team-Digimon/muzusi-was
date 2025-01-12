@@ -2,6 +2,7 @@ package muzusi.application.account.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.account.dto.AccountInfoDto;
+import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
@@ -44,5 +45,19 @@ public class UserAccountService {
         return accountService.readAllByUserId(userId)
                 .stream().map(AccountInfoDto::fromEntity)
                 .toList();
+    }
+
+    /**
+     * 사용자의 현재 계좌 (최신계좌) 불러오는 메서드
+     *
+     * @param userId : 사용자의 pk값
+     * @return : 사용자의 현재 계좌 정보
+     */
+    @Transactional(readOnly = true)
+    public AccountInfoDto getAccount(Long userId) {
+        return AccountInfoDto.fromEntity(
+                accountService.readByUserId(userId)
+                        .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND))
+        );
     }
 }
