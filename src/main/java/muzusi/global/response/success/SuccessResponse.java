@@ -1,10 +1,12 @@
 package muzusi.global.response.success;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import muzusi.global.response.success.type.SuccessType;
 import org.springframework.http.HttpStatus;
 
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record SuccessResponse<T>(
         int code,
         String message,
