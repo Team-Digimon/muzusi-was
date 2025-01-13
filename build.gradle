@@ -44,7 +44,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-	implementation 'io.github.daeyoung0726:api-link-checker:0.0.6'
+	implementation 'io.github.daeyoung0726:api-link-checker:0.1.0'
 }
 
 tasks.named('test') {

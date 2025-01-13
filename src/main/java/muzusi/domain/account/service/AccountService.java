@@ -5,6 +5,9 @@ import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
@@ -12,5 +15,13 @@ public class AccountService {
 
     public void save(Account account) {
         accountRepository.save(account);
+    }
+
+    public List<Account> readAllByUserId(Long userId) {
+        return accountRepository.findByUser_Id(userId);
+    }
+
+    public Optional<Account> readByUserId(Long userId) {
+        return accountRepository.findLatestAccount(userId);
     }
 }
