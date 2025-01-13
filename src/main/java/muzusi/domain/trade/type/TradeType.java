@@ -1,4 +1,4 @@
-package muzusi.domain.trade.entity;
+package muzusi.domain.trade.type;
 
 public enum TradeType {
     BUY, SELL

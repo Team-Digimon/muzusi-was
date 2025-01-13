@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.stock.entity.Stock;
+import muzusi.domain.trade.type.TradeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
