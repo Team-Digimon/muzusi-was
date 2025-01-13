@@ -28,7 +28,7 @@ public class KisBaseClient {
         headers.add("authorization", accessToken.getValue());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
-        headers.add("tr_id", "FHKST01010100 ");
+        headers.add("tr_id", "FHKST01010100");
         headers.add("custtype", "P");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.INQUIRE_PRICE))
