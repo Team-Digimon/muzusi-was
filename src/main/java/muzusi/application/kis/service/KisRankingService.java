@@ -43,7 +43,7 @@ public class KisRankingService {
         }
     }
 
-    private List<RankStockDto> getRankStockFromFluctuationRank(List<FluctuationRankStockDto> fluctuationRankStockDtos){
+    private List<RankStockDto> getRankStockFromFluctuationRank(List<FluctuationRankStockDto> fluctuationRankStockDtos) {
         List<RankStockDto> rankStockDtos = new ArrayList<>();
         int count = 0;
 
