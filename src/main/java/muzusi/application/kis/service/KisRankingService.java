@@ -1,5 +1,6 @@
 package muzusi.application.kis.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.dto.FluctuationRankStockDto;
@@ -33,11 +34,11 @@ public class KisRankingService {
         List<RankStockDto> risingRankStocks = getRankStockFromFluctuationRank(kisRankingClient.getRisingFluctuationRank());
         List<RankStockDto> fallingRankStocks = getRankStockFromFluctuationRank(kisRankingClient.getFallingFluctuationRank());
 
-        for(RankStockDto risingRankStock : risingRankStocks) {
+        for (RankStockDto risingRankStock : risingRankStocks) {
             redisService.setList(KisConstant.RISING_RANK_PREFIX.getValue(), risingRankStock);
         }
 
-        for(RankStockDto fallingRankStock : fallingRankStocks) {
+        for (RankStockDto fallingRankStock : fallingRankStocks) {
             redisService.setList(KisConstant.FALLING_RANK_PREFIX.getValue(), fallingRankStock);
         }
     }
