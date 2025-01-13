@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
+import muzusi.application.stock.dto.FluctuationRankStockDto;
 import muzusi.application.stock.dto.RankStockDto;
 import muzusi.application.stock.service.StockService;
 import muzusi.global.redis.RedisService;
@@ -32,7 +33,7 @@ public class KisRankingClient {
     private final StockService stockService;
 
     public List<RankStockDto> getVolumeRank() {
-        HttpHeaders headers = getHttpHeaders();
+        HttpHeaders headers = getHttpHeaders("FHPST01710000");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")
@@ -70,7 +71,61 @@ public class KisRankingClient {
         }
     }
 
-    private HttpHeaders getHttpHeaders() {
+    public List<FluctuationRankStockDto> getRisingFluctuationRank() {
+        return getFluctuationRank("0");
+    }
+
+    public List<FluctuationRankStockDto> getFallingFluctuationRank() {
+        return getFluctuationRank("1");
+    }
+
+    private List<FluctuationRankStockDto> getFluctuationRank(String fluctuation) {
+        HttpHeaders headers = getHttpHeaders("FHPST01700000");
+
+        String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
+                .queryParam("fid_rsfl_rate2","")
+                .queryParam("fid_cond_mrkt_div_code","J")
+                .queryParam("fid_cond_scr_div_code","20170")
+                .queryParam("fid_input_iscd","0000")
+                .queryParam("fid_rank_sort_cls_code",fluctuation)
+                .queryParam("fid_input_cnt_1","1")
+                .queryParam("fid_prc_cls_code","1")
+                .queryParam("fid_input_price_1","")
+                .queryParam("fid_input_price_2","")
+                .queryParam("fid_vol_cnt","")
+                .queryParam("fid_trgt_cls_code","0")
+                .queryParam("fid_trgt_exls_cls_code","0")
+                .queryParam("fid_div_cls_code","2")
+                .queryParam("fid_rsfl_rate1","")
+                .build()
+                .toUriString();
+
+        HttpEntity<String> requestInfo = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    uri,
+                    HttpMethod.GET,
+                    requestInfo,
+                    String.class
+            );
+
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+
+            System.out.println(rootNode.get("output"));
+
+            System.out.println("result: " + getFluctuationRanks(rootNode.get("output")));
+
+            return getFluctuationRanks(rootNode.get("output"));
+        } catch (Exception e) {
+            log.error("[KIS ERROR] " + e.getMessage());
+            return null;
+        }
+    }
+
+    private HttpHeaders getHttpHeaders(String trId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -78,7 +133,7 @@ public class KisRankingClient {
         headers.add("authorization", accessToken.getValue());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
-        headers.add("tr_id", "FHPST01710000");
+        headers.add("tr_id", trId);
         headers.add("custtype", "P");
 
         return headers;
@@ -110,5 +165,32 @@ public class KisRankingClient {
             }
         }
         return rankStockDtos;
+    }
+
+    private List<FluctuationRankStockDto> getFluctuationRanks(JsonNode node) {
+        List<FluctuationRankStockDto> fluctuationRankDtos = new ArrayList<>();
+
+        for(JsonNode n : node) {
+            Optional<Long> stockId = stockService.readByStockName(n.get("hts_kor_isnm").asText())
+                    .map(stock -> stock.getId());
+
+            if(stockId.isPresent()) {
+                FluctuationRankStockDto fluctuationRankStockDto = FluctuationRankStockDto.builder()
+                        .id(stockId.get())
+                        .name(n.get("hts_kor_isnm").asText())
+                        .code(n.get("stck_shrn_iscd").asInt())
+                        .rank(n.get("data_rank").asInt())
+                        .price(n.get("stck_prpr").asLong())
+                        .prdyVrss(n.get("prdy_vrss").asLong())
+                        .prdyCtrt(n.get("prdy_ctrt").asInt())
+                        .avrgVol(n.get("acml_vol").asLong())
+                        .build();
+
+                fluctuationRankDtos.add(fluctuationRankStockDto);
+            } else {
+                log.error("[KIS ERROR] " + n.get("hts_kor_isnm").asText() + "는 데이터베이스 상 존재하지 않는 주식입니다.");
+            }
+        }
+        return fluctuationRankDtos;
     }
 }
