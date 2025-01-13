@@ -114,10 +114,6 @@ public class KisRankingClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            System.out.println(rootNode.get("output"));
-
-            System.out.println("result: " + getFluctuationRanks(rootNode.get("output")));
-
             return getFluctuationRanks(rootNode.get("output"));
         } catch (Exception e) {
             log.error("[KIS ERROR] " + e.getMessage());
