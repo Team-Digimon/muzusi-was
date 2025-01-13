@@ -36,7 +36,7 @@ public class Trade {
     private Long stockPrice;
 
     @Column(name = "stock_count")
-    private int stockCount;
+    private Integer stockCount;
 
     @Column(name = "trade_at")
     @CreatedDate
@@ -54,7 +54,7 @@ public class Trade {
     private Account account;
 
     @Builder
-    public Trade(Long stockPrice, int stockCount, TradeType tradeType, Stock stock, Account account) {
+    public Trade(Long stockPrice, Integer stockCount, TradeType tradeType, Stock stock, Account account) {
         this.stockPrice = stockPrice;
         this.stockCount = stockCount;
         this.tradeType = tradeType;
