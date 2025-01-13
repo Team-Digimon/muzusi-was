@@ -82,7 +82,7 @@ public class KisRankingClient {
     private List<FluctuationRankStockDto> getFluctuationRank(String fluctuation) {
         HttpHeaders headers = getHttpHeaders("FHPST01700000");
 
-        String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
+        String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.FLUCTUATION_RANK))
                 .queryParam("fid_rsfl_rate2","")
                 .queryParam("fid_cond_mrkt_div_code","J")
                 .queryParam("fid_cond_scr_div_code","20170")
