@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.stock.entity.Stock;
+import muzusi.domain.trade.type.TradeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -35,7 +36,7 @@ public class Trade {
     private Long stockPrice;
 
     @Column(name = "stock_count")
-    private int stockCount;
+    private Integer stockCount;
 
     @Column(name = "trade_at")
     @CreatedDate
@@ -53,7 +54,7 @@ public class Trade {
     private Account account;
 
     @Builder
-    public Trade(Long stockPrice, int stockCount, TradeType tradeType, Stock stock, Account account) {
+    public Trade(Long stockPrice, Integer stockCount, TradeType tradeType, Stock stock, Account account) {
         this.stockPrice = stockPrice;
         this.stockCount = stockCount;
         this.tradeType = tradeType;

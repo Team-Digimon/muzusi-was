@@ -15,4 +15,8 @@ public class StockService {
     public Optional<Stock> readByStockName(String stockName) {
         return stockRepository.findByStockName(stockName);
     }
+
+    public Optional<Stock> readByStockCode(String stockCode) {
+        return stockRepository.findByStockCode(stockCode);
+    }
 }
