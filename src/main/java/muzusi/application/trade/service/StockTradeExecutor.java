@@ -12,6 +12,7 @@ import muzusi.domain.trade.entity.Trade;
 import muzusi.domain.trade.service.TradeService;
 import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class StockTradeExecutor {
      * @param userId : 사용자 pk값
      * @param tradeReqDto : trade 정보 dto
      */
+    @Transactional
     public void executeTrade(Long userId, TradeReqDto tradeReqDto) {
         Account account = accountService.readByUserId(userId)
                 .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
