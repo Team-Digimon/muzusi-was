@@ -28,6 +28,8 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public static final Long INITIAL_BALANCE = 10_000_000L;
+
     private Long balance;
 
     @Column(name = "rate_of_return")
