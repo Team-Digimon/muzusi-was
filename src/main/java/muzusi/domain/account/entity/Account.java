@@ -13,7 +13,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import muzusi.domain.trade.type.TradeType;
 import muzusi.domain.user.entity.User;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,6 +25,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Entity(name = "account")
+@DynamicUpdate
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,5 +50,20 @@ public class Account {
     public Account(Long balance, User user) {
         this.balance = balance;
         this.user = user;
+    }
+
+    /**
+     * 주식 거래로 인한 계좌 업데이트
+     *
+     * @param tradeType : 거래 타입
+     * @param price : 변화할 가격
+     */
+    public void updateAccount(TradeType tradeType, Long price) {
+        switch (tradeType) {
+            case BUY -> balance -= price;
+            case SELL -> balance += price;
+        }
+
+        rateOfReturn = (double) (balance - INITIAL_BALANCE) / INITIAL_BALANCE * 100;
     }
 }
