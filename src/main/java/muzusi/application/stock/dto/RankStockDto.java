@@ -15,7 +15,7 @@ public record RankStockDto(
         /* 등락 금액 */
         Long prdyVrss,
         /* 등락률 */
-        int prdyCtrt,
+        Double prdyCtrt,
         /* 거래량 */
         Long avrgVol
 ) {

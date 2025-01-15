@@ -164,7 +164,7 @@ public class KisRankingClient {
                     .rank(n.get(body.get("rank")).asInt())
                     .price(n.get(body.get("price")).asLong())
                     .prdyVrss(n.get(body.get("prdyVrss")).asLong())
-                    .prdyCtrt(n.get(body.get("prdyCtrt")).asInt())
+                    .prdyCtrt(n.get(body.get("prdyCtrt")).asDouble())
                     .avrgVol(n.get(body.get("avgrVol")).asLong())
                     .build();
 
