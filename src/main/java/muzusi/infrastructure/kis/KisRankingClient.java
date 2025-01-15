@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.RankStockDto;
-import muzusi.application.stock.service.StockService;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.*;
@@ -66,7 +65,7 @@ public class KisRankingClient {
                     "price", "stck_prpr",
                     "prdyVrss", "prdy_vrss",
                     "prdyCtrt", "prdy_ctrt",
-                    "avrgVol", "avrg_vol"
+                    "avgrVol", "avrg_vol"
             );
 
             return getRankStocks(rootNode.get("output"), body);
@@ -100,7 +99,7 @@ public class KisRankingClient {
                 .queryParam("fid_vol_cnt","")
                 .queryParam("fid_trgt_cls_code","0")
                 .queryParam("fid_trgt_exls_cls_code","0")
-                .queryParam("fid_div_cls_code","2")
+                .queryParam("fid_div_cls_code","0")
                 .queryParam("fid_rsfl_rate1","")
                 .build()
                 .toUriString();
@@ -126,7 +125,7 @@ public class KisRankingClient {
                      "price", "stck_prpr",
                      "prdyVrss", "prdy_vrss",
                      "prdyCtrt", "prdy_ctrt",
-                     "avrgVol", "acml_vol"
+                     "avgrVol", "acml_vol"
              );
 
             return getRankStocks(rootNode.get("output"), body);
@@ -150,7 +149,7 @@ public class KisRankingClient {
         return headers;
     }
 
-    private List<RankStockDto> getRankStocks(JsonNode node, Map<String, String> body){
+    private List<RankStockDto> getRankStocks(JsonNode node, Map<String, String> body) {
         List<RankStockDto> rankStockDtos = new ArrayList<>();
 
         for (JsonNode n : node) {
@@ -161,7 +160,7 @@ public class KisRankingClient {
                     .price(n.get(body.get("price")).asLong())
                     .prdyVrss(n.get(body.get("prdyVrss")).asLong())
                     .prdyCtrt(n.get(body.get("prdyCtrt")).asInt())
-                    .avrgVol(n.get(body.get("avgrVold")).asLong())
+                    .avrgVol(n.get(body.get("avgrVol")).asLong())
                     .build();
 
             rankStockDtos.add(rankStockDto);
