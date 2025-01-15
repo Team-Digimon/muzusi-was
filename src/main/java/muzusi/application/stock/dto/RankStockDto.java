@@ -7,7 +7,7 @@ public record RankStockDto(
         /* 종목 이름 */
         String name,
         /* 종목 코드 */
-        int code,
+        String code,
         /* 랭킹 */
         int rank,
         /* 현재가 */

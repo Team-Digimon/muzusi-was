@@ -157,7 +157,7 @@ public class KisRankingClient {
         for (JsonNode n : node) {
             RankStockDto rankStockDto = RankStockDto.builder()
                     .name(n.get(body.get("name")).asText())
-                    .code(n.get(body.get("code")).asInt())
+                    .code(n.get(body.get("code")).asText())
                     .rank(n.get(body.get("rank")).asInt())
                     .price(n.get(body.get("price")).asLong())
                     .prdyVrss(n.get(body.get("prdyVrss")).asLong())
