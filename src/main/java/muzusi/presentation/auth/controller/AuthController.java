@@ -40,7 +40,7 @@ public class AuthController implements AuthApi {
     @Override
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                    @RequestBody SignUpDto signUpDto) {
+                                    @Valid @RequestBody SignUpDto signUpDto) {
 
         return createTokenRes(authService.signUp(userDetails.getUserId(), signUpDto));
     }
