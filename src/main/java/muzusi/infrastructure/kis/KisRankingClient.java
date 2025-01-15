@@ -5,23 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
-import muzusi.application.stock.dto.FluctuationRankStockDto;
 import muzusi.application.stock.dto.RankStockDto;
 import muzusi.application.stock.service.StockService;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -31,6 +26,7 @@ public class KisRankingClient {
     private final ObjectMapper objectMapper;
     private final RedisService redisService;
     private final StockService stockService;
+
 
     public List<RankStockDto> getVolumeRank() {
         HttpHeaders headers = getHttpHeaders("FHPST01710000");
@@ -64,22 +60,32 @@ public class KisRankingClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            return getRankStocks(rootNode.get("output"));
+            Map<String, String> body = Map.of(
+                    "name", "hts_kor_isnm",
+                    "code", "mksc_shrn_iscd",
+                    "rank", "data_rank",
+                    "price", "stck_prpr",
+                    "prdyVrss", "prdy_vrss",
+                    "prdyCtrt", "prdy_ctrt",
+                    "avrgVol", "avrg_vol"
+            );
+
+            return getRankStocks(rootNode.get("output"), body);
         } catch (Exception e) {
             log.error("[KIS ERROR] " + e.getMessage());
             return null;
         }
     }
 
-    public List<FluctuationRankStockDto> getRisingFluctuationRank() {
+    public List<RankStockDto> getRisingFluctuationRank() {
         return getFluctuationRank("0");
     }
 
-    public List<FluctuationRankStockDto> getFallingFluctuationRank() {
+    public List<RankStockDto> getFallingFluctuationRank() {
         return getFluctuationRank("1");
     }
 
-    private List<FluctuationRankStockDto> getFluctuationRank(String fluctuation) {
+    private List<RankStockDto> getFluctuationRank(String fluctuation) {
         HttpHeaders headers = getHttpHeaders("FHPST01700000");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.FLUCTUATION_RANK))
@@ -114,7 +120,17 @@ public class KisRankingClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            return getFluctuationRanks(rootNode.get("output"));
+             Map<String, String> body = Map.of(
+                     "name", "hts_kor_isnm",
+                     "code", "stck_shrn_iscd",
+                     "rank", "data_rank",
+                     "price", "stck_prpr",
+                     "prdyVrss", "prdy_vrss",
+                     "prdyCtrt", "prdy_ctrt",
+                     "avrgVol", "acml_vol"
+             );
+
+            return getRankStocks(rootNode.get("output"), body);
         } catch (Exception e) {
             log.error("[KIS ERROR] " + e.getMessage());
             return null;
@@ -135,58 +151,22 @@ public class KisRankingClient {
         return headers;
     }
 
-    private List<RankStockDto> getRankStocks(JsonNode node) {
+    private List<RankStockDto> getRankStocks(JsonNode node, Map<String, String> body){
         List<RankStockDto> rankStockDtos = new ArrayList<>();
 
-        for(JsonNode n : node) {
-            Optional<Long> stockId = stockService.readByStockName(n.get("hts_kor_isnm").asText())
-                            .map(stock -> stock.getId());
+        for (JsonNode n : node) {
+            RankStockDto rankStockDto = RankStockDto.builder()
+                    .name(n.get(body.get("name")).asText())
+                    .code(n.get(body.get("code")).asInt())
+                    .rank(n.get(body.get("rank")).asInt())
+                    .price(n.get(body.get("price")).asLong())
+                    .prdyVrss(n.get(body.get("prdyVrss")).asLong())
+                    .prdyCtrt(n.get(body.get("prdyCtrt")).asInt())
+                    .avrgVol(n.get(body.get("avgrVold")).asLong())
+                    .build();
 
-            if(stockId.isPresent()) {
-                RankStockDto rankStockDto = RankStockDto.builder()
-                        .id(stockId.get())
-                        .name(n.get("hts_kor_isnm").asText())
-                        .code(n.get("mksc_shrn_iscd").asInt())
-                        .rank(n.get("data_rank").asInt())
-                        .price(n.get("stck_prpr").asLong())
-                        .prdyVrss(n.get("prdy_vrss").asLong())
-                        .prdyCtrt(n.get("prdy_ctrt").asInt())
-                        .avrgVol(n.get("avrg_vol").asLong())
-                        .acmlTrPbmn(n.get("acml_tr_pbmn").asLong())
-                        .build();
-
-                rankStockDtos.add(rankStockDto);
-            } else {
-                log.error("[KIS ERROR] " + n.get("hts_kor_isnm").asText() + "는 데이터베이스 상 존재하지 않는 주식입니다.");
-            }
+            rankStockDtos.add(rankStockDto);
         }
         return rankStockDtos;
-    }
-
-    private List<FluctuationRankStockDto> getFluctuationRanks(JsonNode node) {
-        List<FluctuationRankStockDto> fluctuationRankDtos = new ArrayList<>();
-
-        for(JsonNode n : node) {
-            Optional<Long> stockId = stockService.readByStockName(n.get("hts_kor_isnm").asText())
-                    .map(stock -> stock.getId());
-
-            if(stockId.isPresent()) {
-                FluctuationRankStockDto fluctuationRankStockDto = FluctuationRankStockDto.builder()
-                        .id(stockId.get())
-                        .name(n.get("hts_kor_isnm").asText())
-                        .code(n.get("stck_shrn_iscd").asInt())
-                        .rank(n.get("data_rank").asInt())
-                        .price(n.get("stck_prpr").asLong())
-                        .prdyVrss(n.get("prdy_vrss").asLong())
-                        .prdyCtrt(n.get("prdy_ctrt").asInt())
-                        .avrgVol(n.get("acml_vol").asLong())
-                        .build();
-
-                fluctuationRankDtos.add(fluctuationRankStockDto);
-            } else {
-                log.error("[KIS ERROR] " + n.get("hts_kor_isnm").asText() + "는 데이터베이스 상 존재하지 않는 주식입니다.");
-            }
-        }
-        return fluctuationRankDtos;
     }
 }
