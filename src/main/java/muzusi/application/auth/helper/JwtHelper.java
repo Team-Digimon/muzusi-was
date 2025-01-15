@@ -21,9 +21,10 @@ public class JwtHelper {
     public TokenDto createToken(User user) {
         Long userId = user.getId();
         String username = user.getUsername();
+        String nickname = user.getNickname();
 
-        String accessToken = jwtProvider.generateAccessToken(username, userId);
-        String refreshToken = jwtProvider.generateRefreshToken(username, userId);
+        String accessToken = jwtProvider.generateAccessToken(username, nickname, userId);
+        String refreshToken = jwtProvider.generateRefreshToken(username, nickname, userId);
 
         refreshTokenService.saveRefreshToken(username, refreshToken);
 
@@ -36,10 +37,11 @@ public class JwtHelper {
         if (!refreshTokenService.existedRefreshToken(username))
             throw new CustomException(CommonErrorType.REFRESH_TOKEN_NOT_FOUND);
 
+        String nickname = jwtProvider.getNickname(refreshToken);
         Long userId = jwtProvider.getUserId(refreshToken);
 
-        String newAccessToken = jwtProvider.generateAccessToken(username, userId);
-        String newRefreshToken = jwtProvider.generateRefreshToken(username, userId);
+        String newAccessToken = jwtProvider.generateAccessToken(username, nickname, userId);
+        String newRefreshToken = jwtProvider.generateRefreshToken(username, nickname, userId);
 
         refreshTokenService.saveRefreshToken(username, newRefreshToken);
 
