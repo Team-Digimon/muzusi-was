@@ -25,7 +25,6 @@ public class KisRankingClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
     private final RedisService redisService;
-    private final StockService stockService;
 
 
     public List<RankStockDto> getVolumeRank() {
