@@ -6,10 +6,8 @@ import lombok.Builder;
 public record RankStockDto(
         /* 종목 이름 */
         String name,
-        /* 고유 식별 번호*/
-        Long id,
         /* 종목 코드 */
-        int code,
+        String code,
         /* 랭킹 */
         int rank,
         /* 현재가 */
@@ -17,10 +15,8 @@ public record RankStockDto(
         /* 등락 금액 */
         Long prdyVrss,
         /* 등락률 */
-        int prdyCtrt,
+        Double prdyCtrt,
         /* 거래량 */
-        Long avrgVol,
-        /* 누적 거래 대금 */
-        Long acmlTrPbmn
+        Long avrgVol
 ) {
 }
