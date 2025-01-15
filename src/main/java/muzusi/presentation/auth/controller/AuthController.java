@@ -1,6 +1,7 @@
 package muzusi.presentation.auth.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.auth.dto.LoginDto;
 import muzusi.application.auth.dto.OAuthCodeDto;
@@ -40,8 +41,8 @@ public class AuthController implements AuthApi {
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
                                     @RequestBody SignUpDto signUpDto) {
-        authService.signUp(userDetails.getUserId(), signUpDto);
-        return ResponseEntity.ok(SuccessResponse.ok());
+
+        return createTokenRes(authService.signUp(userDetails.getUserId(), signUpDto));
     }
 
     @Override
