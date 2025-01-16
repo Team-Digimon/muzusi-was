@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 public class AccountManagementService {
     private final AccountService accountService;
 
-    private static final Long DEFAULT_BALANCE = 10_000_000L;
-
     /**
      * 새로운 계좌 연결하는 메서드.
      *
@@ -21,7 +19,7 @@ public class AccountManagementService {
     public void createAndLinkAccount(User user) {
         Account account = Account.builder()
                 .user(user)
-                .balance(DEFAULT_BALANCE)
+                .balance(Account.INITIAL_BALANCE)
                 .build();
 
         accountService.save(account);

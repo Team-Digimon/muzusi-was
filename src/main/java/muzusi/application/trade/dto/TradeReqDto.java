@@ -7,9 +7,13 @@ import muzusi.domain.trade.type.TradeType;
 
 @Schema(name = "TradeReqDto", description = "주식 매수/매도를 위한 DTO")
 public record TradeReqDto(
+        @Schema(description = "주식 현재 가격", example = "3000")
+        @NotNull
+        Long stockPrice,
+
         @Schema(description = "사용자가 입력한 가격", example = "3000")
         @NotNull(message = "주식 가격은 필수 입력입니다.")
-        Long stockPrice,
+        Long inputPrice,
 
         @Schema(description = "사용자가 입력한 매수/매도 개수", example = "3")
         @NotNull(message = "주식 개수는 필수 입력입니다.")
