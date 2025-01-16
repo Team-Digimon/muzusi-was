@@ -85,13 +85,16 @@ public class AuthService {
      *
      * @param userId : 사용자 PK값
      * @param signUpDto : 회원정보 dto
+     * @return : jwt token
      */
     @Transactional
-    public void signUp(Long userId, SignUpDto signUpDto) {
+    public TokenDto signUp(Long userId, SignUpDto signUpDto) {
         User foundUser = userService.readById(userId)
                 .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
         userService.update(foundUser, signUpDto.nickname());
+
+        return jwtHelper.createToken(foundUser);
     }
 
     /**

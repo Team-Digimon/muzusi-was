@@ -47,9 +47,9 @@ public class JwtProvider {
      * @param userId : Token payload에 담을 정보
      * @return : accessToken
      */
-    public String generateAccessToken(String username, Long userId) {
+    public String generateAccessToken(String username, String nickname, Long userId) {
 
-        return createJwt(createClaims(userId), username, accessExpiration);
+        return createJwt(createClaims(userId, nickname), username, accessExpiration);
     }
 
     /**
@@ -59,9 +59,9 @@ public class JwtProvider {
      * @param userId : Token payload에 담을 정보
      * @return : refreshToken
      */
-    public String generateRefreshToken(String username, Long userId) {
+    public String generateRefreshToken(String username, String nickname, Long userId) {
 
-        return createJwt(createClaims(userId), username, refreshExpiration);
+        return createJwt(createClaims(userId, nickname), username, refreshExpiration);
     }
 
     /**
@@ -70,9 +70,10 @@ public class JwtProvider {
      * @param userId : claim에 담을 정보
      * @return : claims
      */
-    private Map<String, Object> createClaims(Long userId) {
+    private Map<String, Object> createClaims(Long userId, String nickname) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
+        claims.put("nickname", nickname);
         return claims;
     }
 
@@ -132,6 +133,16 @@ public class JwtProvider {
      */
     public String getUsername(String token) {
         return parseClaims(token).getSubject();
+    }
+
+    /**
+     * 토큰의 Payload(Subject)를 추출하는 메서드
+     *
+     * @param token : 토큰
+     * @return : Subject
+     */
+    public String getNickname(String token) {
+        return parseClaims(token).get("nickname", String.class);
     }
 
     /**

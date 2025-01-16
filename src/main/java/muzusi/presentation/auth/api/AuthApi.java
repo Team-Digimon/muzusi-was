@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import muzusi.application.auth.dto.OAuthCodeDto;
 import muzusi.application.auth.dto.SignUpDto;
 import muzusi.domain.user.type.OAuthPlatform;
@@ -31,13 +32,24 @@ public interface AuthApi {
                             @ExampleObject(value = """
                                         {
                                             "code": 200,
-                                            "message": "요청이 성공하였습니다."
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "accessToken": "<access token>"
+                                            }
                                         }
                                     """)
-                    }))
+                    })),
+            @ApiResponse(responseCode = "422", description = "유효성 검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "nickname": "2~8자의 한글, 영문, 숫자(공백, 특수문자 제외)"
+                                        }
+                                    """)
+                    })),
     })
     ResponseEntity<?> signUp(@AuthenticationPrincipal CustomUserDetails userDetails,
-                             @RequestBody SignUpDto signUpDto);
+                             @Valid @RequestBody SignUpDto signUpDto);
 
     @TrackApi(description = "소셜 로그인")
     @Operation(summary = "소셜 로그인", description = "서비스를 이용하기 위해 로그인하는 API입니다.")
@@ -46,14 +58,22 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(name = "FirstLogin", value = """
                                         {
-                                            "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0NiIsbGUiOiJPV05FUiIsImNhdGVnb3J5IjoizIiwidXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA",
-                                            "isRegistered": false
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "accessToken": "<access token>",
+                                                "isRegistered": false
+                                            }
                                         }
                                     """),
                             @ExampleObject(name = "ReturningLogin", value = """
                                         {
-                                            "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0NiIsInJvbGUiOiJPV05FUihdGVnb3J5IjoiYWNjZXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA",
-                                            "isRegistered": true
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "accessToken": "<access token>",
+                                                "isRegistered": true
+                                            }
                                         }
                                     """)
                     }))
@@ -68,7 +88,11 @@ public interface AuthApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0NiIsbGUiOiJPV05FUiIsImNhdGVnb3J5IjoizIiwidXNlcklkIjo2LCJpYXQiOjE3MjI2Njc1MzYsImV4cCI6MTcyMjY2OTMzNn0.9eY_1aSfKLfDhKN5X4f85N2hv_I65QOPFtq_2YXEhoA"
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": {
+                                                "accessToken": "<access token>"
+                                            }
                                         }
                                     """)
                     })),
