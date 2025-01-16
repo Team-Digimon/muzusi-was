@@ -35,8 +35,6 @@ public class StockTradeExecutor {
         Stock stock = stockService.readByStockCode(tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(StockErrorType.NOT_FOUND));
 
-        account.updateAccount(tradeReqDto.tradeType(), tradeReqDto.stockPrice() * tradeReqDto.stockCount());
-
         tradeService.save(
                 Trade.builder()
                         .stockPrice(tradeReqDto.stockPrice())
