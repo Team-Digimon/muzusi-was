@@ -3,6 +3,7 @@ package muzusi.infrastructure.news;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.global.exception.CustomException;
+import muzusi.global.exception.NewsApiException;
 import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.infrastructure.properties.NewsProperties;
 import org.springframework.http.HttpEntity;
@@ -58,7 +59,7 @@ public class NewsApiClient {
                     ))
                     .toList();
         } catch (Exception e) {
-            throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
+            throw new NewsApiException(e);
         }
     }
 
