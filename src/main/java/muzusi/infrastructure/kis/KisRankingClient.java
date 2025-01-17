@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.RankStockDto;
+import muzusi.global.exception.KisApiException;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
 
@@ -75,8 +76,7 @@ public class KisRankingClient {
 
             return getRankStocks(rootNode.get("output"), body);
         } catch (Exception e) {
-            log.error("[KIS ERROR] " + e.getMessage());
-            return null;
+            throw new KisApiException(e);
         }
     }
 
@@ -135,8 +135,7 @@ public class KisRankingClient {
 
             return getRankStocks(rootNode.get("output"), body);
         } catch (Exception e) {
-            log.error("[KIS ERROR] " + e.getMessage());
-            return null;
+            throw new KisApiException(e);
         }
     }
 

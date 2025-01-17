@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.global.redis.RedisService;
-import muzusi.infrastructure.kis.KisOAuthClient;
 import muzusi.infrastructure.kis.KisConstant;
+import muzusi.infrastructure.kis.KisOAuthClient;
 import org.springframework.stereotype.Service;
+
 import java.time.Duration;
 
 @Slf4j
@@ -31,8 +32,7 @@ public class KisOAuthService {
                 .value(kisOAuthClient.getAccessToken())
                 .build();
 
-        if (accessToken.getValue() != null)
-            redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
+        redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
     }
 
     /**
@@ -44,7 +44,6 @@ public class KisOAuthService {
                 .value(kisOAuthClient.getWebSocketKey())
                 .build();
 
-        if (webSocketKey.getValue() != null)
-            redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
+        redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
     }
 }
