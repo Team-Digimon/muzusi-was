@@ -54,7 +54,7 @@ public class KisRankingClient {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        try{
+        try {
             ResponseEntity<String> response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,

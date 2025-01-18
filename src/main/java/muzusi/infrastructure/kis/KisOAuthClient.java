@@ -37,7 +37,7 @@ public class KisOAuthClient {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        try{
+        try {
             ResponseEntity<String> response = restTemplate.exchange(
                     kisProperties.getUrl(KisUrlConstant.ACCESS_TOKEN_ISSUE),
                     HttpMethod.POST,
@@ -70,7 +70,7 @@ public class KisOAuthClient {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        try{
+        try {
             ResponseEntity<String> response = restTemplate.exchange(
                     kisProperties.getUrl(KisUrlConstant.WEBSOCKET_KEY_ISSUE),
                     HttpMethod.POST,
