@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.global.exception.KisApiException;
+import muzusi.global.exception.KisOAuthApiException;
 import muzusi.infrastructure.properties.KisProperties;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,7 +53,7 @@ public class KisOAuthClient {
 
             return rootNode.path("token_type").asText() + " "  + rootNode.path("access_token").asText();
         } catch (Exception e){
-            throw new KisApiException(e);
+            throw new KisOAuthApiException(e);
         }
     }
 
@@ -82,7 +86,7 @@ public class KisOAuthClient {
 
             return rootNode.path("approval_key").asText();
         } catch (Exception e){
-            throw new KisApiException(e);
+            throw new KisOAuthApiException(e);
         }
     }
 }
