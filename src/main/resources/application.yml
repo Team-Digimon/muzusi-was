@@ -68,3 +68,7 @@ kis:
   domain: ${KIS_DOMAIN:https://openapi.koreainvestment.com:9443}
   appkey: ${KIS_APPKEY:appkey}
   appsecret: ${KIS_APPSECRET:appsecret}
+
+webhook:
+  discord:
+    url: ${DISCORD_WEBHOOK_URL:https://discord.com/api/webhooks}
