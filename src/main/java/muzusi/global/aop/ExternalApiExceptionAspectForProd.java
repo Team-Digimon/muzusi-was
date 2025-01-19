@@ -2,26 +2,27 @@ package muzusi.global.aop;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.application.webhook.dto.Embed;
-import muzusi.application.webhook.dto.Message;
-import muzusi.application.webhook.service.DiscordWebhookService;
+import muzusi.infrastructure.webhook.Embed;
+import muzusi.infrastructure.webhook.Message;
 import muzusi.global.exception.KisApiException;
 import muzusi.global.exception.KisOAuthApiException;
 import muzusi.global.exception.NewsApiException;
+import muzusi.infrastructure.webhook.DiscordWebhookClient;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Profile("prod")
 @Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class ExternalApiExceptionAspect {
-    private final DiscordWebhookService discordWebhookService;
+public class ExternalApiExceptionAspectForProd {
+    private final DiscordWebhookClient discordWebhookClient;
 
     @Around("execution(* muzusi.infrastructure..*(..))")
     public Object handleServiceExceptions(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -29,15 +30,15 @@ public class ExternalApiExceptionAspect {
             return joinPoint.proceed();
         } catch (NewsApiException e) {
             log.error("[NEWS ERROR] {}", e.getMessage());
-            discordWebhookService.sendDiscordWebhookMessage(getMessage("# NEWS ERROR", joinPoint, e));
+            discordWebhookClient.sendWebhookMessage(getMessage("# NEWS ERROR", joinPoint, e));
             throw e;
         } catch (KisApiException e) {
             log.error("[KIS ERROR] {}", e.getMessage());
-            discordWebhookService.sendDiscordWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
+            discordWebhookClient.sendWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
             throw e;
         } catch (KisOAuthApiException e) {
-            log.error("[KIS ERROR] {}", e.getMessage());
-            discordWebhookService.sendDiscordWebhookMessage(getCriticalMessage("# KIS ERROR - OAuth", joinPoint, e));
+            log.error("[KIS OAUTH ERROR] {}", e.getMessage());
+            discordWebhookClient.sendWebhookMessage(getCriticalMessage("# KIS ERROR - OAuth", joinPoint, e));
             return null;
         }
     }
