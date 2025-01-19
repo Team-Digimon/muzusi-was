@@ -1,4 +1,4 @@
-package muzusi.application.webhook.dto;
+package muzusi.infrastructure.webhook;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
