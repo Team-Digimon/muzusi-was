@@ -16,8 +16,8 @@ public class HoldingService {
         holdingRepository.save(holding);
     }
 
-    public Optional<Holding> readByStockCode(String stockCode) {
-        return holdingRepository.findByStockCode(stockCode);
+    public Optional<Holding> readByUserIdAndStockCode(Long userId, String stockCode) {
+        return holdingRepository.findByUser_IdAndStockCode(userId, stockCode);
     }
 
     public boolean existsByStockCode(String stockCode) {

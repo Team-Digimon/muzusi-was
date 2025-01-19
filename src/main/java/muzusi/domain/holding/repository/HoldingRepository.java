@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface HoldingRepository extends JpaRepository<Holding, Long> {
-    Optional<Holding> findByStockCode(String stockCode);
+    Optional<Holding> findByUser_IdAndStockCode(Long userId, String stockCode);
     boolean existsByStockCode(String stockCode);
     void deleteByStockCode(String stockCode);
 }
