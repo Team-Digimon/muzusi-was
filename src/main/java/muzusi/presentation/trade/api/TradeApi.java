@@ -31,12 +31,18 @@ public interface TradeApi {
                                         }
                                     """)
                     })),
-            @ApiResponse(responseCode = "400", description = "잘못된 잔여 주식 요청",
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "InsufficientStock", value = """
                                         {
                                             "code": "5002",
                                             "message": "잔여 주식이 부족합니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "InsufficientBalance", value = """
+                                        {
+                                            "code": "4002",
+                                            "message": "계좌 잔액이 부족합니다."
                                         }
                                     """)
                     })),
