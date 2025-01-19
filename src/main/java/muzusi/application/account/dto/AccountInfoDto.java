@@ -4,10 +4,9 @@ import muzusi.domain.account.entity.Account;
 
 public record AccountInfoDto(
         Long id,
-        Long balance,
-        double rateOfReturn
+        Long balance
 ) {
     public static AccountInfoDto fromEntity(Account account) {
-        return new AccountInfoDto(account.getId(), account.getBalance(), account.getRateOfReturn());
+        return new AccountInfoDto(account.getId(), account.getBalance());
     }
 }
