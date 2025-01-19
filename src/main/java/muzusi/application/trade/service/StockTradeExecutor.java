@@ -59,6 +59,7 @@ public class StockTradeExecutor {
 
     /**
      * 매수에 대한 내역 처리 메서드
+     * 금액이 부족하다 -> 예외처리
      * 해당 주식에 대한 내역이 있다 -> 그 데이터를 기반으로 업데이트
      * 해당 주식에 대한 내역이 없다 -> 새로운 관리 데이터 생성
      *
@@ -66,6 +67,11 @@ public class StockTradeExecutor {
      * @param account : 연결된 계좌
      */
     private void handleStockPurchase(TradeReqDto tradeReqDto, Account account) {
+        long price = tradeReqDto.stockPrice() * tradeReqDto.stockCount();
+
+        if (account.getBalance() < price)
+            throw new CustomException(AccountErrorType.INSUFFICIENT_BALANCE);
+
         if (!holdingService.existsByStockCode(tradeReqDto.stockCode())) {
             holdingService.save(
                     Holding.builder()
@@ -80,7 +86,7 @@ public class StockTradeExecutor {
             holding.addStock(tradeReqDto.stockCount(), tradeReqDto.stockPrice());
         }
 
-        account.updateAccount(tradeReqDto.tradeType(), tradeReqDto.stockPrice(), tradeReqDto.stockCount());
+        account.updateAccount(tradeReqDto.tradeType(), price);
     }
 
     /**
@@ -100,6 +106,7 @@ public class StockTradeExecutor {
         if (holding.isEmpty())
             holdingService.deleteByStockCode(tradeReqDto.stockCode());
 
-        account.updateAccount(tradeReqDto.tradeType(), tradeReqDto.stockPrice(), tradeReqDto.stockCount());
+        long price = tradeReqDto.stockPrice() * tradeReqDto.stockCount();
+        account.updateAccount(tradeReqDto.tradeType(), price);
     }
 }
