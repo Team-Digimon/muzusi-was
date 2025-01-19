@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import muzusi.domain.account.entity.Account;
+import muzusi.domain.user.entity.User;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
@@ -34,14 +35,19 @@ public class Holding {
     private Long averagePrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
     @Builder
-    public Holding(String stockCode, Integer stockCount, Long averagePrice, Account account) {
+    public Holding(String stockCode, Integer stockCount, Long averagePrice, User user, Account account) {
         this.stockCode = stockCode;
         this.stockCount = stockCount;
         this.averagePrice = averagePrice;
+        this.user = user;
         this.account = account;
     }
 
@@ -57,12 +63,8 @@ public class Holding {
     /**
      * 주식을 매도할 때 수량을 차감하는 메서드
      */
-    public boolean sellStock(int count) {
-        if (this.stockCount < count) {
-            return false;
-        }
+    public void sellStock(int count) {
         this.stockCount -= count;
-        return true;
     }
 
     /**
