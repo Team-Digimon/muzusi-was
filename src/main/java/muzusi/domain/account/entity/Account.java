@@ -53,13 +53,12 @@ public class Account {
      * 주식 거래로 인한 계좌 업데이트
      *
      * @param tradeType : 거래 타입
-     * @param stockPrice : 주식 가격
-     * @param stockCount : 거래 개수
+     * @param price : 거래 금액
      */
-    public void updateAccount(TradeType tradeType, Long stockPrice, Integer stockCount) {
+    public void updateAccount(TradeType tradeType, Long price) {
         switch (tradeType) {
-            case BUY -> balance -= stockPrice * stockCount;
-            case SELL -> balance += stockPrice * stockCount;
+            case BUY -> balance -= price;
+            case SELL -> balance += price;
         }
     }
 }
