@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import muzusi.domain.trade.type.TradeType;
 import muzusi.domain.user.entity.User;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
@@ -34,9 +35,6 @@ public class Account {
 
     private Long balance;
 
-    @Column(name = "rate_of_return")
-    private double rateOfReturn;
-
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -49,5 +47,19 @@ public class Account {
     public Account(Long balance, User user) {
         this.balance = balance;
         this.user = user;
+    }
+
+    /**
+     * 주식 거래로 인한 계좌 업데이트
+     *
+     * @param tradeType : 거래 타입
+     * @param stockPrice : 주식 가격
+     * @param stockCount : 거래 개수
+     */
+    public void updateAccount(TradeType tradeType, Long stockPrice, Integer stockCount) {
+        switch (tradeType) {
+            case BUY -> balance -= stockPrice * stockCount;
+            case SELL -> balance += stockPrice * stockCount;
+        }
     }
 }
