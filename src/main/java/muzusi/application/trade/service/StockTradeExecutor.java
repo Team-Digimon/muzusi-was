@@ -14,9 +14,11 @@ import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.entity.Trade;
 import muzusi.domain.trade.service.TradeService;
 import muzusi.domain.trade.type.TradeType;
+import muzusi.domain.user.entity.User;
+import muzusi.domain.user.exception.UserErrorType;
+import muzusi.domain.user.service.UserService;
 import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -32,19 +34,18 @@ public class StockTradeExecutor {
      * @param userId : 사용자 pk값
      * @param tradeReqDto : trade 정보 dto
      */
-    @Transactional
     public void executeTrade(Long userId, TradeReqDto tradeReqDto) {
         Account account = accountService.readByUserId(userId)
                 .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
+
+        Stock stock = stockService.readByStockCode(tradeReqDto.stockCode())
+                .orElseThrow(() -> new CustomException(StockErrorType.NOT_FOUND));
 
         if (tradeReqDto.tradeType() == TradeType.BUY)
             handleStockPurchase(tradeReqDto, account);
 
         if (tradeReqDto.tradeType() == TradeType.SELL)
             handleStockSale(tradeReqDto, account);
-
-        Stock stock = stockService.readByStockCode(tradeReqDto.stockCode())
-                .orElseThrow(() -> new CustomException(StockErrorType.NOT_FOUND));
 
         tradeService.save(
                 Trade.builder()
@@ -59,18 +60,15 @@ public class StockTradeExecutor {
 
     /**
      * 매수에 대한 내역 처리 메서드
-     * 금액이 부족하다 -> 예외처리
      * 해당 주식에 대한 내역이 있다 -> 그 데이터를 기반으로 업데이트
      * 해당 주식에 대한 내역이 없다 -> 새로운 관리 데이터 생성
      *
      * @param tradeReqDto : trade 정보 dto
      * @param account : 연결된 계좌
      */
-    private void handleStockPurchase(TradeReqDto tradeReqDto, Account account) {
+    private void handleStockPurchase(TradeReqDto tradeReqDto, Account account, Long userId) {
         long price = tradeReqDto.stockPrice() * tradeReqDto.stockCount();
-
-        if (account.getBalance() < price)
-            throw new CustomException(AccountErrorType.INSUFFICIENT_BALANCE);
+        account.updateAccount(tradeReqDto.tradeType(), price);
 
         if (!holdingService.existsByStockCode(tradeReqDto.stockCode())) {
             holdingService.save(
@@ -85,8 +83,6 @@ public class StockTradeExecutor {
             Holding holding = holdingService.readByStockCode(tradeReqDto.stockCode()).get();
             holding.addStock(tradeReqDto.stockCount(), tradeReqDto.stockPrice());
         }
-
-        account.updateAccount(tradeReqDto.tradeType(), price);
     }
 
     /**
