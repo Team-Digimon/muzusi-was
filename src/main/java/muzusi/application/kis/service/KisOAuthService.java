@@ -28,11 +28,15 @@ public class KisOAuthService {
      * 접근토큰 발급 오류 발생 시, DB 데이터 갱신 미실시
      */
     public void saveAccessToken() {
-        KisAuthDto.AccessToken accessToken = KisAuthDto.AccessToken.builder()
-                .value(kisOAuthClient.getAccessToken())
-                .build();
+        String response = kisOAuthClient.getAccessToken();
 
-        redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
+        if (response != null) {
+            KisAuthDto.AccessToken accessToken = KisAuthDto.AccessToken.builder()
+                    .value(response)
+                    .build();
+
+            redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
+        }
     }
 
     /**
@@ -40,10 +44,14 @@ public class KisOAuthService {
      * 웹소켓 접속키 발급 오류 발생 시, DB 데이터 갱신 미실시
      */
     public void saveWebSocketKey() {
-        KisAuthDto.WebSocketKey webSocketKey = KisAuthDto.WebSocketKey.builder()
-                .value(kisOAuthClient.getWebSocketKey())
-                .build();
+        String response = kisOAuthClient.getWebSocketKey();
 
-        redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
+        if (response != null) {
+            KisAuthDto.WebSocketKey webSocketKey = KisAuthDto.WebSocketKey.builder()
+                    .value(kisOAuthClient.getWebSocketKey())
+                    .build();
+
+            redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
+        }
     }
 }

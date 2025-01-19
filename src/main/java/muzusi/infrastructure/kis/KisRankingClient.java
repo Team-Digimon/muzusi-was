@@ -9,7 +9,6 @@ import muzusi.application.stock.dto.RankStockDto;
 import muzusi.global.exception.KisApiException;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
-
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -54,7 +53,7 @@ public class KisRankingClient {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        try{
+        try {
             ResponseEntity<String> response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
