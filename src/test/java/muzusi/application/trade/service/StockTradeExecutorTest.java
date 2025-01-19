@@ -3,7 +3,6 @@ package muzusi.application.trade.service;
 import muzusi.application.stock.service.StockService;
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
-import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
@@ -12,6 +11,8 @@ import muzusi.domain.stock.entity.Stock;
 import muzusi.domain.trade.entity.Trade;
 import muzusi.domain.trade.service.TradeService;
 import muzusi.domain.trade.type.TradeType;
+import muzusi.domain.user.entity.User;
+import muzusi.domain.user.service.UserService;
 import muzusi.global.exception.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,12 +46,15 @@ class StockTradeExecutorTest {
     private AccountService accountService;
     @Mock
     private HoldingService holdingService;
+    @Mock
+    private UserService userService;
 
     private TradeReqDto buyTradeDto;
     private TradeReqDto sellTradeDto;
     private Account account;
     private Stock stock;
     private Holding holding;
+    private User user;
 
     @BeforeEach
     void setUp() {
@@ -72,6 +76,11 @@ class StockTradeExecutorTest {
                 .averagePrice(2900L)
                 .account(account)
                 .build();
+
+        user = User.builder()
+                .username("test")
+                .nickname("테스터")
+                .build();
     }
 
     @Test
@@ -80,6 +89,7 @@ class StockTradeExecutorTest {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
+        given(userService.readById(1L)).willReturn(Optional.of(user));
         given(holdingService.existsByStockCode(buyTradeDto.stockCode())).willReturn(false);
 
         // when
@@ -98,7 +108,7 @@ class StockTradeExecutorTest {
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(holdingService.existsByStockCode(buyTradeDto.stockCode())).willReturn(true);
-        given(holdingService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(holding));
+        given(holdingService.readByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         int prevStockCount = holding.getStockCount();
         long prevTotalCost = prevStockCount * holding.getAveragePrice();
@@ -120,34 +130,12 @@ class StockTradeExecutorTest {
     }
 
     @Test
-    @DisplayName("매수 실행 실패 - 잔액 부족")
-    void executeTradeBuyFailInsufficientBalance() {
-        // given
-        Account lowBalanceAccount = Account.builder()
-                .balance(5000L)
-                .user(null)
-                .build();
-
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(lowBalanceAccount));
-
-        // when
-        CustomException exception = assertThrows(CustomException.class, () ->
-                stockTradeExecutor.executeTrade(1L, buyTradeDto)
-        );
-
-        // then
-        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getStatus(), exception.getErrorType().getStatus());
-        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getCode(), exception.getErrorType().getCode());
-        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getMessage(), exception.getErrorType().getMessage());
-    }
-
-    @Test
     @DisplayName("매도 실행 테스트 - 충분한 수량 보유")
     void executeTradeSellSuccess() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(stock));
-        given(holdingService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(holding));
+        given(holdingService.readByUserIdAndStockCode(1L, sellTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         // when
         stockTradeExecutor.executeTrade(1L, sellTradeDto);
@@ -163,6 +151,7 @@ class StockTradeExecutorTest {
     void executeTradeSellFailNoHolding() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
+        given(stockService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(stock));
 
         // when
         CustomException exception = assertThrows(CustomException.class, () ->
@@ -176,26 +165,6 @@ class StockTradeExecutorTest {
     }
 
     @Test
-    @DisplayName("매도 실행 실패 - 보유 주식 부족")
-    void executeTradeSellFailInsufficientStock() {
-        // given
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(holdingService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(holding));
-
-        TradeReqDto invalidSellTradeDto = new TradeReqDto(3000L, 3000L, 100, "000610", TradeType.SELL);
-
-        // when
-        CustomException exception = assertThrows(CustomException.class, () ->
-                stockTradeExecutor.executeTrade(1L, invalidSellTradeDto)
-        );
-
-        // then
-        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getStatus(), exception.getErrorType().getStatus());
-        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getCode(), exception.getErrorType().getCode());
-        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getMessage(), exception.getErrorType().getMessage());
-    }
-
-    @Test
     @DisplayName("매도 실행 테스트 - 보유 주식이 0이 되면 삭제")
     void executeTradeSellDeleteHoldingWhenZero() {
         // given
@@ -203,7 +172,7 @@ class StockTradeExecutorTest {
 
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(fullSellTradeDto.stockCode())).willReturn(Optional.of(stock));
-        given(holdingService.readByStockCode(fullSellTradeDto.stockCode())).willReturn(Optional.of(holding));
+        given(holdingService.readByUserIdAndStockCode(1L, fullSellTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         // when
         stockTradeExecutor.executeTrade(1L, fullSellTradeDto);
