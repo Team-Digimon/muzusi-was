@@ -27,6 +27,7 @@ public class StockTradeExecutor {
     private final StockService stockService;
     private final AccountService accountService;
     private final HoldingService holdingService;
+    private final UserService userService;
 
     /**
      * 주식 매수, 매도 메서드
@@ -42,10 +43,10 @@ public class StockTradeExecutor {
                 .orElseThrow(() -> new CustomException(StockErrorType.NOT_FOUND));
 
         if (tradeReqDto.tradeType() == TradeType.BUY)
-            handleStockPurchase(tradeReqDto, account);
+            handleStockPurchase(tradeReqDto, account, userId);
 
         if (tradeReqDto.tradeType() == TradeType.SELL)
-            handleStockSale(tradeReqDto, account);
+            handleStockSale(tradeReqDto, account, userId);
 
         tradeService.save(
                 Trade.builder()
@@ -71,16 +72,20 @@ public class StockTradeExecutor {
         account.updateAccount(tradeReqDto.tradeType(), price);
 
         if (!holdingService.existsByStockCode(tradeReqDto.stockCode())) {
+            User foundUser = userService.readById(userId)
+                            .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
+
             holdingService.save(
                     Holding.builder()
                             .stockCode(tradeReqDto.stockCode())
                             .stockCount(tradeReqDto.stockCount())
                             .averagePrice(tradeReqDto.stockPrice())
+                            .user(foundUser)
                             .account(account)
                             .build()
             );
         } else {
-            Holding holding = holdingService.readByStockCode(tradeReqDto.stockCode()).get();
+            Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode()).get();
             holding.addStock(tradeReqDto.stockCount(), tradeReqDto.stockPrice());
         }
     }
@@ -92,12 +97,10 @@ public class StockTradeExecutor {
      * @param tradeReqDto : trade 정보 dto
      * @param account : 연결된 계좌
      */
-    private void handleStockSale(TradeReqDto tradeReqDto, Account account) {
-        Holding holding = holdingService.readByStockCode(tradeReqDto.stockCode())
+    private void handleStockSale(TradeReqDto tradeReqDto, Account account, Long userId) {
+        Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
-
-        if (!holding.sellStock(tradeReqDto.stockCount()))
-            throw new CustomException(HoldingErrorType.INSUFFICIENT_STOCK);
+        holding.sellStock(tradeReqDto.stockCount());
 
         if (holding.isEmpty())
             holdingService.deleteByStockCode(tradeReqDto.stockCode());

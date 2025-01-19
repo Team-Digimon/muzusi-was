@@ -64,7 +64,7 @@ public class StockTradeService {
      * 사용자 입력 값 > 주식 가격 : 주식 거래 예약
      */
     private void processSellTrade(Long userId, TradeReqDto tradeReqDto) {
-        Holding holding = holdingService.readByStockCode(tradeReqDto.stockCode())
+        Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
         if (holding.getStockCount() < tradeReqDto.stockCount())

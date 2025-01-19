@@ -29,7 +29,7 @@ public class TradeReservationHandler {
     public void saveTradeReservation(Long userId, TradeReqDto tradeReqDto) {
         switch (tradeReqDto.tradeType()) {
             case BUY -> handleReservationPurchase(tradeReqDto, userId);
-            case SELL -> handleReservationSale(tradeReqDto);
+            case SELL -> handleReservationSale(tradeReqDto, userId);
             default -> throw new IllegalArgumentException("잘못된 거래 유형입니다.");
         }
 
@@ -61,8 +61,8 @@ public class TradeReservationHandler {
      * 매도 예약 처리
      * 사용자가 보유한 주식 수량을 차감한다
      */
-    private void handleReservationSale(TradeReqDto tradeReqDto) {
-        Holding holding = holdingService.readByStockCode(tradeReqDto.stockCode())
+    private void handleReservationSale(TradeReqDto tradeReqDto, Long userId) {
+        Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
         holding.sellStock(tradeReqDto.stockCount());
