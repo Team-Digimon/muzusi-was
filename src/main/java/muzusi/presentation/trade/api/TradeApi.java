@@ -31,7 +31,22 @@ public interface TradeApi {
                                         }
                                     """)
                     })),
-            @ApiResponse(responseCode = "404", description = "주식 존재 x ",
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "InsufficientStock", value = """
+                                        {
+                                            "code": "5002",
+                                            "message": "잔여 주식이 부족합니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "InsufficientBalance", value = """
+                                        {
+                                            "code": "4002",
+                                            "message": "계좌 잔액이 부족합니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "Not Found 관련",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(name = "NotFoundStock", value = """
                                         {
@@ -43,6 +58,12 @@ public interface TradeApi {
                                         {
                                             "code": "4001",
                                             "message": "계좌가 존재하지 않습니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "NotFoundHolding", value = """
+                                        {
+                                            "code": "5001",
+                                            "message": "매수내역이 없습니다."
                                         }
                                     """)
                     })),

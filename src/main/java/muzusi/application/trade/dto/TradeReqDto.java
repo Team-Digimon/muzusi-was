@@ -1,6 +1,7 @@
 package muzusi.application.trade.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import muzusi.domain.trade.type.TradeType;
@@ -8,7 +9,7 @@ import muzusi.domain.trade.type.TradeType;
 @Schema(name = "TradeReqDto", description = "주식 매수/매도를 위한 DTO")
 public record TradeReqDto(
         @Schema(description = "주식 현재 가격", example = "3000")
-        @NotNull
+        @NotNull(message = "주식 현재 가격은 필수 입력입니다.")
         Long stockPrice,
 
         @Schema(description = "사용자가 입력한 가격", example = "3000")
@@ -17,6 +18,7 @@ public record TradeReqDto(
 
         @Schema(description = "사용자가 입력한 매수/매도 개수", example = "3")
         @NotNull(message = "주식 개수는 필수 입력입니다.")
+        @Min(value = 1, message = "주식 개수는 1개 이상이어야 합니다.")
         Integer stockCount,
 
         @Schema(description = "주식 코드", example = "000610")

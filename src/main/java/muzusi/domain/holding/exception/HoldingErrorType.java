@@ -1,16 +1,16 @@
-package muzusi.domain.account.exception;
+package muzusi.domain.holding.exception;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.global.response.error.type.BaseErrorType;
 import org.springframework.http.HttpStatus;
 
 /**
- * Account ErrorCode: 4xxx
+ * Holding ErrorCode: 5xxx
  */
 @RequiredArgsConstructor
-public enum AccountErrorType implements BaseErrorType {
-    NOT_FOUND(HttpStatus.NOT_FOUND, "4001", "계좌가 존재하지 않습니다."),
-    INSUFFICIENT_BALANCE(HttpStatus.BAD_REQUEST, "4002", "계좌 잔액이 부족합니다.")
+public enum HoldingErrorType implements BaseErrorType {
+    NOT_FOUND(HttpStatus.NOT_FOUND, "5001", "매수내역이 없습니다."),
+    INSUFFICIENT_STOCK(HttpStatus.BAD_REQUEST, "5002", "잔여 주식이 부족합니다.")
     ;
 
     private final HttpStatus status;

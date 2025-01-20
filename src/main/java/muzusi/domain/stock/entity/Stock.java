@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import muzusi.domain.stock.type.MarketType;
@@ -32,4 +33,12 @@ public class Stock {
 
     @Column(name = "industry", nullable = false)
     private String industry;
+
+    @Builder
+    public Stock(String stockName, String stockCode, MarketType marketType, String industry) {
+        this.stockName = stockName;
+        this.stockCode = stockCode;
+        this.marketType = marketType;
+        this.industry = industry;
+    }
 }
