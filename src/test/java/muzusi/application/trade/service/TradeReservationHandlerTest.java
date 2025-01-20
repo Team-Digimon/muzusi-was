@@ -72,7 +72,7 @@ class TradeReservationHandlerTest {
         tradeReservationHandler.saveTradeReservation(1L, buyTradeDto);
 
         // then
-        assertEquals(Account.INITIAL_BALANCE - (buyTradeDto.stockPrice() * buyTradeDto.stockCount()), account.getBalance());
+        assertEquals(Account.INITIAL_BALANCE - (buyTradeDto.inputPrice() * buyTradeDto.stockCount()), account.getBalance());
         verify(tradeReservationService, times(1)).save(any(TradeReservation.class));
     }
 

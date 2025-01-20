@@ -142,7 +142,7 @@ class StockTradeExecutorTest {
 
         // then
         assertEquals(Account.INITIAL_BALANCE + (sellTradeDto.stockPrice() * sellTradeDto.stockCount()), account.getBalance());
-        verify(holdingService, never()).deleteByStockCode(sellTradeDto.stockCode());
+        verify(holdingService, never()).deleteByUserIdAndStockCode(1L, sellTradeDto.stockCode());
         verify(tradeService, times(1)).save(any(Trade.class));
     }
 
@@ -178,7 +178,7 @@ class StockTradeExecutorTest {
         stockTradeExecutor.executeTrade(1L, fullSellTradeDto);
 
         // then
-        verify(holdingService, times(1)).deleteByStockCode(fullSellTradeDto.stockCode());
+        verify(holdingService, times(1)).deleteByUserIdAndStockCode(1L, fullSellTradeDto.stockCode());
         verify(tradeService, times(1)).save(any(Trade.class));
     }
 }
