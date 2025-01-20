@@ -17,14 +17,14 @@ public class HoldingService {
     }
 
     public Optional<Holding> readByUserIdAndStockCode(Long userId, String stockCode) {
-        return holdingRepository.findByUser_IdAndStockCode(userId, stockCode);
+        return holdingRepository.findLatestAccountHolding(userId, stockCode);
     }
 
     public boolean existsByUserIdAndStockCode(Long userId, String stockCode) {
-        return holdingRepository.existsByUser_IdAndStockCode(userId, stockCode);
+        return holdingRepository.existsByLatestAccountHolding(userId, stockCode) == 1;
     }
 
-    public void deleteByStockCode(String stockCode) {
-        holdingRepository.deleteByStockCode(stockCode);
+    public void deleteByUserIdAndStockCode(Long userId, String stockCode) {
+        holdingRepository.deleteByLatestAccountHolding(userId, stockCode);
     }
 }
