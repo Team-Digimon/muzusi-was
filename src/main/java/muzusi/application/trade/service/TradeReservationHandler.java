@@ -65,9 +65,7 @@ public class TradeReservationHandler {
         Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
-        holding.sellStock(tradeReqDto.stockCount());
-
-        if (holding.isEmpty())
-            holdingService.deleteByStockCode(tradeReqDto.stockCode());
+        if (!holding.reserveSellStock(tradeReqDto.stockCount()))
+            throw new CustomException(HoldingErrorType.INSUFFICIENT_STOCK);
     }
 }
