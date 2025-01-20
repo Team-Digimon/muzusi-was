@@ -20,8 +20,8 @@ public class HoldingService {
         return holdingRepository.findByUser_IdAndStockCode(userId, stockCode);
     }
 
-    public boolean existsByStockCode(String stockCode) {
-        return holdingRepository.existsByStockCode(stockCode);
+    public boolean existsByUserIdAndStockCode(Long userId, String stockCode) {
+        return holdingRepository.existsByUser_IdAndStockCode(userId, stockCode);
     }
 
     public void deleteByStockCode(String stockCode) {

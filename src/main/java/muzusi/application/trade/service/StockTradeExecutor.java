@@ -71,7 +71,7 @@ public class StockTradeExecutor {
         long price = tradeReqDto.stockPrice() * tradeReqDto.stockCount();
         account.updateAccount(tradeReqDto.tradeType(), price);
 
-        if (!holdingService.existsByStockCode(tradeReqDto.stockCode())) {
+        if (!holdingService.existsByUserIdAndStockCode(userId, tradeReqDto.stockCode())) {
             User foundUser = userService.readById(userId)
                             .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
