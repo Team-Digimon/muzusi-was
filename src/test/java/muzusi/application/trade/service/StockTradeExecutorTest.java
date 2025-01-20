@@ -90,7 +90,7 @@ class StockTradeExecutorTest {
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(userService.readById(1L)).willReturn(Optional.of(user));
-        given(holdingService.existsByStockCode(buyTradeDto.stockCode())).willReturn(false);
+        given(holdingService.existsByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(false);
 
         // when
         stockTradeExecutor.executeTrade(1L, buyTradeDto);
@@ -107,7 +107,7 @@ class StockTradeExecutorTest {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
-        given(holdingService.existsByStockCode(buyTradeDto.stockCode())).willReturn(true);
+        given(holdingService.existsByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(true);
         given(holdingService.readByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         int prevStockCount = holding.getStockCount();
