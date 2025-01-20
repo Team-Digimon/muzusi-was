@@ -103,7 +103,7 @@ public class StockTradeExecutor {
         holding.sellStock(tradeReqDto.stockCount());
 
         if (holding.isEmpty())
-            holdingService.deleteByStockCode(tradeReqDto.stockCode());
+            holdingService.deleteByUserIdAndStockCode(userId, tradeReqDto.stockCode());
 
         long price = tradeReqDto.stockPrice() * tradeReqDto.stockCount();
         account.updateAccount(tradeReqDto.tradeType(), price);
