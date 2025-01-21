@@ -12,7 +12,7 @@ import muzusi.domain.stock.type.StockRankingType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@ApiGroup(value = "[주식 순위 API")
+@ApiGroup(value = "[주식 순위 API]")
 @Tag(name = "[주식 순위 API]", description = "주식 순위 관련 API")
 public interface StockRankingApi {
 
