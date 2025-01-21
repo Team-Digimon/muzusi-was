@@ -20,6 +20,8 @@ public class KisRankingService {
     public void saveVolumeRank() {
         List<RankStockDto> rankStockDtos = kisRankingClient.getVolumeRank();
 
+        redisService.del(KisConstant.VOLUME_RANK_PREFIX.getValue());
+
         for (RankStockDto rankStockDto : rankStockDtos) {
             redisService.setList(KisConstant.VOLUME_RANK_PREFIX.getValue(), rankStockDto);
         }
@@ -28,6 +30,9 @@ public class KisRankingService {
     public void saveFluctuationRank() {
         List<RankStockDto> risingRankStocks = kisRankingClient.getRisingFluctuationRank();
         List<RankStockDto> fallingRankStocks = kisRankingClient.getFallingFluctuationRank();
+
+        redisService.del(KisConstant.RISING_RANK_PREFIX.getValue());
+        redisService.del(KisConstant.FALLING_RANK_PREFIX.getValue());
 
         for (RankStockDto risingRankStock : risingRankStocks) {
             redisService.setList(KisConstant.RISING_RANK_PREFIX.getValue(), risingRankStock);
