@@ -31,7 +31,7 @@ public class Holding {
     @Column(name = "stock_count", nullable = false)
     private Integer stockCount;
 
-    @Column(name = "reserved_stock_count", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "reserved_stock_count")
     private Integer reservedStockCount = 0;
 
     @Column(name = "average_price", nullable = false)
