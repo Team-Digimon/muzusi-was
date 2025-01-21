@@ -54,7 +54,7 @@ public class TradeReservationHandler {
 
         long price = tradeReqDto.inputPrice() * tradeReqDto.stockCount();
 
-        account.updateAccount(tradeReqDto.tradeType(), price);
+        account.addReservedBuy(price);
     }
 
     /**
