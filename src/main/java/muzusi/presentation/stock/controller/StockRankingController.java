@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.service.StockRankingService;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.global.response.success.SuccessResponse;
+import muzusi.presentation.stock.api.StockRankingApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/stocks/rank")
 @RequiredArgsConstructor
-public class StockRankingController {
+public class StockRankingController implements StockRankingApi {
     private final StockRankingService stockRankingService;
 
     @GetMapping
