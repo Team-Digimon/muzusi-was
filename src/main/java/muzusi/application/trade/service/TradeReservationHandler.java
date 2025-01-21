@@ -54,6 +54,9 @@ public class TradeReservationHandler {
 
         long price = tradeReqDto.inputPrice() * tradeReqDto.stockCount();
 
+        if (account.getBalance() < price)
+            throw new CustomException(AccountErrorType.INSUFFICIENT_BALANCE);
+
         account.addReservedBuy(price);
     }
 
