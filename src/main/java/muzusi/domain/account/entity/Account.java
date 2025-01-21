@@ -90,7 +90,7 @@ public class Account {
      *
      * @param price : 금액
      */
-    public void applyReservedBuy(Long price) {
+    public void confirmReservedBuy(Long price) {
         this.reservedPrice -= price;
     }
 }
