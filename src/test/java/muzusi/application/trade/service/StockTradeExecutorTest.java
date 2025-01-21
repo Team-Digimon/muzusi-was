@@ -3,6 +3,7 @@ package muzusi.application.trade.service;
 import muzusi.application.stock.service.StockService;
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
+import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
@@ -151,7 +152,6 @@ class StockTradeExecutorTest {
     void executeTradeSellFailNoHolding() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(stockService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(stock));
 
         // when
         CustomException exception = assertThrows(CustomException.class, () ->
@@ -180,5 +180,46 @@ class StockTradeExecutorTest {
         // then
         verify(holdingService, times(1)).deleteByUserIdAndStockCode(1L, fullSellTradeDto.stockCode());
         verify(tradeService, times(1)).save(any(Trade.class));
+    }
+
+    @Test
+    @DisplayName("매수 실행 실패 - 잔액 부족")
+    void executeTradeBuyFailInsufficientBalance() {
+        // given
+        Account lowBalanceAccount = Account.builder()
+                .balance(5000L)
+                .user(null)
+                .build();
+
+        given(accountService.readByUserId(1L)).willReturn(Optional.of(lowBalanceAccount));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () ->
+                stockTradeExecutor.executeTrade(1L, buyTradeDto)
+        );
+
+        // then
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getStatus(), exception.getErrorType().getStatus());
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getCode(), exception.getErrorType().getCode());
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getMessage(), exception.getErrorType().getMessage());
+    }
+
+    @Test
+    @DisplayName("매도 실행 실패 - 보유 주식 부족")
+    void executeTradeSellFailInsufficientStock() {
+        // given
+        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
+        given(holdingService.readByUserIdAndStockCode(1L, sellTradeDto.stockCode())).willReturn(Optional.of(holding));
+        TradeReqDto invalidSellTradeDto = new TradeReqDto(3000L, 3000L, 100, "000610", TradeType.SELL);
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () ->
+                stockTradeExecutor.executeTrade(1L, invalidSellTradeDto)
+        );
+
+        // then
+        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getStatus(), exception.getErrorType().getStatus());
+        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getCode(), exception.getErrorType().getCode());
+        assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getMessage(), exception.getErrorType().getMessage());
     }
 }
