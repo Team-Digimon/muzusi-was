@@ -102,4 +102,11 @@ public class Holding {
     public boolean isEmpty() {
         return this.stockCount == 0;
     }
+
+    /**
+     * 매도 거래 가능한 주식 수 확인
+     */
+    public int getSellableStockCount() {
+        return this.stockCount - this.reservedStockCount;
+    }
 }

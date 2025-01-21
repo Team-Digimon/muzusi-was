@@ -107,7 +107,7 @@ public class StockTradeExecutor {
         Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
-        if (holding.getStockCount() < tradeReqDto.stockCount())
+        if (holding.getSellableStockCount() < tradeReqDto.stockCount())
             throw new CustomException(HoldingErrorType.INSUFFICIENT_STOCK);
 
         holding.sellStock(tradeReqDto.stockCount());
