@@ -31,7 +31,7 @@ public class UserAccountService {
     public void connectNewAccount(Long userId) {
         LocalDateTime latestCreatedAt = accountService.readCreatedAt(userId);
 
-        if (latestCreatedAt.toLocalDate().equals(LocalDate.now())) {
+        if (latestCreatedAt != null && latestCreatedAt.toLocalDate().equals(LocalDate.now())) {
             throw new CustomException(AccountErrorType.ACCOUNT_CREATION_LIMIT);
         }
         User foundUser = userService.readById(userId)
