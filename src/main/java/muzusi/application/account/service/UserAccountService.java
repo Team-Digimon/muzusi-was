@@ -11,6 +11,8 @@ import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -27,6 +29,11 @@ public class UserAccountService {
      */
     @Transactional
     public void connectNewAccount(Long userId) {
+        LocalDateTime latestCreatedAt = accountService.readCreatedAt(userId);
+
+        if (latestCreatedAt.toLocalDate().equals(LocalDate.now())) {
+            throw new CustomException(AccountErrorType.ACCOUNT_CREATION_LIMIT);
+        }
         User foundUser = userService.readById(userId)
                 .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
