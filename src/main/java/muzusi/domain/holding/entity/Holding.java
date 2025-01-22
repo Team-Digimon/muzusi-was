@@ -31,7 +31,7 @@ public class Holding {
     @Column(name = "stock_count", nullable = false)
     private Integer stockCount;
 
-    @Column(name = "reserved_stock_count", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "reserved_stock_count")
     private Integer reservedStockCount = 0;
 
     @Column(name = "average_price", nullable = false)
@@ -73,7 +73,7 @@ public class Holding {
     /**
      * 예약 매도를 추가하는 메서드
      */
-    public boolean reserveSellStock(int count) {
+    public boolean increaseReservedStock(int count) {
         if (count > this.stockCount - this.reservedStockCount) {
             return false;
         }
@@ -84,15 +84,15 @@ public class Holding {
     /**
      * 예약 매도를 취소하는 메서드
      */
-    public void cancelReservedSell(int count) {
+    public void decreaseReservedStock(int count) {
         this.reservedStockCount -= count;
     }
 
     /**
      * 예약 매도가 확정되었을 때 실제 보유 주식에서 차감
      */
-    public void confirmReservedSell(int count) {
-        sellStock(this.reservedStockCount);
+    public void clearReservedStock(int count) {
+        sellStock(count);
         this.reservedStockCount -= count;
     }
 
@@ -101,5 +101,12 @@ public class Holding {
      */
     public boolean isEmpty() {
         return this.stockCount == 0;
+    }
+
+    /**
+     * 매도 거래 가능한 주식 수 확인
+     */
+    public int getSellableStockCount() {
+        return this.stockCount - this.reservedStockCount;
     }
 }

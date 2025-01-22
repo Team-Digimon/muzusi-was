@@ -2,6 +2,7 @@ package muzusi.application.trade.service;
 
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
+import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
@@ -73,6 +74,7 @@ class TradeReservationHandlerTest {
 
         // then
         assertEquals(Account.INITIAL_BALANCE - (buyTradeDto.inputPrice() * buyTradeDto.stockCount()), account.getBalance());
+        assertEquals(buyTradeDto.inputPrice() * buyTradeDto.stockCount(), account.getReservedPrice());
         verify(tradeReservationService, times(1)).save(any(TradeReservation.class));
     }
 
@@ -87,6 +89,28 @@ class TradeReservationHandlerTest {
 
         // then
         verify(tradeReservationService, times(1)).save(any(TradeReservation.class));
+    }
+
+    @Test
+    @DisplayName("매수 예약 실패 테스트 - 잔액 부족")
+    void handleReservationPurchaseFailInsufficientBalance() {
+        // given
+        Account lowBalanceAccount = Account.builder()
+                .balance(5000L)
+                .user(null)
+                .build();
+
+        given(accountService.readByUserId(1L)).willReturn(Optional.of(lowBalanceAccount));
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () ->
+                tradeReservationHandler.saveTradeReservation(1L, buyTradeDto)
+        );
+
+        // then
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getStatus(), exception.getErrorType().getStatus());
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getCode(), exception.getErrorType().getCode());
+        assertEquals(AccountErrorType.INSUFFICIENT_BALANCE.getMessage(), exception.getErrorType().getMessage());
     }
 
     @Test

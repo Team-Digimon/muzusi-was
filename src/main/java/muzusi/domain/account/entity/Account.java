@@ -35,6 +35,9 @@ public class Account {
 
     private Long balance;
 
+    @Column(name = "reserved_price")
+    private Long reservedPrice = 0L;
+
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -60,5 +63,34 @@ public class Account {
             case BUY -> balance -= price;
             case SELL -> balance += price;
         }
+    }
+
+    /**
+     * 예약 매수 금액 추가
+     *
+     * @param price : 예약 매수 금액
+     */
+    public void increaseReservedPrice(Long price) {
+        this.balance -= price;
+        this.reservedPrice += price;
+    }
+
+    /**
+     * 예약 매수 금액 취소
+     *
+     * @param price : 취소할 예약 매수 금액
+     */
+    public void decreaseReservedPrice(Long price) {
+        this.balance += price;
+        this.reservedPrice -= price;
+    }
+
+    /**
+     * 예약 매수 성공으로 인한 예약 가격 삭제
+     *
+     * @param price : 금액
+     */
+    public void clearReservedPrice(Long price) {
+        this.reservedPrice -= price;
     }
 }

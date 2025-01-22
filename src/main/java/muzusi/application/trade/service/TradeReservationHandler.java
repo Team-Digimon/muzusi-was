@@ -54,7 +54,10 @@ public class TradeReservationHandler {
 
         long price = tradeReqDto.inputPrice() * tradeReqDto.stockCount();
 
-        account.updateAccount(tradeReqDto.tradeType(), price);
+        if (account.getBalance() < price)
+            throw new CustomException(AccountErrorType.INSUFFICIENT_BALANCE);
+
+        account.increaseReservedPrice(price);
     }
 
     /**
@@ -65,7 +68,7 @@ public class TradeReservationHandler {
         Holding holding = holdingService.readByUserIdAndStockCode(userId, tradeReqDto.stockCode())
                 .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
-        if (!holding.reserveSellStock(tradeReqDto.stockCount()))
+        if (!holding.increaseReservedStock(tradeReqDto.stockCount()))
             throw new CustomException(HoldingErrorType.INSUFFICIENT_STOCK);
     }
 }
