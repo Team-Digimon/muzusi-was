@@ -73,7 +73,7 @@ public class Holding {
     /**
      * 예약 매도를 추가하는 메서드
      */
-    public boolean reserveSellStock(int count) {
+    public boolean increaseReservedStock(int count) {
         if (count > this.stockCount - this.reservedStockCount) {
             return false;
         }
@@ -84,15 +84,15 @@ public class Holding {
     /**
      * 예약 매도를 취소하는 메서드
      */
-    public void cancelReservedSell(int count) {
+    public void decreaseReservedStock(int count) {
         this.reservedStockCount -= count;
     }
 
     /**
      * 예약 매도가 확정되었을 때 실제 보유 주식에서 차감
      */
-    public void confirmReservedSell(int count) {
-        sellStock(this.reservedStockCount);
+    public void clearReservedStock(int count) {
+        sellStock(count);
         this.reservedStockCount -= count;
     }
 

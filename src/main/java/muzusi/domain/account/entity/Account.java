@@ -70,7 +70,7 @@ public class Account {
      *
      * @param price : 예약 매수 금액
      */
-    public void addReservedBuy(Long price) {
+    public void increaseReservedPrice(Long price) {
         this.balance -= price;
         this.reservedPrice += price;
     }
@@ -80,7 +80,7 @@ public class Account {
      *
      * @param price : 취소할 예약 매수 금액
      */
-    public void cancelReservedBuy(Long price) {
+    public void decreaseReservedPrice(Long price) {
         this.balance += price;
         this.reservedPrice -= price;
     }
@@ -90,7 +90,7 @@ public class Account {
      *
      * @param price : 금액
      */
-    public void confirmReservedBuy(Long price) {
+    public void clearReservedPrice(Long price) {
         this.reservedPrice -= price;
     }
 }
