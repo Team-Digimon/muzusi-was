@@ -5,6 +5,7 @@ import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,5 +24,9 @@ public class AccountService {
 
     public Optional<Account> readByUserId(Long userId) {
         return accountRepository.findLatestAccount(userId);
+    }
+
+    public LocalDateTime readCreatedAt(Long userId) {
+        return accountRepository.findLatestCreatedAt(userId);
     }
 }

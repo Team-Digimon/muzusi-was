@@ -5,12 +5,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
     List<Account> findByUser_Id(Long userId);
 
-    @Query(value = "SELECT * FROM account a WHERE a.user_id = :userId ORDER BY a.created_at DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM account a " +
+            "WHERE a.user_id = :userId " +
+            "ORDER BY a.created_at DESC LIMIT 1", nativeQuery = true)
     Optional<Account> findLatestAccount(@Param("userId") Long userId);
+
+    @Query(value = "SELECT a.created_at FROM account a " +
+            "WHERE a.user_id = :userId " +
+            "ORDER BY a.created_at DESC LIMIT 1", nativeQuery = true)
+    LocalDateTime findLatestCreatedAt(@Param("userId") Long userId);
 }
