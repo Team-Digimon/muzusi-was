@@ -27,6 +27,15 @@ public interface AccountApi {
                                             "message": "요청이 성공하였습니다."
                                         }
                                     """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "계좌 생성 횟수 제한",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": "4003",
+                                            "message": "오늘은 이미 계좌를 생성했습니다."
+                                        }
+                                    """)
                     }))
     })
     ResponseEntity<?> createNewAccount(@AuthenticationPrincipal CustomUserDetails userDetails);
