@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
  */
 @RequiredArgsConstructor
 public enum TradeErrorType implements BaseErrorType {
-    NOT_FOUND(HttpStatus.NOT_FOUND, "5001", "예약 내역이 없습니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "6001", "예약 내역이 없습니다."),
     UNAUTHORIZED_ACCESS(HttpStatus.FORBIDDEN, "6002", "해당 예약을 취소할 권한이 없습니다.")
     ;
 
