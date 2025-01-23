@@ -8,6 +8,7 @@ import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
 import muzusi.domain.holding.service.HoldingService;
 import muzusi.domain.trade.entity.TradeReservation;
+import muzusi.domain.trade.exception.TradeErrorType;
 import muzusi.domain.trade.service.TradeReservationService;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
@@ -45,6 +46,8 @@ class TradeReservationHandlerTest {
     private TradeReqDto sellTradeDto;
     private Account account;
     private Holding holding;
+    private TradeReservation buyTradeReservation;
+    private TradeReservation sellTradeReservation;
 
     @BeforeEach
     void setUp() {
@@ -60,6 +63,22 @@ class TradeReservationHandlerTest {
                 .stockCount(10)
                 .averagePrice(2900L)
                 .account(account)
+                .build();
+
+        buyTradeReservation = TradeReservation.builder()
+                .userId(1L)
+                .inputPrice(3000L)
+                .stockCount(10)
+                .stockCode("000610")
+                .tradeType(TradeType.BUY)
+                .build();
+
+        sellTradeReservation = TradeReservation.builder()
+                .userId(1L)
+                .inputPrice(3000L)
+                .stockCount(10)
+                .stockCode("000610")
+                .tradeType(TradeType.SELL)
                 .build();
     }
 
@@ -88,6 +107,7 @@ class TradeReservationHandlerTest {
         tradeReservationHandler.saveTradeReservation(1L, sellTradeDto);
 
         // then
+        assertEquals(sellTradeDto.stockCount(), holding.getReservedStockCount());
         verify(tradeReservationService, times(1)).save(any(TradeReservation.class));
     }
 
@@ -129,5 +149,61 @@ class TradeReservationHandlerTest {
         assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getStatus(), exception.getErrorType().getStatus());
         assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getCode(), exception.getErrorType().getCode());
         assertEquals(HoldingErrorType.INSUFFICIENT_STOCK.getMessage(), exception.getErrorType().getMessage());
+    }
+
+    @Test
+    @DisplayName("예약 매수 취소 테스트")
+    void cancelReservationPurchaseTest() {
+        // given
+        String tradeReservationId = "tradeReservationId";
+        given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(buyTradeReservation));
+        given(accountService.readByUserId(1L)).willReturn(Optional.ofNullable(account));
+        Long currentAccountBalance = account.getBalance();
+        Long currentAccountReservedPrice = account.getReservedPrice();
+        long reservationPrice = buyTradeReservation.getInputPrice() * buyTradeReservation.getStockCount();
+
+        // when
+        tradeReservationHandler.cancelTradeReservation(1L, tradeReservationId);
+
+        // then
+        assertEquals(currentAccountBalance + (reservationPrice), account.getBalance());
+        assertEquals(currentAccountReservedPrice - (reservationPrice), account.getReservedPrice());
+        verify(tradeReservationService, times(1)).deleteById(tradeReservationId);
+    }
+
+    @Test
+    @DisplayName("예약 매도 취소 테스트")
+    void cancelReservationSaleTest() {
+        // given
+        String tradeReservationId = "tradeReservationId";
+        given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(sellTradeReservation));
+        given(holdingService.readByUserIdAndStockCode(1L, "000610")).willReturn(Optional.ofNullable(holding));
+        int currentReservedStockCount = holding.getReservedStockCount();
+
+        // when
+        tradeReservationHandler.cancelTradeReservation(1L, tradeReservationId);
+
+        // then
+        assertEquals(currentReservedStockCount - sellTradeReservation.getStockCount(), holding.getReservedStockCount());
+        verify(tradeReservationService, times(1)).deleteById(tradeReservationId);
+    }
+
+    @Test
+    @DisplayName("예약 취소에 대한 권한 없음")
+    void cancelReservationFailedByForbidden() {
+        // given
+        String tradeReservationId = "tradeReservationId";
+        given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(sellTradeReservation));
+        Long anotherUserId = 2L;
+
+        // when
+        CustomException exception = assertThrows(CustomException.class, () ->
+                tradeReservationHandler.cancelTradeReservation(anotherUserId, tradeReservationId)
+        );
+
+        // then
+        assertEquals(TradeErrorType.UNAUTHORIZED_ACCESS.getStatus(), exception.getErrorType().getStatus());
+        assertEquals(TradeErrorType.UNAUTHORIZED_ACCESS.getCode(), exception.getErrorType().getCode());
+        assertEquals(TradeErrorType.UNAUTHORIZED_ACCESS.getMessage(), exception.getErrorType().getMessage());
     }
 }
