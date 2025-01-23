@@ -31,6 +31,7 @@ public class TradeController implements TradeApi {
         return ResponseEntity.ok(SuccessResponse.ok());
     }
 
+    @Override
     @DeleteMapping("/{tradeReservationId}")
     public ResponseEntity<?> cancelTradeReservation(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                     @PathVariable String tradeReservationId) {
