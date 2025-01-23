@@ -52,4 +52,14 @@ public class StockTradeService {
         }
     }
 
+    /**
+     * 예약 매수/매도 처리하는 메서드
+     *
+     * @param userId : 사용자 pk값
+     * @param tradeReservationId : 예약주식 pk값
+     */
+    @Transactional
+    public void cancelTradeReservation(Long userId, String tradeReservationId) {
+        tradeReservationHandler.cancelTradeReservation(userId, tradeReservationId);
+    }
 }
