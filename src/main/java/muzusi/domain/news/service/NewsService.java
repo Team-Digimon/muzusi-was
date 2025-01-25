@@ -15,8 +15,8 @@ import java.util.List;
 public class NewsService {
     private final NewsRepository newsRepository;
 
-    public void save(News post) {
-        newsRepository.save(post);
+    public void save(News news) {
+        newsRepository.save(news);
     }
 
     public Page<News> readAll(Pageable pageable) {
@@ -31,8 +31,8 @@ public class NewsService {
         return newsRepository.findIdsByPubDateBefore(dateTime);
     }
 
-    public boolean existsByTitle(String title) {
-        return newsRepository.existsByTitle(title);
+    public boolean existsByLink(String link) {
+        return newsRepository.existsByLink(link);
     }
 
     public void deleteByIds(List<Long> ids) {
