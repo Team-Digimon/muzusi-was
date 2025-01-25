@@ -27,7 +27,7 @@ public class NewsManagementService {
     public void createPostsFromNews() {
         keywords.forEach(keyword ->
                 newsApiClient.fetchNews(keyword).stream()
-                        .filter(content -> !newsService.existsByTitle(content.get("title")))
+                        .filter(content -> !newsService.existsByLink(content.get("link")))
                         .map(content ->
                                 News.builder()
                                         .title(content.get("title"))

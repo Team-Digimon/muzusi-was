@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface NewsRepository extends JpaRepository<News, Long> {
     Page<News> findByKeyword(String keyword, Pageable pageable);
-    boolean existsByTitle(String title);
+    boolean existsByLink(String link);
 
     @Query("SELECT n.id FROM news n WHERE n.pubDate < :dateTime")
     List<Long> findIdsByPubDateBefore(@Param("dateTime") LocalDateTime dateTime);
