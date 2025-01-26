@@ -1,6 +1,6 @@
 package muzusi.application.trade.service;
 
-import muzusi.application.stock.service.StockService;
+import muzusi.domain.stock.service.StockService;
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.exception.AccountErrorType;
