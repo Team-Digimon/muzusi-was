@@ -39,7 +39,7 @@ public class KisRankingClient {
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")
                 .queryParam("FID_COND_SCR_DIV_CODE", "20171")
                 .queryParam("FID_INPUT_ISCD", "0000")
-                .queryParam("FID_DIV_CLS_CODE", "2")
+                .queryParam("FID_DIV_CLS_CODE", "0")
                 .queryParam("FID_BLNG_CLS_CODE", "0")
                 .queryParam("FID_TRGT_CLS_CODE", "")
                 .queryParam("FID_TRGT_EXLS_CLS_CODE", "")
