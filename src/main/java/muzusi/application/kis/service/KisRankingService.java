@@ -1,13 +1,16 @@
 package muzusi.application.kis.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.RankStockDto;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.kis.KisConstant;
 import muzusi.infrastructure.kis.KisRankingClient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -17,6 +20,12 @@ public class KisRankingService {
     private final KisRankingClient kisRankingClient;
     private final RedisService redisService;
 
+    @PostConstruct
+    public void init() {
+        this.saveVolumeRank();
+        this.saveFluctuationRank();
+    }
+
     public void saveVolumeRank() {
         List<RankStockDto> rankStockDtos = kisRankingClient.getVolumeRank();
 
@@ -25,6 +34,8 @@ public class KisRankingService {
         for (RankStockDto rankStockDto : rankStockDtos) {
             redisService.setList(KisConstant.VOLUME_RANK_PREFIX.getValue(), rankStockDto);
         }
+
+        redisService.set(KisConstant.VOLUME_RANK_TIME_PREFIX.getValue(), KisDto.Time.of(LocalDateTime.now()));
     }
 
     public void saveFluctuationRank() {
@@ -41,5 +52,7 @@ public class KisRankingService {
         for (RankStockDto fallingRankStock : fallingRankStocks) {
             redisService.setList(KisConstant.FALLING_RANK_PREFIX.getValue(), fallingRankStock);
         }
+
+        redisService.set(KisConstant.FLUCTUATION_RANK_TIME_PREFIX.getValue(), KisDto.Time.of(LocalDateTime.now()));
     }
 }
