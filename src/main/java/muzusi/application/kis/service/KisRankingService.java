@@ -20,12 +20,6 @@ public class KisRankingService {
     private final KisRankingClient kisRankingClient;
     private final RedisService redisService;
 
-    @PostConstruct
-    public void init() {
-        this.saveVolumeRank();
-        this.saveFluctuationRank();
-    }
-
     public void saveVolumeRank() {
         List<RankStockDto> rankStockDtos = kisRankingClient.getVolumeRank();
 
