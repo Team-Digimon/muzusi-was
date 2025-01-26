@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface StockDailyRepository extends MongoRepository<StockDaily, String> {
-    List<StockDaily> findByStockCode(String stockCode);
+    List<StockDaily> findByStockCodeOrderByDateAsc(String stockCode);
 }

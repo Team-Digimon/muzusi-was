@@ -16,7 +16,11 @@ public class StockYearlyService {
         stockYearlyRepository.save(stockYearly);
     }
 
+    public void saveAll(List<StockYearly> stockYearlies) {
+        stockYearlyRepository.saveAll(stockYearlies);
+    }
+
     public List<StockYearly> readByStockCode(String stockCode) {
-        return stockYearlyRepository.findByStockCode(stockCode);
+        return stockYearlyRepository.findByStockCodeOrderByDateAsc(stockCode);
     }
 }
