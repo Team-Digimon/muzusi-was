@@ -97,7 +97,7 @@ public class KisRankingClient {
                 .queryParam("fid_cond_scr_div_code","20170")
                 .queryParam("fid_input_iscd","0000")
                 .queryParam("fid_rank_sort_cls_code",fluctuation)
-                .queryParam("fid_input_cnt_1","1")
+                .queryParam("fid_input_cnt_1","0")
                 .queryParam("fid_prc_cls_code","1")
                 .queryParam("fid_input_price_1","")
                 .queryParam("fid_input_price_2","")
