@@ -5,9 +5,11 @@ import muzusi.domain.stock.entity.StockMonthly;
 import muzusi.domain.stock.entity.StockWeekly;
 import muzusi.domain.stock.entity.StockYearly;
 
+import java.time.LocalDate;
+
 public record StockChartInfoDto(
         String stockCode,
-        String date,
+        LocalDate date,
         Double open,
         Double high,
         Double low,
