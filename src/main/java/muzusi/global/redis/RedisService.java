@@ -20,6 +20,10 @@ public class RedisService {
         return redisTemplate.opsForList().range(key, 0 , -1);
     }
 
+    public void set(String key, Object value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+
     public void set(String key, Object value, Duration duration) {
         redisTemplate.opsForValue().set(key, value, duration);
     }
