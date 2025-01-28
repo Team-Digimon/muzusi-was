@@ -21,7 +21,11 @@ public record TradeReqDto(
         @Min(value = 1, message = "주식 개수는 1개 이상이어야 합니다.")
         Integer stockCount,
 
-        @Schema(description = "주식 코드", example = "000610")
+        @Schema(description = "주식 이름", example = "삼성전자")
+        @NotBlank(message = "주식 이름은 필수 정보입니다.")
+        String stockName,
+
+        @Schema(description = "주식 코드", example = "005390")
         @NotBlank(message = "주식 코드는 필수 정보입니다.")
         String stockCode,
 

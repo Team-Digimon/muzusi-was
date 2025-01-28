@@ -18,6 +18,10 @@ public class AccountService {
         accountRepository.save(account);
     }
 
+    public Optional<Account> readById(Long id) {
+        return accountRepository.findById(id);
+    }
+
     public List<Account> readAllByUserId(Long userId) {
         return accountRepository.findByUser_Id(userId);
     }

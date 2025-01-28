@@ -24,6 +24,8 @@ public class TradeReservation {
 
     private Integer stockCount;
 
+    private String stockName;
+
     private String stockCode;
 
     private TradeType tradeType;
@@ -32,10 +34,11 @@ public class TradeReservation {
     private LocalDateTime createdAt;
 
     @Builder
-    public TradeReservation(Long userId, Long inputPrice, Integer stockCount, String stockCode, TradeType tradeType) {
+    public TradeReservation(Long userId, Long inputPrice, Integer stockCount, String stockName, String stockCode, TradeType tradeType) {
         this.userId = userId;
         this.inputPrice = inputPrice;
         this.stockCount = stockCount;
+        this.stockName = stockName;
         this.stockCode = stockCode;
         this.tradeType = tradeType;
     }

@@ -32,8 +32,8 @@ class StockTradeServiceTest {
 
     @BeforeEach
     void setUp() {
-        buyTradeDto = new TradeReqDto(3000L, 3100L, 5, "000610", TradeType.BUY);
-        sellTradeDto = new TradeReqDto(3000L, 2900L, 3, "000610", TradeType.SELL);
+        buyTradeDto = new TradeReqDto(3000L, 3100L, 5, "삼성전자", "005390", TradeType.BUY);
+        sellTradeDto = new TradeReqDto(3000L, 2900L, 3, "삼성전자", "005390", TradeType.SELL);
     }
 
     @Test
@@ -53,7 +53,7 @@ class StockTradeServiceTest {
     @DisplayName("매수 예약 테스트")
     void tradeStockBuyReservation() {
         // given
-        TradeReqDto buyReservationDto = new TradeReqDto(3000L, 2900L, 5, "000610", TradeType.BUY);
+        TradeReqDto buyReservationDto = new TradeReqDto(3000L, 2900L, 5, "삼성전자", "005390", TradeType.BUY);
 
         // when
         stockTradeService.tradeStock(1L, buyReservationDto);
@@ -80,7 +80,7 @@ class StockTradeServiceTest {
     @DisplayName("매도 예약 테스트")
     void tradeStockSellReservation() {
         // given
-        TradeReqDto sellReservationDto = new TradeReqDto(3000L, 3100L, 3, "000610", TradeType.SELL);
+        TradeReqDto sellReservationDto = new TradeReqDto(3000L, 3100L, 3, "삼성전자", "005390", TradeType.SELL);
 
         // when
         stockTradeService.tradeStock(1L, sellReservationDto);

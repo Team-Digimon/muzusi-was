@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import muzusi.domain.account.entity.Account;
-import muzusi.domain.stock.entity.Stock;
 import muzusi.domain.trade.type.TradeType;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -38,6 +37,12 @@ public class Trade {
     @Column(name = "stock_count")
     private Integer stockCount;
 
+    @Column(name = "stock_name")
+    private String stockName;
+
+    @Column(name = "stock_code")
+    private String stockCode;
+
     @Column(name = "trade_at")
     @CreatedDate
     private LocalDateTime tradeAt;
@@ -46,19 +51,16 @@ public class Trade {
     private TradeType tradeType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_id")
-    private Stock stock;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
     private Account account;
 
     @Builder
-    public Trade(Long stockPrice, Integer stockCount, TradeType tradeType, Stock stock, Account account) {
+    public Trade(Long stockPrice, Integer stockCount, String stockName, String stockCode, TradeType tradeType, Account account) {
         this.stockPrice = stockPrice;
         this.stockCount = stockCount;
+        this.stockName = stockName;
+        this.stockCode = stockCode;
         this.tradeType = tradeType;
-        this.stock = stock;
         this.account = account;
     }
 }

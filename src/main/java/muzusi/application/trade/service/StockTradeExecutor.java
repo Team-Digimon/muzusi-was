@@ -1,7 +1,6 @@
 package muzusi.application.trade.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.domain.stock.service.StockService;
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.exception.AccountErrorType;
@@ -9,8 +8,6 @@ import muzusi.domain.account.service.AccountService;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
 import muzusi.domain.holding.service.HoldingService;
-import muzusi.domain.stock.entity.Stock;
-import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.entity.Trade;
 import muzusi.domain.trade.service.TradeService;
 import muzusi.domain.trade.type.TradeType;
@@ -24,7 +21,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StockTradeExecutor {
     private final TradeService tradeService;
-    private final StockService stockService;
     private final AccountService accountService;
     private final HoldingService holdingService;
     private final UserService userService;
@@ -45,15 +41,13 @@ public class StockTradeExecutor {
         if (tradeReqDto.tradeType() == TradeType.SELL)
             handleStockSale(tradeReqDto, account, userId);
 
-        Stock stock = stockService.readByStockCode(tradeReqDto.stockCode())
-                .orElseThrow(() -> new CustomException(StockErrorType.NOT_FOUND));
-
         tradeService.save(
                 Trade.builder()
                         .stockPrice(tradeReqDto.stockPrice())
                         .stockCount(tradeReqDto.stockCount())
+                        .stockName(tradeReqDto.stockName())
+                        .stockCode(tradeReqDto.stockCode())
                         .tradeType(tradeReqDto.tradeType())
-                        .stock(stock)
                         .account(account)
                         .build()
         );

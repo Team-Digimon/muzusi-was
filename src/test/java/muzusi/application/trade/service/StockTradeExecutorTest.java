@@ -1,6 +1,5 @@
 package muzusi.application.trade.service;
 
-import muzusi.domain.stock.service.StockService;
 import muzusi.application.trade.dto.TradeReqDto;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.exception.AccountErrorType;
@@ -42,8 +41,6 @@ class StockTradeExecutorTest {
     @Mock
     private TradeService tradeService;
     @Mock
-    private StockService stockService;
-    @Mock
     private AccountService accountService;
     @Mock
     private HoldingService holdingService;
@@ -59,8 +56,8 @@ class StockTradeExecutorTest {
 
     @BeforeEach
     void setUp() {
-        buyTradeDto = new TradeReqDto(3000L, 3000L, 5, "000610", TradeType.BUY);
-        sellTradeDto = new TradeReqDto(3000L, 3000L, 3, "000610", TradeType.SELL);
+        buyTradeDto = new TradeReqDto(3000L, 3000L, 5, "삼성전자", "005390", TradeType.BUY);
+        sellTradeDto = new TradeReqDto(3000L, 3000L, 3, "삼성전자", "005390", TradeType.SELL);
 
         account = Account.builder()
                 .balance(Account.INITIAL_BALANCE)
@@ -89,7 +86,6 @@ class StockTradeExecutorTest {
     void executeTradeBuyNewHolding() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(userService.readById(1L)).willReturn(Optional.of(user));
         given(holdingService.existsByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(false);
 
@@ -107,7 +103,6 @@ class StockTradeExecutorTest {
     void executeTradeBuyExistingHolding() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(stockService.readByStockCode(buyTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(holdingService.existsByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(true);
         given(holdingService.readByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(Optional.of(holding));
 
@@ -135,7 +130,6 @@ class StockTradeExecutorTest {
     void executeTradeSellSuccess() {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(stockService.readByStockCode(sellTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(holdingService.readByUserIdAndStockCode(1L, sellTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         // when
@@ -168,10 +162,9 @@ class StockTradeExecutorTest {
     @DisplayName("매도 실행 테스트 - 보유 주식이 0이 되면 삭제")
     void executeTradeSellDeleteHoldingWhenZero() {
         // given
-        TradeReqDto fullSellTradeDto = new TradeReqDto(3000L, 3000L, holding.getStockCount(), "000610", TradeType.SELL);
+        TradeReqDto fullSellTradeDto = new TradeReqDto(3000L, 3000L, holding.getStockCount(), "삼성전자", "005390", TradeType.SELL);
 
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(stockService.readByStockCode(fullSellTradeDto.stockCode())).willReturn(Optional.of(stock));
         given(holdingService.readByUserIdAndStockCode(1L, fullSellTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         // when
@@ -210,7 +203,7 @@ class StockTradeExecutorTest {
         // given
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(holdingService.readByUserIdAndStockCode(1L, sellTradeDto.stockCode())).willReturn(Optional.of(holding));
-        TradeReqDto invalidSellTradeDto = new TradeReqDto(3000L, 3000L, 100, "000610", TradeType.SELL);
+        TradeReqDto invalidSellTradeDto = new TradeReqDto(3000L, 3000L, 100, "삼성전자", "005390", TradeType.SELL);
 
         // when
         CustomException exception = assertThrows(CustomException.class, () ->
