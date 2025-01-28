@@ -53,13 +53,13 @@ public interface AccountApi {
                                                 "content": [
                                                     {
                                                         "id": 1,
-                                                        "balance": 10000000,
-                                                        "rateOfReturn": 0.0
+                                                        "totalBalance": 10000000,
+                                                        "reservedPrice": 300000
                                                     },
                                                     {
                                                         "id": 2,
-                                                        "balance": 20000000,
-                                                        "rateOfReturn": 100.0
+                                                        "totalBalance": 20000000,
+                                                        "reservedPrice": 300000
                                                     }
                                                 ],
                                                 "page": {
@@ -86,8 +86,8 @@ public interface AccountApi {
                                             "message": "요청이 성공하였습니다.",
                                             "data": {
                                                 "id": 2,
-                                                "balance": 20000000,
-                                                "rateOfReturn": 100.0
+                                                "totalBalance": 20000000,
+                                                "reservedPrice": 300000
                                             }
                                         }
                                     """)
