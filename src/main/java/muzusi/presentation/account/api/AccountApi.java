@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import muzusi.global.security.auth.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @ApiGroup(value = "[계좌 API]")
 @Tag(name = "[계좌 API]", description = "계좌 관련 API")
@@ -94,4 +95,58 @@ public interface AccountApi {
                     }))
     })
     ResponseEntity<?> getAccount(@AuthenticationPrincipal CustomUserDetails userDetails);
+
+    @TrackApi(description = "계좌 거래 내역 불러오기")
+    @Operation(summary = "계좌 거래 내역 불러오기", description = "계좌 거래내역을 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "거래내역 호출 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": 200,
+                                            "message": "요청이 성공하였습니다.",
+                                            "data": [
+                                                {
+                                                    "id": 1,
+                                                    "stockPrice": 60000,
+                                                    "stockCount": 10,
+                                                    "stockName": "삼성전자",
+                                                    "stockCode": "005930",
+                                                    "tradeType": "BUY",
+                                                    "tradeAt": "2025-01-28T21:15:22.81816"
+                                                },
+                                                {
+                                                    "id": 2,
+                                                    "stockPrice": 65000,
+                                                    "stockCount": 10,
+                                                    "stockName": "삼성전자",
+                                                    "stockCode": "005930",
+                                                    "tradeType": "SELL",
+                                                    "tradeAt": "2025-01-28T21:15:37.963513"
+                                                }
+                                            ]
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "계좌 존재하지 않음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": "4001",
+                                            "message": "계좌가 존재하지 않습니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "403", description = "접근 권한 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "code": "4004",
+                                            "message": "해당 계좌에 접근 권한이 없습니다."
+                                        }
+                                    """)
+                    })),
+    })
+    ResponseEntity<?> getTradesByAccountId(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                           @PathVariable Long accountId);
 }
