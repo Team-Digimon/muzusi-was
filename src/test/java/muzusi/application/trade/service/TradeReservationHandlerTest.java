@@ -51,8 +51,8 @@ class TradeReservationHandlerTest {
 
     @BeforeEach
     void setUp() {
-        buyTradeDto = new TradeReqDto(3500L, 3000L, 5, "000610", TradeType.BUY);
-        sellTradeDto = new TradeReqDto(2500L, 3000L, 3, "000610", TradeType.SELL);
+        buyTradeDto = new TradeReqDto(3500L, 3000L, 5, "삼성전자", "005390", TradeType.BUY);
+        sellTradeDto = new TradeReqDto(2500L, 3000L, 3, "삼성전자", "005390", TradeType.SELL);
 
         account = Account.builder()
                 .balance(Account.INITIAL_BALANCE)
@@ -137,7 +137,7 @@ class TradeReservationHandlerTest {
     @DisplayName("매도 예약 실패 테스트 - 수량 부족")
     void handleReservationSaleFalseTest() {
         // given
-        TradeReqDto overCountDto = new TradeReqDto(2500L, 3000L, 15, "000610", TradeType.SELL);
+        TradeReqDto overCountDto = new TradeReqDto(2500L, 3000L, 15, "삼성전자", "005390", TradeType.SELL);
         given(holdingService.readByUserIdAndStockCode(1L, buyTradeDto.stockCode())).willReturn(Optional.of(holding));
 
         // when
