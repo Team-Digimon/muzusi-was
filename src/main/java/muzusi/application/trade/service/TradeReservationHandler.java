@@ -38,6 +38,7 @@ public class TradeReservationHandler {
                 .userId(userId)
                 .inputPrice(tradeReqDto.inputPrice())
                 .stockCount(tradeReqDto.stockCount())
+                .stockName(tradeReqDto.stockName())
                 .stockCode(tradeReqDto.stockCode())
                 .tradeType(tradeReqDto.tradeType())
                 .build();
