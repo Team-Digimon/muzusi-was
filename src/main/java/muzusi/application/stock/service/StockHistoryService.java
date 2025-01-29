@@ -19,6 +19,18 @@ public class StockHistoryService {
     private final StockMonthlyService stockMonthlyService;
     private final StockYearlyService stockYearlyService;
 
+    /**
+     * 과거 주식 차트 불러오는 메서드
+     * StockPeriodType
+     * - DAILY: 일 단위 주식 차트 데이터를 조회
+     * - WEEKLY: 주 단위 주식 차트 데이터를 조회
+     * - MONTHLY: 월 단위 주식 차트 데이터를 조회
+     * - YEARLY: 연 단위 주식 차트 데이터를 조회
+     *
+     * @param stockCode : 주식 코드
+     * @param stockPeriodType : 주식 차트 기간 유형 (DAILY, WEEKLY, MONTHLY, YEARLY)
+     * @return 과거 주식 차트
+     */
     public List<StockChartInfoDto> getStockHistoryByType(String stockCode, StockPeriodType stockPeriodType) {
         return switch (stockPeriodType) {
             case DAILY -> stockDailyService.readByStockCode(stockCode)
