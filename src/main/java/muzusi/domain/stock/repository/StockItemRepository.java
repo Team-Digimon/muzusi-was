@@ -11,6 +11,4 @@ public interface StockItemRepository extends MongoRepository<StockItem, String>,
 
     @Query(value = "{'stockName': {$regex: ?0, $options: 'i'}}", sort = "{'searchCount': -1, 'stockName': 1}")
     List<StockItem> findByKeyword(String keyword, Pageable pageable);
-
-
 }
