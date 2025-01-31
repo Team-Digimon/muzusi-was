@@ -36,8 +36,8 @@ public class TradeReservationCleaner {
         Map<Long, Long> totalBuyAmountMap = totalAmounts.getLeft();
         Map<Long, Map<String, Integer>> totalSellStockMap = totalAmounts.getRight();
 
-        updateReservedBuyAmounts(totalBuyAmountMap);
-        updateReservedSellStocks(totalSellStockMap);
+        discardReservedBuyAmounts(totalBuyAmountMap);
+        discardReservedSellStocks(totalSellStockMap);
 
         tradeReservationService.deleteAll();
     }
@@ -74,7 +74,7 @@ public class TradeReservationCleaner {
      *
      * @param totalBuyAmountMap : key - userId, value - 예약 매수 내역
      */
-    private void updateReservedBuyAmounts(Map<Long, Long> totalBuyAmountMap) {
+    private void discardReservedBuyAmounts(Map<Long, Long> totalBuyAmountMap) {
         totalBuyAmountMap.forEach((userId, totalBuyAmount) -> {
             Account account = accountService.readByUserId(userId)
                     .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
@@ -87,7 +87,7 @@ public class TradeReservationCleaner {
      *
      * @param totalSellStockMap : key - userId, value - 예약 매도 내역
      */
-    private void updateReservedSellStocks(Map<Long, Map<String, Integer>> totalSellStockMap) {
+    private void discardReservedSellStocks(Map<Long, Map<String, Integer>> totalSellStockMap) {
         totalSellStockMap.forEach((userId, stockCounts) ->
                 stockCounts.forEach((stockCode, totalStockCount) -> {
                     Holding holding = holdingService.readByUserIdAndStockCode(userId, stockCode)
