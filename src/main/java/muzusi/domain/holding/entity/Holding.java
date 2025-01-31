@@ -31,6 +31,9 @@ public class Holding {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "stock_name", nullable = false)
+    private String stockName;
+
     @Column(name = "stock_code", nullable = false)
     private String stockCode;
 
@@ -56,7 +59,8 @@ public class Holding {
     private Account account;
 
     @Builder
-    public Holding(String stockCode, Integer stockCount, Long averagePrice, User user, Account account) {
+    public Holding(String stockName, String stockCode, Integer stockCount, Long averagePrice, User user, Account account) {
+        this.stockName = stockName;
         this.stockCode = stockCode;
         this.stockCount = stockCount;
         this.averagePrice = averagePrice;

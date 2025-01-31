@@ -76,6 +76,7 @@ public class StockTradeExecutor {
 
             holdingService.save(
                     Holding.builder()
+                            .stockName(tradeReqDto.stockName())
                             .stockCode(tradeReqDto.stockCode())
                             .stockCount(tradeReqDto.stockCount())
                             .averagePrice(tradeReqDto.stockPrice())
