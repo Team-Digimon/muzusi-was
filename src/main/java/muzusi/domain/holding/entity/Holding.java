@@ -2,6 +2,7 @@ package muzusi.domain.holding.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,15 +16,23 @@ import lombok.NoArgsConstructor;
 import muzusi.domain.account.entity.Account;
 import muzusi.domain.user.entity.User;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Entity(name = "holding")
 @DynamicUpdate
 public class Holding {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "stock_name", nullable = false)
+    private String stockName;
 
     @Column(name = "stock_code", nullable = false)
     private String stockCode;
@@ -37,6 +46,10 @@ public class Holding {
     @Column(name = "average_price", nullable = false)
     private Long averagePrice;
 
+    @Column(name = "holding_at")
+    @CreatedDate
+    private LocalDateTime holdingAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -46,7 +59,8 @@ public class Holding {
     private Account account;
 
     @Builder
-    public Holding(String stockCode, Integer stockCount, Long averagePrice, User user, Account account) {
+    public Holding(String stockName, String stockCode, Integer stockCount, Long averagePrice, User user, Account account) {
+        this.stockName = stockName;
         this.stockCode = stockCode;
         this.stockCount = stockCount;
         this.averagePrice = averagePrice;
