@@ -12,8 +12,8 @@ import java.util.Optional;
 public class HoldingService {
     private final HoldingRepository holdingRepository;
 
-    public void save(Holding holding) {
-        holdingRepository.save(holding);
+    public Holding save(Holding holding) {
+        return holdingRepository.save(holding);
     }
 
     public Optional<Holding> readByUserIdAndStockCode(Long userId, String stockCode) {
