@@ -16,7 +16,6 @@ import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;
 import muzusi.global.exception.CustomException;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,6 @@ public class TradeReservationTrigger {
      * @param stockCode  : 주식 코드
      * @param stockPrice : 현재 주식 가격
      */
-    @Async
     @Transactional
     public void processTradeReservations(String stockCode, Long stockPrice) {
         tradeReservationService.readByStockCode(stockCode).forEach(reservation -> {
