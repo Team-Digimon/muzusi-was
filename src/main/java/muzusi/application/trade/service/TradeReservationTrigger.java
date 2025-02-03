@@ -36,6 +36,8 @@ public class TradeReservationTrigger {
 
     /**
      * 예약 내역 도달 확인 및 처리 메서드
+     * 1. 예약 매수/매도 별 userId로 구분하여 값 수집 (예약 체결 가능한 값)
+     * 2. 예약 체결 분기별 처리
      *
      * @param stockCode  : 주식 코드
      * @param stockPrice : 현재 주식 가격
@@ -51,6 +53,13 @@ public class TradeReservationTrigger {
         processSellOrders(totalSellStockMap);
     }
 
+    /**
+     * 예약 내역 중 체결 가능한 내역 매수/매도 별 userId로 구분하여 값 수집
+     *
+     * @param stockCode : 주식 코드
+     * @param stockPrice : 현재 주식 가격
+     * @return
+     */
     private Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>>
     calculateTotalAmounts(
             String stockCode,
@@ -74,6 +83,8 @@ public class TradeReservationTrigger {
 
     /**
      * 예약 매수 내역 확인 및 처리
+     * - userId별 계좌 및 보유 주식 조회 한 번으로 내역 업데이트
+     * - 예약 체결 내역 생성 (trade)
      *
      * @param totalBuyAmountMap : 예약 내역
      */
@@ -99,6 +110,8 @@ public class TradeReservationTrigger {
 
     /**
      * 예약 매도 내역 확인 및 처리
+     * - userId별 계좌 및 보유 주식 조회 한 번으로 내역 업데이트
+     * - 예약 체결 내역 생성 (trade)
      *
      * @param totalSellStockMap : 예약 내역
      */
