@@ -46,15 +46,17 @@ class TradeReservationTriggerTest {
     @Mock
     private TradeService tradeService;
 
-    private TradeReservation buyReservation;
-    private TradeReservation sellReservation;
+    private TradeReservation buyReservation1;
+    private TradeReservation buyReservation2;
+    private TradeReservation sellReservation1;
+    private TradeReservation sellReservation2;
     private Account account;
     private Holding holding;
     private User user;
 
     @BeforeEach
     void setUp() {
-        buyReservation = TradeReservation.builder()
+        buyReservation1 = TradeReservation.builder()
                 .tradeType(TradeType.BUY)
                 .inputPrice(3000L)
                 .stockCount(5)
@@ -63,7 +65,25 @@ class TradeReservationTriggerTest {
                 .userId(1L)
                 .build();
 
-        sellReservation = TradeReservation.builder()
+        buyReservation2 = TradeReservation.builder()
+                .tradeType(TradeType.BUY)
+                .inputPrice(3000L)
+                .stockCount(5)
+                .stockName("삼성전자")
+                .stockCode("005390")
+                .userId(1L)
+                .build();
+
+        sellReservation1 = TradeReservation.builder()
+                .tradeType(TradeType.SELL)
+                .inputPrice(3000L)
+                .stockCount(3)
+                .stockName("삼성전자")
+                .stockCode("005390")
+                .userId(1L)
+                .build();
+
+        sellReservation2 = TradeReservation.builder()
                 .tradeType(TradeType.SELL)
                 .inputPrice(3000L)
                 .stockCount(3)
@@ -75,7 +95,7 @@ class TradeReservationTriggerTest {
         account = Account.builder()
                 .balance(Account.INITIAL_BALANCE)
                 .build();
-        account.increaseReservedPrice(3000L * 5);
+        account.increaseReservedPrice(3000L * 5 * 2);
 
         holding = Holding.builder()
                 .stockCode("005390")
@@ -84,7 +104,7 @@ class TradeReservationTriggerTest {
                 .averagePrice(2900L)
                 .account(account)
                 .build();
-        holding.increaseReservedStock(3);
+        holding.increaseReservedStock(6);
 
         user = User.builder()
                 .username("testUser")
@@ -95,35 +115,43 @@ class TradeReservationTriggerTest {
     @DisplayName("예약된 매수 주문이 처리됨")
     void processBuyOrderSuccess() {
         // given
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation));
+        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation1, buyReservation2));
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.of(holding));
-        int expectedCount = holding.getStockCount() + buyReservation.getStockCount();
+        long totalPrice = (buyReservation1.getInputPrice() * buyReservation1.getStockCount())
+                + (buyReservation2.getInputPrice() * buyReservation2.getStockCount());
+        int totalCount = buyReservation1.getStockCount() + buyReservation2.getStockCount();
+        int expectedCount = holding.getStockCount() + totalCount;
         long expectedPrice = ((holding.getAveragePrice() * holding.getStockCount()) +
-                (buyReservation.getInputPrice() * buyReservation.getStockCount())) / expectedCount;
+                totalPrice) / expectedCount;
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 2900L);
+        tradeReservationTrigger.processTradeReservations("005390", 3000L);
 
         // then
         assertEquals(0, account.getReservedPrice());
         assertEquals(expectedCount, holding.getStockCount());
         assertEquals(expectedPrice, holding.getAveragePrice());
 
+        verify(accountService, times(1)).readByUserId(1L);
+        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, never()).save(any(Holding.class));
-        verify(tradeReservationService, times(1)).deleteById(buyReservation.getId());
-        verify(tradeService, times(1)).save(any(Trade.class));
+        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
+        verify(tradeService, times(2)).save(any(Trade.class));
     }
 
     @Test
     @DisplayName("예약된 매도 주문이 처리됨")
     void processSellOrderSuccess() {
         // given
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(sellReservation));
+        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(sellReservation1, sellReservation2));
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.of(holding));
-        long expectedBalance = account.getBalance() + (sellReservation.getStockCount() * sellReservation.getInputPrice());
-        int expectedCount = holding.getStockCount() - sellReservation.getStockCount();
+        long totalPrice = (sellReservation1.getInputPrice() * sellReservation1.getStockCount())
+                + (sellReservation2.getInputPrice() * sellReservation2.getStockCount());
+        int totalCount = sellReservation1.getStockCount() + sellReservation2.getStockCount();
+        long expectedBalance = account.getBalance() + totalPrice;
+        int expectedCount = holding.getStockCount() - totalCount;
 
         // when
         tradeReservationTrigger.processTradeReservations("005390", 3100L);
@@ -132,8 +160,10 @@ class TradeReservationTriggerTest {
         assertEquals(expectedBalance, account.getBalance());
         assertEquals(expectedCount, holding.getStockCount());
 
-        verify(tradeReservationService, times(1)).deleteById(sellReservation.getId());
-        verify(tradeService, times(1)).save(any(Trade.class));
+        verify(accountService, times(1)).readByUserId(1L);
+        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
+        verify(tradeReservationService, times(2)).deleteById(sellReservation1.getId());
+        verify(tradeService, times(2)).save(any(Trade.class));
     }
 
     @Test
@@ -144,22 +174,28 @@ class TradeReservationTriggerTest {
                 .stockCount(0)
                 .averagePrice(0L)
                 .build();
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation));
+        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation1, buyReservation2));
         given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
         given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.empty());
         given(userService.readById(1L)).willReturn(Optional.of(user));
         given(holdingService.save(any(Holding.class))).willReturn(newHolding);
+        long totalPrice = (buyReservation1.getInputPrice() * buyReservation1.getStockCount())
+                + (buyReservation2.getInputPrice() * buyReservation2.getStockCount());
+        int totalCount = buyReservation1.getStockCount() + buyReservation2.getStockCount();
+        long averagePrice = totalPrice / totalCount;
 
         // when
         tradeReservationTrigger.processTradeReservations("005390", 2900L);
 
         // then
-        assertEquals(buyReservation.getStockCount(), newHolding.getStockCount());
-        assertEquals(buyReservation.getInputPrice(), newHolding.getAveragePrice());
+        assertEquals(totalCount, newHolding.getStockCount());
+        assertEquals(averagePrice, newHolding.getAveragePrice());
 
+        verify(accountService, times(1)).readByUserId(1L);
+        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, times(1)).save(any(Holding.class));
-        verify(tradeReservationService, times(1)).deleteById(buyReservation.getId());
-        verify(tradeService, times(1)).save(any(Trade.class));
+        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
+        verify(tradeService, times(2)).save(any(Trade.class));
     }
 
     @Test
@@ -186,6 +222,8 @@ class TradeReservationTriggerTest {
         // then
         assertEquals(expectedBalance, account.getBalance());
 
+        verify(accountService, times(1)).readByUserId(1L);
+        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, times(1)).deleteByUserIdAndStockCode(1L, "005390");
         verify(tradeReservationService, times(1)).deleteById(fullSellReservation.getId());
         verify(tradeService, times(1)).save(any(Trade.class));
