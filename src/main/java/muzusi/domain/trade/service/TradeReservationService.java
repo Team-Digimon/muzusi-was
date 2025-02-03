@@ -25,6 +25,10 @@ public class TradeReservationService {
         return tradeReservationRepository.findById(id);
     }
 
+    public List<TradeReservation> readByStockCode(String stockCode) {
+        return tradeReservationRepository.findByStockCode(stockCode);
+    }
+
     public void deleteById(String id) {
         tradeReservationRepository.deleteById(id);
     }

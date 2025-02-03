@@ -72,9 +72,9 @@ public class Holding {
      * 주식을 추가 매수할 때 평균 단가를 재계산하는 메서드
      */
     public void addStock(int count, long price) {
-        long totalCost = (this.stockCount * this.averagePrice) + (count * price);
+        long totalPrice = (this.stockCount * this.averagePrice) + (count * price);
         this.stockCount += count;
-        this.averagePrice = totalCost / this.stockCount;
+        this.averagePrice = totalPrice / this.stockCount;
     }
 
     /**
