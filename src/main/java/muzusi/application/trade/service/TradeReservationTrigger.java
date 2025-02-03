@@ -16,8 +16,14 @@ import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;
 import muzusi.global.exception.CustomException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -36,54 +42,87 @@ public class TradeReservationTrigger {
      */
     @Transactional
     public void processTradeReservations(String stockCode, Long stockPrice) {
+        Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>> totalAmounts
+                = calculateTotalAmounts(stockCode, stockPrice);
+        Map<Long, List<TradeReservation>> totalBuyAmountMap = totalAmounts.getLeft();
+        Map<Long, List<TradeReservation>> totalSellStockMap = totalAmounts.getRight();
+
+        processBuyOrders(totalBuyAmountMap);
+        processSellOrders(totalSellStockMap);
+    }
+
+    private Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>>
+    calculateTotalAmounts(
+            String stockCode,
+            Long stockPrice
+    ) {
+        Map<Long, List<TradeReservation>> buyReservations = new HashMap<>();
+        Map<Long, List<TradeReservation>> sellReservations = new HashMap<>();
+
         tradeReservationService.readByStockCode(stockCode).forEach(reservation -> {
+            Long userId = reservation.getUserId();
+
             if (reservation.getTradeType() == TradeType.BUY && reservation.getInputPrice() >= stockPrice) {
-                processBuyOrder(reservation);
+                buyReservations.computeIfAbsent(userId, k -> new ArrayList<>()).add(reservation);
             } else if (reservation.getTradeType() == TradeType.SELL && reservation.getInputPrice() <= stockPrice) {
-                processSellOrder(reservation);
+                sellReservations.computeIfAbsent(userId, k -> new ArrayList<>()).add(reservation);
             }
         });
+
+        return Pair.of(buyReservations, sellReservations);
     }
 
     /**
      * 예약 매수 내역 확인 및 처리
      *
-     * @param reservation : 예약 내역
+     * @param totalBuyAmountMap : 예약 내역
      */
-    private void processBuyOrder(TradeReservation reservation) {
-        Account account = accountService.readByUserId(reservation.getUserId())
-                .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
+    private void processBuyOrders(Map<Long, List<TradeReservation>> totalBuyAmountMap) {
+        totalBuyAmountMap.forEach((userId, reservations) -> {
+            Account account = accountService.readByUserId(userId)
+                    .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
 
-        Holding holding = holdingService.readByUserIdAndStockCode(reservation.getUserId(), reservation.getStockCode())
-                .orElseGet(() -> createNewHolding(reservation, account));
+            TradeReservation firstReservation = reservations.get(0);
+            Holding holding = holdingService.readByUserIdAndStockCode(userId, firstReservation.getStockCode())
+                    .orElseGet(() -> createNewHolding(firstReservation, account));
 
-        long price = reservation.getInputPrice() * reservation.getStockCount();
-        account.clearReservedPrice(price);
-        holding.addStock(reservation.getStockCount(), reservation.getInputPrice());
+            long totalPrice = reservations.stream().mapToLong(r -> r.getInputPrice() * r.getStockCount()).sum();
+            int totalStockCount = reservations.stream().mapToInt(TradeReservation::getStockCount).sum();
+            long averagePrice = totalPrice / totalStockCount;
 
-        finalizeTrade(reservation, account);
+            account.clearReservedPrice(totalPrice);
+            holding.addStock(totalStockCount, averagePrice);
+
+            reservations.forEach(reservation -> finalizeTrade(reservation, account));
+        });
     }
 
     /**
      * 예약 매도 내역 확인 및 처리
      *
-     * @param reservation : 예약 내역
+     * @param totalSellStockMap : 예약 내역
      */
-    private void processSellOrder(TradeReservation reservation) {
-        Account account = accountService.readByUserId(reservation.getUserId())
-                .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
+    private void processSellOrders(Map<Long, List<TradeReservation>> totalSellStockMap) {
+        totalSellStockMap.forEach((userId, reservations) -> {
+            Account account = accountService.readByUserId(userId)
+                    .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
 
-        Holding holding = holdingService.readByUserIdAndStockCode(reservation.getUserId(), reservation.getStockCode())
-                .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
+            TradeReservation firstReservation = reservations.get(0);
+            Holding holding = holdingService.readByUserIdAndStockCode(userId, firstReservation.getStockCode())
+                    .orElseThrow(() -> new CustomException(HoldingErrorType.NOT_FOUND));
 
-        holding.clearReservedStock(reservation.getStockCount());
-        long price = reservation.getInputPrice() * reservation.getStockCount();
-        account.updateAccount(reservation.getTradeType(), price);
+            long totalPrice = reservations.stream().mapToLong(r -> r.getInputPrice() * r.getStockCount()).sum();
+            int totalStockCount = reservations.stream().mapToInt(TradeReservation::getStockCount).sum();
 
-        if (holding.isEmpty())
-            holdingService.deleteByUserIdAndStockCode(reservation.getUserId(), reservation.getStockCode());
+            holding.clearReservedStock(totalStockCount);
+            account.updateAccount(TradeType.SELL, totalPrice);
 
-        finalizeTrade(reservation, account);
+            if (holding.isEmpty()) {
+                holdingService.deleteByUserIdAndStockCode(userId, firstReservation.getStockCode());
+            }
+
+            reservations.forEach(reservation -> finalizeTrade(reservation, account));
+        });
     }
 
     /**
