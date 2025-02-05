@@ -19,6 +19,11 @@ public class StockPriceService {
     private final StockService stockService;
     private final RedisService redisService;
 
+    /**
+     * 주식 현재가 조회 및 값 저장을 위한 메서드.
+     * @param code : 주식 종목 코드
+     * @return StockPriceDto : 주식 현재가 DTO
+     */
     public StockPriceDto getStockPrice(String code) {
         if(!stockService.existsByStockCode(code)) {
             throw new CustomException(StockErrorType.NOT_PREPARED);
