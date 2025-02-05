@@ -3,9 +3,8 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
-import muzusi.application.stock.dto.RankStockDto;
+import muzusi.application.stock.dto.StockRankDto;
 import muzusi.global.exception.KisApiException;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KisRankingClient {
@@ -30,7 +28,7 @@ public class KisRankingClient {
     private final ObjectMapper objectMapper;
     private final RedisService redisService;
 
-    public List<RankStockDto> getVolumeRank() {
+    public List<StockRankDto> getVolumeRank() {
         HttpHeaders headers = getHttpHeaders("FHPST01710000");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
@@ -78,15 +76,15 @@ public class KisRankingClient {
         }
     }
 
-    public List<RankStockDto> getRisingFluctuationRank() {
+    public List<StockRankDto> getRisingFluctuationRank() {
         return getFluctuationRank("0");
     }
 
-    public List<RankStockDto> getFallingFluctuationRank() {
+    public List<StockRankDto> getFallingFluctuationRank() {
         return getFluctuationRank("1");
     }
 
-    private List<RankStockDto> getFluctuationRank(String fluctuation) {
+    private List<StockRankDto> getFluctuationRank(String fluctuation) {
         HttpHeaders headers = getHttpHeaders("FHPST01700000");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.FLUCTUATION_RANK))
@@ -151,11 +149,11 @@ public class KisRankingClient {
         return headers;
     }
 
-    private List<RankStockDto> getRankStocks(JsonNode node, Map<String, String> body) {
-        List<RankStockDto> rankStockDtos = new ArrayList<>();
+    private List<StockRankDto> getRankStocks(JsonNode node, Map<String, String> body) {
+        List<StockRankDto> stockRankDtos = new ArrayList<>();
 
         for (JsonNode n : node) {
-            RankStockDto rankStockDto = RankStockDto.builder()
+            StockRankDto stockRankDto = StockRankDto.builder()
                     .name(n.get(body.get("name")).asText())
                     .code(n.get(body.get("code")).asText())
                     .rank(n.get(body.get("rank")).asInt())
@@ -165,8 +163,8 @@ public class KisRankingClient {
                     .avrgVol(n.get(body.get("avgrVol")).asLong())
                     .build();
 
-            rankStockDtos.add(rankStockDto);
+            stockRankDtos.add(stockRankDto);
         }
-        return rankStockDtos;
+        return stockRankDtos;
     }
 }
