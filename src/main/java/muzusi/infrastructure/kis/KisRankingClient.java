@@ -30,7 +30,6 @@ public class KisRankingClient {
     private final ObjectMapper objectMapper;
     private final RedisService redisService;
 
-
     public List<RankStockDto> getVolumeRank() {
         HttpHeaders headers = getHttpHeaders("FHPST01710000");
 
