@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -24,16 +25,22 @@ public class UserAccountService {
 
     /**
      * 새로운 계좌를 등록하기 위한 메서드.
+     * 계좌 등록은 오전 9시 이전에만 가능하며, 하루에 한 개의 계좌만 등록할 수 있습니다.
      *
      * @param userId : 사용자의 pk값
      */
     @Transactional
     public void connectNewAccount(Long userId) {
+        if (LocalDateTime.now().toLocalTime().isAfter(LocalTime.of(9, 0))) {
+            throw new CustomException(AccountErrorType.ACCOUNT_CREATION_TIME_LIMIT);
+        }
+
         LocalDateTime latestCreatedAt = accountService.readCreatedAt(userId);
 
         if (latestCreatedAt != null && latestCreatedAt.toLocalDate().equals(LocalDate.now())) {
             throw new CustomException(AccountErrorType.ACCOUNT_CREATION_LIMIT);
         }
+
         User foundUser = userService.readById(userId)
                 .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
