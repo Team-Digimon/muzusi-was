@@ -3,7 +3,7 @@ package muzusi.application.stock.dto;
 import lombok.Builder;
 
 @Builder
-public record RankStockDto(
+public record StockRankDto(
         /* 종목 이름 */
         String name,
         /* 종목 코드 */
