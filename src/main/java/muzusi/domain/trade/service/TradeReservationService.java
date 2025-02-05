@@ -29,6 +29,10 @@ public class TradeReservationService {
         return tradeReservationRepository.findByStockCode(stockCode);
     }
 
+    public List<TradeReservation> readByUserId(Long userId) {
+        return tradeReservationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+    }
+
     public void deleteById(String id) {
         tradeReservationRepository.deleteById(id);
     }
