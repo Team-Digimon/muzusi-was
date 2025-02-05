@@ -29,12 +29,18 @@ public interface AccountApi {
                                         }
                                     """)
                     })),
-            @ApiResponse(responseCode = "400", description = "계좌 생성 횟수 제한",
+            @ApiResponse(responseCode = "400", description = "계좌 생성 오류",
                     content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
+                            @ExampleObject(name = "AccountCreationLimit", value = """
                                         {
                                             "code": "4003",
                                             "message": "오늘은 이미 계좌를 생성했습니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "AccountCreationTimeLimit", value = """
+                                        {
+                                            "code": "4005",
+                                            "message": "오전 9시 이전에만 계좌를 개설할 수 있습니다."
                                         }
                                     """)
                     }))
