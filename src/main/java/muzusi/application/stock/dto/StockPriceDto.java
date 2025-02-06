@@ -10,7 +10,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record StockPriceDto (
+public record StockPriceDto(
         String code,
         long price,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")

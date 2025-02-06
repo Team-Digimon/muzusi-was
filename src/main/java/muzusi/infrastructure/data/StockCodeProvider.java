@@ -22,9 +22,9 @@ public class StockCodeProvider {
         ClassPathResource resource = new ClassPathResource(stockCodePath);
         List<String> list = new ArrayList<>(CODE_COUNT);
 
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String code;
-            while((code = br.readLine()) != null) {
+            while ((code = br.readLine()) != null) {
                 list.add(code);
             }
         } catch (IOException e) {

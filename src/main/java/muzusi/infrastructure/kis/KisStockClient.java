@@ -62,12 +62,12 @@ public class KisStockClient {
             long high = Long.MIN_VALUE, low = Long.MAX_VALUE;
             long open = 0L, close = 0L, volume = 0L;
 
-            for(int i = 0 ; i < Math.min(MINUTES_GAP, output2.size()); i++) {
+            for (int i = 0 ; i < Math.min(MINUTES_GAP, output2.size()); i++) {
                 JsonNode stockInfo = output2.get(i);
-                if(i == 0) {
+                if (i == 0) {
                     close = stockInfo.get("stck_prpr").asLong();
                 }
-                if(i == Math.min(MINUTES_GAP, output2.size())-1) {
+                if (i == Math.min(MINUTES_GAP, output2.size())-1) {
                     open = stockInfo.get("stck_prpr").asLong();
                 }
                 low = Math.min(low, stockInfo.get("stck_prpr").asLong());

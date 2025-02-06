@@ -10,7 +10,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Builder
-public record StockMinutesChartInfoDto (
+public record StockMinutesChartInfoDto(
         String stockCode,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)

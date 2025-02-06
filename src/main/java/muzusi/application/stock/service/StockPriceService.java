@@ -25,7 +25,7 @@ public class StockPriceService {
      * @return StockPriceDto : 주식 현재가 DTO
      */
     public StockPriceDto getStockPrice(String code) {
-        if(!stockService.existsByStockCode(code)) {
+        if (!stockService.existsByStockCode(code)) {
             throw new CustomException(StockErrorType.NOT_PREPARED);
         }
 

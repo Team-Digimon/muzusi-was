@@ -22,8 +22,8 @@ public class KisStockService {
     public void saveStockMinutesChart() throws InterruptedException {
         int count = 0;
         LocalDateTime now = LocalDateTime.now();
-        for(String code : stockCodeProvider.getAllStockCodes()) {
-            if(++count % 20 == 0) {
+        for (String code : stockCodeProvider.getAllStockCodes()) {
+            if (++count % 20 == 0) {
                 Thread.sleep(1000L);
             }
             redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code, kisStockClient.getStockMinutesChartInfo(code, now));
