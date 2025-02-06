@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.RankStockDto;
-import muzusi.global.redis.RedisService;
-import muzusi.infrastructure.kis.KisConstant;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.KisConstant;
 import muzusi.infrastructure.kis.KisRankingClient;
 import org.springframework.stereotype.Service;
 

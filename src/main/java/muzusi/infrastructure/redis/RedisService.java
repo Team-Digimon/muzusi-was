@@ -1,4 +1,4 @@
-package muzusi.global.redis;
+package muzusi.infrastructure.redis;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;

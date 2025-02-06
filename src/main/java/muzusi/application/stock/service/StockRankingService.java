@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.RankStockDto;
 import muzusi.domain.stock.type.StockRankingType;
-import muzusi.global.redis.RedisService;
-import muzusi.infrastructure.kis.KisConstant;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;

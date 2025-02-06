@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.redis.constant;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
