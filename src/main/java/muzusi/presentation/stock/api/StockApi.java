@@ -40,36 +40,4 @@ public interface StockApi {
                     }))
     })
     ResponseEntity<?> searchStock(@RequestParam String keyword);
-
-
-    @TrackApi(description = "주식 현재가 조회")
-    @Operation(summary = "주식 현재가 조회", description = "주식 현재가를 조회하는 API입니다. (5분 단위 갱신)")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "주식 현재가 조회 성공",
-                content = @Content(mediaType = "application/json", examples = {
-                        @ExampleObject(value = """
-                                    {
-                                        "code": 200,
-                                        "message": "요청이 성공하였습니다.",
-                                        "data": {
-                                            "code": "000050",
-                                            "price": 6240,
-                                            "time": "2025-02-06 01:57"
-                                        }
-                                    }
-                                """)
-                })
-            ),
-            @ApiResponse(responseCode = "400", description = "DB 내 미존재 주식",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                    {
-                                        "code": "2002",
-                                        "message": "아직 준비 중인 주식 종목입니다."
-                                    }
-                                    """)
-                    })
-            )
-    })
-    public ResponseEntity<?> getStockPrice(@PathVariable String code);
 }
