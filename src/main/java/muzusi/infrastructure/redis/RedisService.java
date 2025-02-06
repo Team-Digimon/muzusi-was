@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +39,17 @@ public class RedisService {
 
     public boolean existed(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    public void addToSet(String key, Object value) {
+        redisTemplate.opsForSet().add(key, value);
+    }
+
+    public void removeFromSet(String key, Object value) {
+        redisTemplate.opsForSet().remove(key, value);
+    }
+
+    public Set<Object> getSetMembers(String key) {
+        return redisTemplate.opsForSet().members(key);
     }
 }
