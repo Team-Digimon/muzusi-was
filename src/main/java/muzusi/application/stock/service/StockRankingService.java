@@ -2,7 +2,7 @@ package muzusi.application.stock.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.dto.KisDto;
-import muzusi.application.stock.dto.RankStockDto;
+import muzusi.application.stock.dto.StockRankDto;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
@@ -28,7 +28,7 @@ public class StockRankingService {
     private Map<String, Object> getStockRankingByType(KisConstant rank, KisConstant time) {
         Map<String, Object> content = new HashMap<>();
         content.put("time", ((KisDto.Time) redisService.get(time.getValue())).getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        content.put("rank", redisService.getList(rank.getValue()).stream().map(obj -> (RankStockDto) obj).toList());
+        content.put("rank", redisService.getList(rank.getValue()).stream().map(obj -> (StockRankDto) obj).toList());
         return content;
     }
 }

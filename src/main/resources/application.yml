@@ -69,6 +69,9 @@ kis:
   appkey: ${KIS_APPKEY:appkey}
   appsecret: ${KIS_APPSECRET:appsecret}
 
+data:
+  stock-code-path: ${DATA_STOCK_CODE_PATH:data/stock/stock-code.csv}
+
 webhook:
   discord:
     url: ${DISCORD_WEBHOOK_URL:https://discord.com/api/webhooks}

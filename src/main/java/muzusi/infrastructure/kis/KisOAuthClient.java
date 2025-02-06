@@ -3,7 +3,6 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import muzusi.global.exception.KisOAuthApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
@@ -17,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class KisOAuthClient {
