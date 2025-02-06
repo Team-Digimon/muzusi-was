@@ -16,6 +16,8 @@ import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;
 import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.TradeConstant;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class TradeReservationTrigger {
     private final HoldingService holdingService;
     private final UserService userService;
     private final TradeService tradeService;
+    private final RedisService redisService;
 
     /**
      * 예약 내역 도달 확인 및 처리 메서드
@@ -159,6 +162,9 @@ public class TradeReservationTrigger {
 
     /**
      * 거래 완료 후 처리 (예약 삭제 및 거래 내역 추가)
+     * 1. 예약 내역 삭제
+     * 2. 거래 내역 추가
+     * 3. 종목 코드에 예약 내역 없으면, redis 값 삭제
      */
     private void finalizeTrade(TradeReservation reservation, Account account) {
         tradeReservationService.deleteById(reservation.getId());
@@ -173,5 +179,9 @@ public class TradeReservationTrigger {
                         .account(account)
                         .build()
         );
+
+        if (!tradeReservationService.existsByStockCode(reservation.getStockCode())) {
+            redisService.removeFromSet(TradeConstant.RESERVATION_PREFIX.getValue(), reservation.getStockCode());
+        }
     }
 }

@@ -7,6 +7,7 @@ import muzusi.domain.holding.service.HoldingService;
 import muzusi.domain.trade.entity.TradeReservation;
 import muzusi.domain.trade.service.TradeReservationService;
 import muzusi.domain.trade.type.TradeType;
+import muzusi.infrastructure.redis.RedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,8 @@ class TradeReservationCleanerTest {
     private AccountService accountService;
     @Mock
     private HoldingService holdingService;
+    @Mock
+    private RedisService redisService;
 
     private TradeReservation buyReservation1;
     private TradeReservation buyReservation2;

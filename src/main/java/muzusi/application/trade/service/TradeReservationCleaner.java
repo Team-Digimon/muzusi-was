@@ -10,6 +10,8 @@ import muzusi.domain.holding.service.HoldingService;
 import muzusi.domain.trade.service.TradeReservationService;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.TradeConstant;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class TradeReservationCleaner {
     private final TradeReservationService tradeReservationService;
     private final AccountService accountService;
     private final HoldingService holdingService;
+    private final RedisService redisService;
 
     /**
      * 주식 장 마감 후, 미처리 예약 삭제 메서드
@@ -39,7 +42,7 @@ public class TradeReservationCleaner {
         discardReservedBuyAmounts(totalBuyAmountMap);
         discardReservedSellStocks(totalSellStockMap);
 
-        tradeReservationService.deleteAll();
+        finalizeReservation();
     }
 
     /**
@@ -95,5 +98,15 @@ public class TradeReservationCleaner {
                     holding.decreaseReservedStock(totalStockCount);
                 })
         );
+    }
+
+    /**
+     * 예약 정리 완료 후 처리
+     * 1. 예약 내역 전체 삭제
+     * 2. redis에 존재하는 종목 코드 전체 삭제
+     */
+    private void finalizeReservation() {
+        tradeReservationService.deleteAll();
+        redisService.del(TradeConstant.RESERVATION_PREFIX.getValue());
     }
 }

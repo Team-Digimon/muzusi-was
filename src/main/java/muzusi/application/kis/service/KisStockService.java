@@ -1,12 +1,11 @@
 package muzusi.application.kis.service;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisConstant;
 import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

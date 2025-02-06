@@ -1,7 +1,7 @@
 package muzusi.application.auth.service.token;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.global.redis.RedisService;
+import muzusi.infrastructure.redis.RedisService;
 import muzusi.global.util.jwt.AuthConstants;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

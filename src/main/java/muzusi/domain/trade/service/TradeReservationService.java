@@ -33,6 +33,10 @@ public class TradeReservationService {
         return tradeReservationRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 
+    public boolean existsByStockCode(String stockCode) {
+        return tradeReservationRepository.existsByStockCode(stockCode);
+    }
+
     public void deleteById(String id) {
         tradeReservationRepository.deleteById(id);
     }

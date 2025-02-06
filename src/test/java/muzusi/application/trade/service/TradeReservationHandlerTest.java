@@ -12,6 +12,7 @@ import muzusi.domain.trade.exception.TradeErrorType;
 import muzusi.domain.trade.service.TradeReservationService;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.redis.RedisService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,8 @@ class TradeReservationHandlerTest {
     private AccountService accountService;
     @Mock
     private HoldingService holdingService;
+    @Mock
+    private RedisService redisService;
 
     private TradeReqDto buyTradeDto;
     private TradeReqDto sellTradeDto;
