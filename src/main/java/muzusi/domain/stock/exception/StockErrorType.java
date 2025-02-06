@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
  */
 @RequiredArgsConstructor
 public enum StockErrorType implements BaseErrorType {
-    NOT_FOUND(HttpStatus.NOT_FOUND, "2001", "주식 종목이 존재하지 않습니다.")
+    NOT_FOUND(HttpStatus.NOT_FOUND, "2001", "주식 종목이 존재하지 않습니다."),
+    NOT_PREPARED(HttpStatus.NOT_FOUND, "2002", "아직 준비 중인 주식 종목입니다.")
     ;
 
     private final HttpStatus status;

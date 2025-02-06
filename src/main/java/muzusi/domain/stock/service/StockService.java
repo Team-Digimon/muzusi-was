@@ -19,4 +19,8 @@ public class StockService {
     public Optional<Stock> readByStockCode(String stockCode) {
         return stockRepository.findByStockCode(stockCode);
     }
+
+    public boolean existsByStockCode(String stockCode) {
+        return stockRepository.existsByStockCode(stockCode);
+    }
 }

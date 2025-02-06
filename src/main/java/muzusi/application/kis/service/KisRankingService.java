@@ -3,7 +3,7 @@ package muzusi.application.kis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisDto;
-import muzusi.application.stock.dto.RankStockDto;
+import muzusi.application.stock.dto.StockRankDto;
 import muzusi.global.redis.RedisService;
 import muzusi.infrastructure.kis.KisConstant;
 import muzusi.infrastructure.kis.KisRankingClient;
@@ -20,29 +20,29 @@ public class KisRankingService {
     private final RedisService redisService;
 
     public void saveVolumeRank() {
-        List<RankStockDto> rankStockDtos = kisRankingClient.getVolumeRank();
+        List<StockRankDto> stockRankDtos = kisRankingClient.getVolumeRank();
 
         redisService.del(KisConstant.VOLUME_RANK_PREFIX.getValue());
 
-        for (RankStockDto rankStockDto : rankStockDtos) {
-            redisService.setList(KisConstant.VOLUME_RANK_PREFIX.getValue(), rankStockDto);
+        for (StockRankDto stockRankDto : stockRankDtos) {
+            redisService.setList(KisConstant.VOLUME_RANK_PREFIX.getValue(), stockRankDto);
         }
 
         redisService.set(KisConstant.VOLUME_RANK_TIME_PREFIX.getValue(), KisDto.Time.of(LocalDateTime.now()));
     }
 
     public void saveFluctuationRank() {
-        List<RankStockDto> risingRankStocks = kisRankingClient.getRisingFluctuationRank();
-        List<RankStockDto> fallingRankStocks = kisRankingClient.getFallingFluctuationRank();
+        List<StockRankDto> risingRankStocks = kisRankingClient.getRisingFluctuationRank();
+        List<StockRankDto> fallingRankStocks = kisRankingClient.getFallingFluctuationRank();
 
         redisService.del(KisConstant.RISING_RANK_PREFIX.getValue());
         redisService.del(KisConstant.FALLING_RANK_PREFIX.getValue());
 
-        for (RankStockDto risingRankStock : risingRankStocks) {
+        for (StockRankDto risingRankStock : risingRankStocks) {
             redisService.setList(KisConstant.RISING_RANK_PREFIX.getValue(), risingRankStock);
         }
 
-        for (RankStockDto fallingRankStock : fallingRankStocks) {
+        for (StockRankDto fallingRankStock : fallingRankStocks) {
             redisService.setList(KisConstant.FALLING_RANK_PREFIX.getValue(), fallingRankStock);
         }
 

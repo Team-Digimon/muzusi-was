@@ -11,6 +11,7 @@ public enum KisUrlConstant {
     VOLUME_RANK("/uapi/domestic-stock/v1/quotations/volume-rank"),
     FLUCTUATION_RANK("/uapi/domestic-stock/v1/ranking/fluctuation"),
     INQUIRE_PRICE("/uapi/domestic-stock/v1/quotations/inquire-price"),
+    TIME_ITEM_CHART_PRICE("/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"),
     ;
 
     private final String url;
