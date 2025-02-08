@@ -29,13 +29,10 @@ public class KisScheduler {
         kisOAuthService.saveWebSocketKey();
     }
 
-    @Scheduled(cron = "0 0/10 9-14 * * 1-5")
-    public void runRankingJob() {
-        kisRankingService.saveVolumeRank();
-        kisRankingService.saveFluctuationRank();
-    }
-
-    @Scheduled(cron = "0 10,20,30 15 * * 1-5")
+    @Schedules({
+            @Scheduled(cron = "0 0/10 9-14 * * 1-5"),
+            @Scheduled(cron = "0 10,20,30 15 * * 1-5")
+    })
     public void runRankingJobAt3PM() {
         kisRankingService.saveVolumeRank();
         kisRankingService.saveFluctuationRank();
