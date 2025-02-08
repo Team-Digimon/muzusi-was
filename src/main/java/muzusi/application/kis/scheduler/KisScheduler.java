@@ -31,7 +31,7 @@ public class KisScheduler {
 
     @Schedules({
             @Scheduled(cron = "0 0/10 9-14 * * 1-5"),
-            @Scheduled(cron = "0 10,20,30 15 * * 1-5")
+            @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
     })
     public void runRankingJobAt3PM() {
         kisRankingService.saveVolumeRank();
