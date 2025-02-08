@@ -25,6 +25,11 @@ public class KisStockService {
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
 
+    /**
+     * 한국투자증권 주식 분봉데이터 호출 및 저장 메서드.
+     *
+     * REST API 호출 유량 제한으로 인하여 초당 20개 단위 주식 데이터 호출 제한
+     */
     public void saveStockMinutesChart() throws InterruptedException {
         int count = 0;
         LocalDateTime now = LocalDateTime.now();
@@ -36,9 +41,15 @@ public class KisStockService {
         }
     }
 
+    /**
+     * 주식 분봉데이터 이관 메서드.
+     * Redis -> MongoDB
+     */
     public void saveDailyStockMinutesChart() {
         for (String code : stockCodeProvider.getAllStockCodes()) {
-            List<StockMinutesChartInfoDto> minutesChars = redisService.getList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code).stream()
+            String key = KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code;
+
+            List<StockMinutesChartInfoDto> minutesChars = redisService.getList(key).stream()
                             .map(stockMinutesChart -> (StockMinutesChartInfoDto) stockMinutesChart)
                             .toList();
 
@@ -47,6 +58,8 @@ public class KisStockService {
                     .date(LocalDate.now(ZoneId.of("Asia/Seoul")))
                     .minutesChart(minutesChars)
                     .build());
+
+            redisService.del(key);
         }
     }
 }
