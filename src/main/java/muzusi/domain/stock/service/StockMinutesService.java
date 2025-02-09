@@ -18,6 +18,10 @@ public class StockMinutesService {
         stockMinutesRepository.save(stockMinutes);
     }
 
+    public void saveAll(List<StockMinutes> stockMinutesList) {
+        stockMinutesRepository.saveAll(stockMinutesList);
+    }
+
     public List<StockMinutes> readByStockCode(String stockCode) {
         return stockMinutesRepository.findByStockCodeOrderByDateAsc(stockCode);
     }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -46,20 +47,27 @@ public class KisStockMinutesService {
      * Redis -> MongoDB
      */
     public void saveDailyStockMinutesChart() {
-        for (String code : stockCodeProvider.getAllStockCodes()) {
+        List<String> stockCodeList = stockCodeProvider.getAllStockCodes();
+        List<StockMinutes> stockMinutesList = new ArrayList<>(stockCodeList.size());
+
+        for (String code : stockCodeList) {
             String key = KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code;
 
-            List<StockMinutesChartInfoDto> minutesChars = redisService.getList(key).stream()
+            List<StockMinutesChartInfoDto> minutesCharts = redisService.getList(key).stream()
                             .map(stockMinutesChart -> (StockMinutesChartInfoDto) stockMinutesChart)
                             .toList();
 
-            stockMinutesService.save(StockMinutes.builder()
+            stockMinutesList.add(StockMinutes.builder()
                     .stockCode(code)
                     .date(LocalDate.now(ZoneId.of("Asia/Seoul")))
-                    .minutesChart(minutesChars)
+                    .minutesChart(minutesCharts)
                     .build());
 
             redisService.del(key);
+        }
+
+        for (int i = 0; i < stockMinutesList.size(); i += 500) {
+            stockMinutesService.saveAll(stockMinutesList.subList(i, Math.min(i + 500, stockMinutesList.size())));
         }
     }
 }
