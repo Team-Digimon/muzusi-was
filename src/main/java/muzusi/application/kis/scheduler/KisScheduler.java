@@ -3,14 +3,21 @@ package muzusi.application.kis.scheduler;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.service.KisOAuthService;
 import muzusi.application.kis.service.KisRankingService;
+import muzusi.application.kis.service.KisStockMinutesService;
+import muzusi.domain.stock.service.StockMinutesService;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
 public class KisScheduler {
     private final KisOAuthService kisOAuthService;
     private final KisRankingService kisRankingService;
+    private final KisStockMinutesService kisStockMinutesService;
+    private final StockMinutesService stockMinutesService;
 
     @Scheduled(cron = "0 0 7 * * ?")
     public void runIssueAccessTokenJob() {
@@ -22,15 +29,27 @@ public class KisScheduler {
         kisOAuthService.saveWebSocketKey();
     }
 
-    @Scheduled(cron = "0 0/10 9-14 * * 1-5")
-    public void runRankingJob() {
+    @Schedules({
+            @Scheduled(cron = "0 0/10 9-14 * * 1-5"),
+            @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
+    })
+    public void runRankingJobAt3PM() {
         kisRankingService.saveVolumeRank();
         kisRankingService.saveFluctuationRank();
     }
 
-    @Scheduled(cron = "0 10,20,30 15 * * 1-5")
-    public void runRankingJobAt3PM() {
-        kisRankingService.saveVolumeRank();
-        kisRankingService.saveFluctuationRank();
+    @Schedules({
+            @Scheduled(cron = "0 10,20,30,40,50 9 * * 1-5"),
+            @Scheduled(cron = "0 0/10 10-14 * * 1-5"),
+            @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
+    })
+    public void runSaveStockMinutesChart() throws InterruptedException {
+        kisStockMinutesService.saveStockMinutesChart();
+    }
+
+    @Scheduled(cron = "0 0 16 * * 1-5")
+    public void runSaveDailyStockMinutesChartJob() {
+        kisStockMinutesService.saveDailyStockMinutesChart();
+        stockMinutesService.deleteByDateBefore(LocalDate.now().minusDays(6));
     }
 }
