@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisStockService {
+public class KisStockMinutesService {
     private final StockCodeProvider stockCodeProvider;
     private final RedisService redisService;
     private final KisStockClient kisStockClient;

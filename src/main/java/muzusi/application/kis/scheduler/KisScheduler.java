@@ -3,7 +3,7 @@ package muzusi.application.kis.scheduler;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.service.KisOAuthService;
 import muzusi.application.kis.service.KisRankingService;
-import muzusi.application.kis.service.KisStockService;
+import muzusi.application.kis.service.KisStockMinutesService;
 import muzusi.domain.stock.service.StockMinutesService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class KisScheduler {
     private final KisOAuthService kisOAuthService;
     private final KisRankingService kisRankingService;
-    private final KisStockService kisStockService;
+    private final KisStockMinutesService kisStockMinutesService;
     private final StockMinutesService stockMinutesService;
 
     @Scheduled(cron = "0 0 7 * * ?")
@@ -44,12 +44,12 @@ public class KisScheduler {
             @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
     })
     public void runSaveStockMinutesChart() throws InterruptedException {
-        kisStockService.saveStockMinutesChart();
+        kisStockMinutesService.saveStockMinutesChart();
     }
 
     @Scheduled(cron = "0 0 16 * * 1-5")
     public void runSaveDailyStockMinutesChartJob() {
-        kisStockService.saveDailyStockMinutesChart();
+        kisStockMinutesService.saveDailyStockMinutesChart();
         stockMinutesService.deleteByDateBefore(LocalDate.now().minusDays(6));
     }
 }
