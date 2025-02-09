@@ -47,10 +47,11 @@ public class KisStockMinutesService {
      * Redis -> MongoDB
      */
     public void saveDailyStockMinutesChart() {
-        List<String> stockCodeList = stockCodeProvider.getAllStockCodes();
-        List<StockMinutes> stockMinutesList = new ArrayList<>(stockCodeList.size());
+        final int BATCH_SIZE = 500;
+        List<StockMinutes> stockMinutesList = new ArrayList<>(BATCH_SIZE);
+        int count = 0;
 
-        for (String code : stockCodeList) {
+        for (String code : stockCodeProvider.getAllStockCodes()) {
             String key = KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code;
 
             List<StockMinutesChartInfoDto> minutesCharts = redisService.getList(key).stream()
@@ -64,10 +65,15 @@ public class KisStockMinutesService {
                     .build());
 
             redisService.del(key);
+
+            if (++count == BATCH_SIZE) {
+               stockMinutesService.saveAll(stockMinutesList);
+               stockMinutesList.clear();
+            }
         }
 
-        for (int i = 0; i < stockMinutesList.size(); i += 500) {
-            stockMinutesService.saveAll(stockMinutesList.subList(i, Math.min(i + 500, stockMinutesList.size())));
+        if (!stockMinutesList.isEmpty()) {
+           stockMinutesService.saveAll(stockMinutesList);
         }
     }
 }
