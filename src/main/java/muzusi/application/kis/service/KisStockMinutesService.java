@@ -35,7 +35,7 @@ public class KisStockMinutesService {
     /**
      * 한국투자증권 주식 분봉데이터 호출 및 저장 메서드.
      *
-     * REST API 호출 유량 제한으로 인하여 초당 20개 단위 주식 데이터 호출 제한
+     * REST API 호출 유량 제한으로 인하여 초당 15개 단위 주식 데이터 호출 제한
      */
     public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
         int count = 0;
