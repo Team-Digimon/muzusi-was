@@ -5,6 +5,8 @@ import lombok.Builder;
 @Builder
 public record StockPriceDto(
         String stockCode,
-        long price
+        Long close,
+        Long low,
+        Long high
 ) {
 }

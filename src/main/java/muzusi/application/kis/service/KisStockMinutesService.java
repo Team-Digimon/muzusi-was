@@ -76,7 +76,9 @@ public class KisStockMinutesService {
     private StockPriceDto extractStockPrice(StockMinutesChartInfoDto stockMinutesChartInfo) {
         return StockPriceDto.builder()
                 .stockCode(stockMinutesChartInfo.stockCode())
-                .price(stockMinutesChartInfo.close())
+                .low(stockMinutesChartInfo.low())
+                .high(stockMinutesChartInfo.high())
+                .close(stockMinutesChartInfo.close())
                 .build();
     }
 
