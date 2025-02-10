@@ -14,6 +14,7 @@ public enum KisConstant {
     VOLUME_RANK_TIME_PREFIX("kis:volume-rank-time"),
     FLUCTUATION_RANK_TIME_PREFIX("kis:fluctuation-rank-time"),
     MINUTES_CHART_PREFIX("kis:minutes-chart"),
+    INQUIRE_PRICE_PREFIX("kis:inquire-price"),
     ;
 
     private final String value;
