@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -51,5 +52,9 @@ public class RedisService {
 
     public Set<Object> getSetMembers(String key) {
         return redisTemplate.opsForSet().members(key);
+    }
+
+    public void addToHash(String key, Map<String, Object> value) {
+        redisTemplate.opsForHash().putAll(key, value);
     }
 }
