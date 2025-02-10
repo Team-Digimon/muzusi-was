@@ -69,6 +69,7 @@ public class KisStockMinutesService {
             if (++count == BATCH_SIZE) {
                stockMinutesService.saveAll(stockMinutesList);
                stockMinutesList.clear();
+               count = 0;
             }
         }
 
