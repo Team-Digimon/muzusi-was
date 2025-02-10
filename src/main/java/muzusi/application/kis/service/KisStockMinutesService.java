@@ -3,6 +3,7 @@ package muzusi.application.kis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.dto.StockMinutesChartInfoDto;
+import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.infrastructure.data.StockCodeProvider;
@@ -15,7 +16,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -26,20 +30,54 @@ public class KisStockMinutesService {
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
 
+    private static final int BATCH_SIZE = 500;
+
     /**
      * 한국투자증권 주식 분봉데이터 호출 및 저장 메서드.
      *
      * REST API 호출 유량 제한으로 인하여 초당 20개 단위 주식 데이터 호출 제한
      */
-    public void saveStockMinutesChart() throws InterruptedException {
+    public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
         int count = 0;
+        Map<String, Object> inquirePriceMap = new HashMap<>();
         LocalDateTime now = LocalDateTime.now();
         for (String code : stockCodeProvider.getAllStockCodes()) {
-            if (++count % 20 == 0) {
+            if (++count % 15 == 0) {
                 Thread.sleep(1000L);
             }
-            redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code, kisStockClient.getStockMinutesChartInfo(code, now));
+            StockMinutesChartInfoDto stockMinutesChartInfo = kisStockClient.getStockMinutesChartInfo(code, now);
+            inquirePriceMap.put(code, stockMinutesChartInfo);
+
+            if (count == BATCH_SIZE) {
+                for (String key : inquirePriceMap.keySet()) {
+                    redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + key, inquirePriceMap.get(key));
+                }
+                redisService.addToHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), convertStockPriceMap(inquirePriceMap));
+                inquirePriceMap.clear();
+                count = 0;
+            }
         }
+
+        if (!inquirePriceMap.isEmpty()) {
+            for (String key : inquirePriceMap.keySet()) {
+                redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + key, inquirePriceMap.get(key));
+            }
+            redisService.addToHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), convertStockPriceMap(inquirePriceMap));
+        }
+    }
+
+    private Map<String, Object> convertStockPriceMap(Map<String, Object> stockMinutesChartMap) {
+        return stockMinutesChartMap.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), extractStockPrice((StockMinutesChartInfoDto) entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+
+    private StockPriceDto extractStockPrice(StockMinutesChartInfoDto stockMinutesChartInfo) {
+        return StockPriceDto.builder()
+                .stockCode(stockMinutesChartInfo.stockCode())
+                .price(stockMinutesChartInfo.close())
+                .build();
     }
 
     /**
@@ -47,7 +85,6 @@ public class KisStockMinutesService {
      * Redis -> MongoDB
      */
     public void saveDailyStockMinutesChart() {
-        final int BATCH_SIZE = 500;
         List<StockMinutes> stockMinutesList = new ArrayList<>(BATCH_SIZE);
         int count = 0;
 
