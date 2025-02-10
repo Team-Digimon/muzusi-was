@@ -44,7 +44,7 @@ public class KisScheduler {
             @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
     })
     public void runSaveStockMinutesChart() throws InterruptedException {
-        kisStockMinutesService.saveStockMinutesChart();
+        kisStockMinutesService.saveStockMinutesChartAndInquirePrice();
     }
 
     @Scheduled(cron = "0 0 16 * * 1-5")
