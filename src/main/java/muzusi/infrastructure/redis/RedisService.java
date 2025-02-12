@@ -1,6 +1,7 @@
 package muzusi.infrastructure.redis;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.global.exception.CustomException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -56,5 +57,9 @@ public class RedisService {
 
     public void addToHash(String key, Map<String, Object> value) {
         redisTemplate.opsForHash().putAll(key, value);
+    }
+
+    public Object getHash(String key, String field) {
+        return redisTemplate.opsForHash().get(key, field);
     }
 }
