@@ -129,7 +129,7 @@ class TradeReservationProcessorTest {
                 totalPrice) / expectedCount;
 
         // when
-        tradeReservationProcessor.processTradeReservations("005390", 3000L);
+        tradeReservationProcessor.processTradeReservations("005390", 3000L, 3100L);
 
         // then
         assertEquals(0, account.getReservedPrice());
@@ -157,7 +157,7 @@ class TradeReservationProcessorTest {
         int expectedCount = holding.getStockCount() - totalCount;
 
         // when
-        tradeReservationProcessor.processTradeReservations("005390", 3100L);
+        tradeReservationProcessor.processTradeReservations("005390", 3000L, 3100L);
 
         // then
         assertEquals(expectedBalance, account.getBalance());
@@ -188,7 +188,7 @@ class TradeReservationProcessorTest {
         long averagePrice = totalPrice / totalCount;
 
         // when
-        tradeReservationProcessor.processTradeReservations("005390", 2900L);
+        tradeReservationProcessor.processTradeReservations("005390", 2900L, 3100L);
 
         // then
         assertEquals(totalCount, newHolding.getStockCount());
@@ -220,7 +220,7 @@ class TradeReservationProcessorTest {
         long expectedBalance = account.getBalance() + (fullSellReservation.getInputPrice() * fullSellReservation.getStockCount());
 
         // when
-        tradeReservationProcessor.processTradeReservations("005390", 3100L);
+        tradeReservationProcessor.processTradeReservations("005390", 3000L, 3100L);
 
         // then
         assertEquals(expectedBalance, account.getBalance());
