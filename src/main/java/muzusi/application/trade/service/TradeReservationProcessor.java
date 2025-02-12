@@ -43,12 +43,13 @@ public class TradeReservationProcessor {
      * 2. 예약 체결 분기별 처리
      *
      * @param stockCode  : 주식 코드
-     * @param stockPrice : 현재 주식 가격
+     * @param lowPrice : 특정 시간대 주식 저가
+     * @param highPrice : 특정 시간대 주식 고가
      */
     @Transactional
-    public void processTradeReservations(String stockCode, Long stockPrice) {
+    public void processTradeReservations(String stockCode, Long lowPrice, Long highPrice) {
         Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>> totalAmounts
-                = calculateTotalAmounts(stockCode, stockPrice);
+                = calculateTotalAmounts(stockCode, lowPrice, highPrice);
         Map<Long, List<TradeReservation>> totalBuyAmountMap = totalAmounts.getLeft();
         Map<Long, List<TradeReservation>> totalSellStockMap = totalAmounts.getRight();
 
@@ -60,13 +61,15 @@ public class TradeReservationProcessor {
      * 예약 내역 중 체결 가능한 내역 매수/매도 별 userId로 구분하여 값 수집
      *
      * @param stockCode : 주식 코드
-     * @param stockPrice : 현재 주식 가격
+     * @param lowPrice : 특정 시간대 주식 저가
+     * @param highPrice : 특정 시간대 주식 고가
      * @return
      */
     private Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>>
     calculateTotalAmounts(
             String stockCode,
-            Long stockPrice
+            Long lowPrice,
+            Long highPrice
     ) {
         Map<Long, List<TradeReservation>> buyReservations = new HashMap<>();
         Map<Long, List<TradeReservation>> sellReservations = new HashMap<>();
@@ -74,9 +77,9 @@ public class TradeReservationProcessor {
         tradeReservationService.readByStockCode(stockCode).forEach(reservation -> {
             Long userId = reservation.getUserId();
 
-            if (reservation.getTradeType() == TradeType.BUY && reservation.getInputPrice() >= stockPrice) {
+            if (reservation.getTradeType() == TradeType.BUY && reservation.getInputPrice() >= lowPrice) {
                 buyReservations.computeIfAbsent(userId, k -> new ArrayList<>()).add(reservation);
-            } else if (reservation.getTradeType() == TradeType.SELL && reservation.getInputPrice() <= stockPrice) {
+            } else if (reservation.getTradeType() == TradeType.SELL && reservation.getInputPrice() <= highPrice) {
                 sellReservations.computeIfAbsent(userId, k -> new ArrayList<>()).add(reservation);
             }
         });
