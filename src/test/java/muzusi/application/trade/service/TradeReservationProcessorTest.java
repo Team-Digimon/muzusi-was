@@ -31,10 +31,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class TradeReservationTriggerTest {
+class TradeReservationProcessorTest {
 
     @InjectMocks
-    private TradeReservationTrigger tradeReservationTrigger;
+    private TradeReservationProcessor tradeReservationProcessor;
 
     @Mock
     private TradeReservationService tradeReservationService;
@@ -129,7 +129,7 @@ class TradeReservationTriggerTest {
                 totalPrice) / expectedCount;
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 3000L);
+        tradeReservationProcessor.processTradeReservations("005390", 3000L);
 
         // then
         assertEquals(0, account.getReservedPrice());
@@ -157,7 +157,7 @@ class TradeReservationTriggerTest {
         int expectedCount = holding.getStockCount() - totalCount;
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 3100L);
+        tradeReservationProcessor.processTradeReservations("005390", 3100L);
 
         // then
         assertEquals(expectedBalance, account.getBalance());
@@ -188,7 +188,7 @@ class TradeReservationTriggerTest {
         long averagePrice = totalPrice / totalCount;
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 2900L);
+        tradeReservationProcessor.processTradeReservations("005390", 2900L);
 
         // then
         assertEquals(totalCount, newHolding.getStockCount());
@@ -220,7 +220,7 @@ class TradeReservationTriggerTest {
         long expectedBalance = account.getBalance() + (fullSellReservation.getInputPrice() * fullSellReservation.getStockCount());
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 3100L);
+        tradeReservationProcessor.processTradeReservations("005390", 3100L);
 
         // then
         assertEquals(expectedBalance, account.getBalance());

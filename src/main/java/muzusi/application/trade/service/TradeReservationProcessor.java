@@ -29,7 +29,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class TradeReservationTrigger {
+public class TradeReservationProcessor {
     private final TradeReservationService tradeReservationService;
     private final AccountService accountService;
     private final HoldingService holdingService;
