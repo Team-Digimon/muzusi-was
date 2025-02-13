@@ -42,8 +42,8 @@ public class TradeReservationProcessor {
      * 1. 예약 매수/매도 별 userId로 구분하여 값 수집 (예약 체결 가능한 값)
      * 2. 예약 체결 분기별 처리
      *
-     * @param stockCode  : 주식 코드
-     * @param lowPrice : 특정 시간대 주식 저가
+     * @param stockCode : 주식 코드
+     * @param lowPrice  : 특정 시간대 주식 저가
      * @param highPrice : 특정 시간대 주식 고가
      */
     @Transactional
@@ -63,7 +63,7 @@ public class TradeReservationProcessor {
      * @param stockCode : 주식 코드
      * @param lowPrice : 특정 시간대 주식 저가
      * @param highPrice : 특정 시간대 주식 고가
-     * @return
+     * @return : userId별 매수/매도 Pair 쌍
      */
     private Pair<Map<Long, List<TradeReservation>>, Map<Long, List<TradeReservation>>>
     calculateTotalAmounts(
