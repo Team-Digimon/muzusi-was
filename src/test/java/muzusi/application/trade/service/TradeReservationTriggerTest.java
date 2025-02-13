@@ -1,18 +1,9 @@
 package muzusi.application.trade.service;
 
-import muzusi.domain.account.entity.Account;
-import muzusi.domain.account.service.AccountService;
-import muzusi.domain.holding.entity.Holding;
-import muzusi.domain.holding.service.HoldingService;
-import muzusi.domain.trade.entity.Trade;
-import muzusi.domain.trade.entity.TradeReservation;
-import muzusi.domain.trade.service.TradeReservationService;
-import muzusi.domain.trade.service.TradeService;
-import muzusi.domain.trade.type.TradeType;
-import muzusi.domain.user.entity.User;
-import muzusi.domain.user.service.UserService;
+import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.infrastructure.redis.RedisService;
-import org.junit.jupiter.api.BeforeEach;
+import muzusi.infrastructure.redis.constant.KisConstant;
+import muzusi.infrastructure.redis.constant.TradeConstant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,10 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
@@ -37,198 +26,57 @@ class TradeReservationTriggerTest {
     private TradeReservationTrigger tradeReservationTrigger;
 
     @Mock
-    private TradeReservationService tradeReservationService;
-    @Mock
-    private AccountService accountService;
-    @Mock
-    private HoldingService holdingService;
-    @Mock
-    private UserService userService;
-    @Mock
-    private TradeService tradeService;
+    private TradeReservationProcessor tradeReservationProcessor;
     @Mock
     private RedisService redisService;
 
-    private TradeReservation buyReservation1;
-    private TradeReservation buyReservation2;
-    private TradeReservation sellReservation1;
-    private TradeReservation sellReservation2;
-    private Account account;
-    private Holding holding;
-    private User user;
+    @Test
+    @DisplayName("예약된 종목 코드가 없는 경우 트리거 실행 안 됨")
+    void triggerTradeReservationsNoStockCode() {
+        // given
+        given(redisService.getSetMembers(TradeConstant.RESERVATION_PREFIX.getValue())).willReturn(Set.of());
 
-    @BeforeEach
-    void setUp() {
-        buyReservation1 = TradeReservation.builder()
-                .tradeType(TradeType.BUY)
-                .inputPrice(3000L)
-                .stockCount(5)
-                .stockName("삼성전자")
-                .stockCode("005390")
-                .userId(1L)
-                .build();
+        // when
+        tradeReservationTrigger.triggerTradeReservations();
 
-        buyReservation2 = TradeReservation.builder()
-                .tradeType(TradeType.BUY)
-                .inputPrice(3000L)
-                .stockCount(5)
-                .stockName("삼성전자")
-                .stockCode("005390")
-                .userId(1L)
-                .build();
-
-        sellReservation1 = TradeReservation.builder()
-                .tradeType(TradeType.SELL)
-                .inputPrice(3000L)
-                .stockCount(3)
-                .stockName("삼성전자")
-                .stockCode("005390")
-                .userId(1L)
-                .build();
-
-        sellReservation2 = TradeReservation.builder()
-                .tradeType(TradeType.SELL)
-                .inputPrice(3000L)
-                .stockCount(3)
-                .stockName("삼성전자")
-                .stockCode("005390")
-                .userId(1L)
-                .build();
-
-        account = Account.builder()
-                .balance(Account.INITIAL_BALANCE)
-                .build();
-        account.increaseReservedPrice(3000L * 5 * 2);
-
-        holding = Holding.builder()
-                .stockCode("005390")
-                .stockName("삼성전자")
-                .stockCount(10)
-                .averagePrice(2900L)
-                .account(account)
-                .build();
-        holding.increaseReservedStock(6);
-
-        user = User.builder()
-                .username("testUser")
-                .build();
+        // then
+        verify(tradeReservationProcessor, never()).processTradeReservations(any(), any(), any());
     }
 
     @Test
-    @DisplayName("예약된 매수 주문이 처리됨")
-    void processBuyOrderSuccess() {
+    @DisplayName("예약된 종목 코드가 있는 경우 정상 처리")
+    void triggerTradeReservationsWithStockCode() {
         // given
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation1, buyReservation2));
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.of(holding));
-        long totalPrice = (buyReservation1.getInputPrice() * buyReservation1.getStockCount())
-                + (buyReservation2.getInputPrice() * buyReservation2.getStockCount());
-        int totalCount = buyReservation1.getStockCount() + buyReservation2.getStockCount();
-        int expectedCount = holding.getStockCount() + totalCount;
-        long expectedPrice = ((holding.getAveragePrice() * holding.getStockCount()) +
-                totalPrice) / expectedCount;
-
-        // when
-        tradeReservationTrigger.processTradeReservations("005390", 3000L);
-
-        // then
-        assertEquals(0, account.getReservedPrice());
-        assertEquals(expectedCount, holding.getStockCount());
-        assertEquals(expectedPrice, holding.getAveragePrice());
-
-        verify(accountService, times(1)).readByUserId(1L);
-        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
-        verify(holdingService, never()).save(any(Holding.class));
-        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
-    }
-
-    @Test
-    @DisplayName("예약된 매도 주문이 처리됨")
-    void processSellOrderSuccess() {
-        // given
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(sellReservation1, sellReservation2));
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.of(holding));
-        long totalPrice = (sellReservation1.getInputPrice() * sellReservation1.getStockCount())
-                + (sellReservation2.getInputPrice() * sellReservation2.getStockCount());
-        int totalCount = sellReservation1.getStockCount() + sellReservation2.getStockCount();
-        long expectedBalance = account.getBalance() + totalPrice;
-        int expectedCount = holding.getStockCount() - totalCount;
-
-        // when
-        tradeReservationTrigger.processTradeReservations("005390", 3100L);
-
-        // then
-        assertEquals(expectedBalance, account.getBalance());
-        assertEquals(expectedCount, holding.getStockCount());
-
-        verify(accountService, times(1)).readByUserId(1L);
-        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
-        verify(tradeReservationService, times(2)).deleteById(sellReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
-    }
-
-    @Test
-    @DisplayName("보유 주식이 없는 경우 새로운 Holding 생성 후 매수 처리")
-    void processBuyOrderCreateNewHolding() {
-        // given
-        Holding newHolding = Holding.builder()
-                .stockCount(0)
-                .averagePrice(0L)
-                .build();
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(buyReservation1, buyReservation2));
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.empty());
-        given(userService.readById(1L)).willReturn(Optional.of(user));
-        given(holdingService.save(any(Holding.class))).willReturn(newHolding);
-        long totalPrice = (buyReservation1.getInputPrice() * buyReservation1.getStockCount())
-                + (buyReservation2.getInputPrice() * buyReservation2.getStockCount());
-        int totalCount = buyReservation1.getStockCount() + buyReservation2.getStockCount();
-        long averagePrice = totalPrice / totalCount;
-
-        // when
-        tradeReservationTrigger.processTradeReservations("005390", 2900L);
-
-        // then
-        assertEquals(totalCount, newHolding.getStockCount());
-        assertEquals(averagePrice, newHolding.getAveragePrice());
-
-        verify(accountService, times(1)).readByUserId(1L);
-        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
-        verify(holdingService, times(1)).save(any(Holding.class));
-        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
-    }
-
-    @Test
-    @DisplayName("매도 후 보유 주식이 0이 되면 삭제")
-    void processSellOrderDeleteHoldingWhenZero() {
-        // given
-        TradeReservation fullSellReservation = TradeReservation.builder()
-                .tradeType(TradeType.SELL)
-                .inputPrice(3000L)
-                .stockCount(10)
-                .stockName("삼성전자")
-                .stockCode("005390")
-                .userId(1L)
+        String stockCode = "005930";
+        StockPriceDto stockPriceDto = StockPriceDto.builder()
+                .low(2900L)
+                .high(3100L)
                 .build();
 
-        given(tradeReservationService.readByStockCode("005390")).willReturn(List.of(fullSellReservation));
-        given(accountService.readByUserId(1L)).willReturn(Optional.of(account));
-        given(holdingService.readByUserIdAndStockCode(1L, "005390")).willReturn(Optional.of(holding));
-        long expectedBalance = account.getBalance() + (fullSellReservation.getInputPrice() * fullSellReservation.getStockCount());
+        given(redisService.getSetMembers(TradeConstant.RESERVATION_PREFIX.getValue())).willReturn(Set.of(stockCode));
+        given(redisService.getHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), stockCode)).willReturn(stockPriceDto);
 
         // when
-        tradeReservationTrigger.processTradeReservations("005390", 3100L);
+        tradeReservationTrigger.triggerTradeReservations();
 
         // then
-        assertEquals(expectedBalance, account.getBalance());
+        verify(tradeReservationProcessor, times(1)).processTradeReservations(stockCode, 2900L, 3100L);
+    }
 
-        verify(accountService, times(1)).readByUserId(1L);
-        verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
-        verify(holdingService, times(1)).deleteByUserIdAndStockCode(1L, "005390");
-        verify(tradeReservationService, times(1)).deleteById(fullSellReservation.getId());
-        verify(tradeService, times(1)).save(any(Trade.class));
+    @Test
+    @DisplayName("예약된 종목 코드에 대한 현재가가 없는 경우")
+    void triggerTradeReservationsNoStockPrice() {
+        // given
+        String stockCode = "005930";
+        StockPriceDto stockPriceDto = null;
+
+        given(redisService.getSetMembers(TradeConstant.RESERVATION_PREFIX.getValue())).willReturn(Set.of(stockCode));
+        given(redisService.getHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), stockCode)).willReturn(stockPriceDto);
+
+        // when
+        tradeReservationTrigger.triggerTradeReservations();
+
+        // then
+        verify(tradeReservationProcessor, never()).processTradeReservations(any(), any(), any());
     }
 }

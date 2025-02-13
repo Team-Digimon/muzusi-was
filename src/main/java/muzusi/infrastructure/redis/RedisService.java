@@ -57,4 +57,8 @@ public class RedisService {
     public void addToHash(String key, Map<String, Object> value) {
         redisTemplate.opsForHash().putAll(key, value);
     }
+
+    public Object getHash(String key, String field) {
+        return redisTemplate.opsForHash().get(key, field);
+    }
 }
