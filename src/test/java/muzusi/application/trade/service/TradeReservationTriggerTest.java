@@ -62,4 +62,21 @@ class TradeReservationTriggerTest {
         // then
         verify(tradeReservationProcessor, times(1)).processTradeReservations(stockCode, 2900L, 3100L);
     }
+
+    @Test
+    @DisplayName("예약된 종목 코드에 대한 현재가가 없는 경우")
+    void triggerTradeReservationsNoStockPrice() {
+        // given
+        String stockCode = "005930";
+        StockPriceDto stockPriceDto = null;
+
+        given(redisService.getSetMembers(TradeConstant.RESERVATION_PREFIX.getValue())).willReturn(Set.of(stockCode));
+        given(redisService.getHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), stockCode)).willReturn(stockPriceDto);
+
+        // when
+        tradeReservationTrigger.triggerTradeReservations();
+
+        // then
+        verify(tradeReservationProcessor, never()).processTradeReservations(any(), any(), any());
+    }
 }
