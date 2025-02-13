@@ -26,7 +26,9 @@ public class TradeReservationTrigger {
                 .forEach(stockCode -> {
                     StockPriceDto stockPriceDto =
                             (StockPriceDto) redisService.getHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), stockCode);
-                    tradeReservationProcessor.processTradeReservations(stockCode, stockPriceDto.low(), stockPriceDto.high());
+
+                    if (stockPriceDto != null)
+                        tradeReservationProcessor.processTradeReservations(stockCode, stockPriceDto.low(), stockPriceDto.high());
                 });
     }
 }
