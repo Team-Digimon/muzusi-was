@@ -28,6 +28,7 @@ public class StockHistoryController implements StockHistoryApi {
         );
     }
 
+    @Override
     @GetMapping("/{stockCode}/minutes")
     public ResponseEntity<?> getStockMinutesHistory(@PathVariable String stockCode,
                                                     @RequestParam StockMinutesPeriodDto period) {
