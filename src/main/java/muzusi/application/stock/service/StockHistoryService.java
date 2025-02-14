@@ -57,6 +57,13 @@ public class StockHistoryService {
         };
     }
 
+    /**
+     * 주식 종목 별 분봉 데이터를 조회하는 메서드
+     *
+     * @param stockCode : 주식 코드
+     * @param period    : 분봉 데이터 조회 유형(당일 TODAY, 지난 일주일 WEEK)
+     * @return 주식 분봉 데이터
+     */
     public List<StockMinutesChartInfoDto> getStockMinutesHistory(String stockCode, StockMinutesPeriodDto period) {
         return switch (period) {
             case TODAY -> getTodayStockMinutes(stockCode);
@@ -65,6 +72,12 @@ public class StockHistoryService {
         };
     }
 
+    /**
+     * 주식 종목 별 당일 분봉 데이터를 반환하는 메서드
+     * 
+     * @param stockCode : 주식 종목 코드
+     * @return 당일 주식 분봉 데이터
+     */
     private List<StockMinutesChartInfoDto> getTodayStockMinutes(String stockCode) {
         if (LocalDateTime.now().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 10)))
             || LocalDateTime.now().isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)))) {
@@ -76,6 +89,12 @@ public class StockHistoryService {
                 .toList();
     }
 
+    /**
+     * 주식 종목 별 지난 일주일 분봉 데이터를 반환하는 메서드
+     *
+     * @param stockCode : 주식 종목 코드
+     * @return 지난 일주일 주식 분봉 데이터
+     */
     private List<StockMinutesChartInfoDto> getLastStockMinutes(String stockCode) {
         List<StockMinutesChartInfoDto> stockMinutesCharts = new ArrayList<>();
 
