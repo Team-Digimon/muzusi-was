@@ -2,6 +2,7 @@ package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.service.StockHistoryService;
+import muzusi.application.stock.dto.StockMinutesPeriodDto;
 import muzusi.domain.stock.type.StockPeriodType;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockHistoryApi;
@@ -27,4 +28,11 @@ public class StockHistoryController implements StockHistoryApi {
         );
     }
 
+    @GetMapping("/{stockCode}/minutes")
+    public ResponseEntity<?> getStockMinutesHistory(@PathVariable String stockCode,
+                                                    @RequestParam StockMinutesPeriodDto period) {
+        return ResponseEntity.ok(
+                SuccessResponse.from(stockHistoryService.getStockMinutesHistory(stockCode, period))
+        );
+    }
 }

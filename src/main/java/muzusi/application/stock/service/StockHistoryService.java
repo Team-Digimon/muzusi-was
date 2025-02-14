@@ -2,22 +2,35 @@ package muzusi.application.stock.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stock.dto.StockMinutesChartInfoDto;
+import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.stock.service.StockDailyService;
+import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockMonthlyService;
 import muzusi.domain.stock.service.StockWeeklyService;
 import muzusi.domain.stock.service.StockYearlyService;
+import muzusi.application.stock.dto.StockMinutesPeriodDto;
 import muzusi.domain.stock.type.StockPeriodType;
+import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StockHistoryService {
+    private final StockMinutesService stockMinutesService;
     private final StockDailyService stockDailyService;
     private final StockWeeklyService stockWeeklyService;
     private final StockMonthlyService stockMonthlyService;
     private final StockYearlyService stockYearlyService;
+    private final RedisService redisService;
 
     /**
      * 과거 주식 차트 불러오는 메서드
@@ -42,5 +55,34 @@ public class StockHistoryService {
             case YEARLY -> stockYearlyService.readByStockCode(stockCode)
                     .stream().map(StockChartInfoDto::from).toList();
         };
+    }
+
+    public List<StockMinutesChartInfoDto> getStockMinutesHistory(String stockCode, StockMinutesPeriodDto period) {
+        return switch (period) {
+            case TODAY -> getTodayStockMinutes(stockCode);
+            case WEEK -> getLastStockMinutes(stockCode);
+            default -> throw new CustomException(StockErrorType.UNSUPPORTED_MINUTES_PERIOD);
+        };
+    }
+
+    private List<StockMinutesChartInfoDto> getTodayStockMinutes(String stockCode) {
+        if (LocalDateTime.now().isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 10)))
+            || LocalDateTime.now().isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)))) {
+            throw new CustomException(StockErrorType.NOT_AVAILABLE_MINUTES_CHART);
+        }
+
+        return redisService.getList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + stockCode).stream()
+                .map(stockMinutesChartInfoDto -> (StockMinutesChartInfoDto) stockMinutesChartInfoDto)
+                .toList();
+    }
+
+    private List<StockMinutesChartInfoDto> getLastStockMinutes(String stockCode) {
+        List<StockMinutesChartInfoDto> stockMinutesCharts = new ArrayList<>();
+
+        stockMinutesService.readByStockCode(stockCode).forEach(
+                stockMinutes -> stockMinutesCharts.addAll(stockMinutes.getMinutesChart())
+        );
+
+        return stockMinutesCharts;
     }
 }
