@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.dto.KisAuthDto;
-import muzusi.application.stock.dto.StockMinutesChartInfoDto;
+import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.global.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import muzusi.infrastructure.redis.RedisService;
@@ -28,7 +28,7 @@ public class KisStockClient {
     private final RedisService redisService;
     private static final int MINUTES_GAP = 10;
 
-    public StockMinutesChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
+    public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
         HttpHeaders headers = new HttpHeaders();
         KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
         headers.add("authorization", accessToken.getValue());
@@ -75,14 +75,13 @@ public class KisStockClient {
                 volume += stockInfo.get("cntg_vol").asLong();
             }
 
-            return StockMinutesChartInfoDto.builder()
+            return StockChartInfoDto.builder()
                     .stockCode(code)
-                    .start(time.minusMinutes(MINUTES_GAP))
-                    .end(time)
+                    .date(time)
+                    .low(low)
+                    .high(high)
                     .open(open)
                     .close(close)
-                    .high(high)
-                    .low(low)
                     .volume(volume)
                     .build();
         } catch (Exception e) {

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,20 +18,20 @@ public class StockYearly {
 
     private String stockCode;
 
-    private LocalDate date;
+    private LocalDateTime date;
 
-    private Double open;
+    private Long open;
 
-    private Double high;
+    private Long high;
 
-    private Double low;
+    private Long low;
 
-    private Double close;
+    private Long close;
 
     private Long volume;
 
     @Builder
-    public StockYearly(String stockCode, LocalDate date, Double open, Double high, Double low, Double close, Long volume) {
+    public StockYearly(String stockCode, LocalDateTime date, Long open, Long high, Long low, Long close, Long volume) {
         this.stockCode = stockCode;
         this.date = date;
         this.open = open;

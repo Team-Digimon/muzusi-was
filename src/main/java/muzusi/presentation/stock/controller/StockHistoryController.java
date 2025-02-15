@@ -26,5 +26,4 @@ public class StockHistoryController implements StockHistoryApi {
                 SuccessResponse.from(stockHistoryService.getStockHistoryByType(stockCode, period))
         );
     }
-
 }
