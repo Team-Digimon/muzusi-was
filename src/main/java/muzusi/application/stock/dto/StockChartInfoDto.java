@@ -1,5 +1,10 @@
 package muzusi.application.stock.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Builder;
 import muzusi.domain.stock.entity.StockDaily;
 import muzusi.domain.stock.entity.StockMonthly;
@@ -11,6 +16,9 @@ import java.time.LocalDateTime;
 @Builder
 public record StockChartInfoDto(
         String stockCode,
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+        @JsonSerialize(using = LocalDateTimeSerializer.class)
         LocalDateTime date,
         Long open,
         Long high,
