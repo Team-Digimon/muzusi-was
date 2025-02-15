@@ -20,18 +20,18 @@ public class StockDaily {
 
     private LocalDateTime date;
 
-    private Double open;
+    private Long open;
 
-    private Double high;
+    private Long high;
 
-    private Double low;
+    private Long low;
 
-    private Double close;
+    private Long close;
 
     private Long volume;
 
     @Builder
-    public StockDaily(String stockCode, LocalDateTime date, Double open, Double high, Double low, Double close, Long volume) {
+    public StockDaily(String stockCode, LocalDateTime date, Long open, Long high, Long low, Long close, Long volume) {
         this.stockCode = stockCode;
         this.date = date;
         this.open = open;

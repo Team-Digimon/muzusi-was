@@ -1,5 +1,6 @@
 package muzusi.application.stock.dto;
 
+import lombok.Builder;
 import muzusi.domain.stock.entity.StockDaily;
 import muzusi.domain.stock.entity.StockMonthly;
 import muzusi.domain.stock.entity.StockWeekly;
@@ -7,13 +8,14 @@ import muzusi.domain.stock.entity.StockYearly;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record StockChartInfoDto(
         String stockCode,
         LocalDateTime date,
-        Double open,
-        Double high,
-        Double low,
-        Double close,
+        Long open,
+        Long high,
+        Long low,
+        Long close,
         Long volume
 ) {
     public static StockChartInfoDto from(StockDaily stockDaily) {
