@@ -1,6 +1,5 @@
 package muzusi.domain.stock.service;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.repository.StockMinutesRepository;
