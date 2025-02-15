@@ -2,7 +2,6 @@ package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.service.StockHistoryService;
-import muzusi.application.stock.dto.StockMinutesPeriodDto;
 import muzusi.domain.stock.type.StockPeriodType;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockHistoryApi;
