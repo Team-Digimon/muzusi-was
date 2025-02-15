@@ -1,5 +1,5 @@
 package muzusi.domain.stock.type;
 
 public enum StockPeriodType {
-    DAILY, WEEKLY, MONTHLY, YEARLY
+    MINUTES_TODAY, MINUTES_WEEK, DAILY, WEEKLY, MONTHLY, YEARLY
 }
