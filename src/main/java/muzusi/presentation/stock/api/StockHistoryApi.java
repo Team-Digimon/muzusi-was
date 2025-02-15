@@ -58,6 +58,15 @@ public interface StockHistoryApi {
                                             ]
                                         }
                                 """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "당일 분봉 데이터 조회 가능 시간(평일 09:10~16:00)이 아닐 경우 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                    {
+                                        "code": "2003",
+                                        "message": "당일 주식 조회 가능 기간이 아닙니다."
+                                    }
+                                """)
                     }))
     })
     ResponseEntity<?> getStockHistory(@PathVariable String stockCode,
