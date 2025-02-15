@@ -2,16 +2,22 @@ package muzusi.application.stock.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.stock.service.StockDailyService;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockMonthlyService;
 import muzusi.domain.stock.service.StockWeeklyService;
 import muzusi.domain.stock.service.StockYearlyService;
 import muzusi.domain.stock.type.StockPeriodType;
+import muzusi.global.exception.CustomException;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +67,15 @@ public class StockHistoryService {
      * @return 당일 주식 분봉 차트
      */
     private List<StockChartInfoDto> getMinutesTodayChartByStockCode(String stockCode) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime open = LocalDateTime.of(now.toLocalDate(), LocalTime.of(9, 10));
+        LocalDateTime close = LocalDateTime.of(open.toLocalDate(), LocalTime.of(16, 0));
+        boolean isWeekend = now.getDayOfWeek() == DayOfWeek.SATURDAY || now.getDayOfWeek() == DayOfWeek.SUNDAY;
+
+        if (now.isBefore(open) || now.isAfter(close) || isWeekend) {
+            throw new CustomException(StockErrorType.NOT_AVAILABLE_MINUTES_CHART);
+        }
+
         return redisService.getList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + stockCode)
                 .stream().map(stockChartInfo -> (StockChartInfoDto) stockChartInfo)
                 .toList();
