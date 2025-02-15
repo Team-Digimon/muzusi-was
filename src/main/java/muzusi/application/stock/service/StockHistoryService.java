@@ -28,13 +28,15 @@ public class StockHistoryService {
     /**
      * 과거 주식 차트 불러오는 메서드
      * StockPeriodType
+     * - MINUTES_TODAY: 당일 주식 분봉 차트 데이터를 조회
+     * - MINUTES_WEEK: 지난 1주일 간 주식 분봉 차트 데이터를 조회
      * - DAILY: 일 단위 주식 차트 데이터를 조회
      * - WEEKLY: 주 단위 주식 차트 데이터를 조회
      * - MONTHLY: 월 단위 주식 차트 데이터를 조회
      * - YEARLY: 연 단위 주식 차트 데이터를 조회
      *
      * @param stockCode : 주식 코드
-     * @param stockPeriodType : 주식 차트 기간 유형 (DAILY, WEEKLY, MONTHLY, YEARLY)
+     * @param stockPeriodType : 주식 차트 기간 유형 (MINUTES_TODAY, MINUTES_WEEK, DAILY, WEEKLY, MONTHLY, YEARLY)
      * @return 과거 주식 차트
      */
     public List<StockChartInfoDto> getStockHistoryByType(String stockCode, StockPeriodType stockPeriodType) {
@@ -52,12 +54,24 @@ public class StockHistoryService {
         };
     }
 
+    /**
+     * 당일 주식 분봉 차트를 반환하는 메서드
+     *
+     * @param stockCode : 주식 코드
+     * @return 당일 주식 분봉 차트
+     */
     private List<StockChartInfoDto> getMinutesTodayChartByStockCode(String stockCode) {
         return redisService.getList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + stockCode)
                 .stream().map(stockChartInfo -> (StockChartInfoDto) stockChartInfo)
                 .toList();
     }
 
+    /**
+     * 지난 1주일 간 주식 분봉 차트를 반환하는 메서드
+     *
+     * @param stockCode : 주식 코드
+     * @return 지난 1주일 간 주식 분봉 차트
+     */
     private List<StockChartInfoDto> getMinutesWeekChartByStockCode(String stockCode) {
         return stockMinutesService.readByStockCode(stockCode).stream()
                 .flatMap(stockMinutes -> stockMinutes.getMinutesChart().stream())
