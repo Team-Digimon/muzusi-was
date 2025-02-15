@@ -2,7 +2,7 @@ package muzusi.application.kis.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.application.stock.dto.StockMinutesChartInfoDto;
+import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
@@ -45,8 +45,8 @@ public class KisStockMinutesService {
             if (++count % 15 == 0) {
                 Thread.sleep(1000L);
             }
-            StockMinutesChartInfoDto stockMinutesChartInfo = kisStockClient.getStockMinutesChartInfo(code, now);
-            inquirePriceMap.put(code, stockMinutesChartInfo);
+            StockChartInfoDto stockChartInfoDto = kisStockClient.getStockMinutesChartInfo(code, LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth()-1, 9, 10));
+            inquirePriceMap.put(code, stockChartInfoDto);
 
             if (count == BATCH_SIZE) {
                 for (String key : inquirePriceMap.keySet()) {
@@ -68,12 +68,12 @@ public class KisStockMinutesService {
 
     private Map<String, Object> convertStockPriceMap(Map<String, Object> stockMinutesChartMap) {
         return stockMinutesChartMap.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), extractStockPrice((StockMinutesChartInfoDto) entry.getValue())))
+                .map(entry -> Map.entry(entry.getKey(), extractStockPrice((StockChartInfoDto) entry.getValue())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 
-    private StockPriceDto extractStockPrice(StockMinutesChartInfoDto stockMinutesChartInfo) {
+    private StockPriceDto extractStockPrice(StockChartInfoDto stockMinutesChartInfo) {
         return StockPriceDto.builder()
                 .stockCode(stockMinutesChartInfo.stockCode())
                 .low(stockMinutesChartInfo.low())
@@ -93,8 +93,8 @@ public class KisStockMinutesService {
         for (String code : stockCodeProvider.getAllStockCodes()) {
             String key = KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code;
 
-            List<StockMinutesChartInfoDto> minutesCharts = redisService.getList(key).stream()
-                            .map(stockMinutesChart -> (StockMinutesChartInfoDto) stockMinutesChart)
+            List<StockChartInfoDto> minutesCharts = redisService.getList(key).stream()
+                            .map(stockMinutesChart -> (StockChartInfoDto) stockMinutesChart)
                             .toList();
 
             stockMinutesList.add(StockMinutes.builder()
