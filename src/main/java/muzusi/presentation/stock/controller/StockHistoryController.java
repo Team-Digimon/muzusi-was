@@ -27,13 +27,4 @@ public class StockHistoryController implements StockHistoryApi {
                 SuccessResponse.from(stockHistoryService.getStockHistoryByType(stockCode, period))
         );
     }
-
-    @Override
-    @GetMapping("/{stockCode}/minutes")
-    public ResponseEntity<?> getStockMinutesHistory(@PathVariable String stockCode,
-                                                    @RequestParam StockMinutesPeriodDto period) {
-        return ResponseEntity.ok(
-                SuccessResponse.from(stockHistoryService.getStockMinutesHistory(stockCode, period))
-        );
-    }
 }
