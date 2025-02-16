@@ -60,13 +60,15 @@ public interface AccountApi {
                                                 "content": [
                                                     {
                                                         "id": 1,
-                                                        "totalBalance": 10000000,
-                                                        "reservedPrice": 300000
+                                                        "balance": 10000000,
+                                                        "reservedPrice": 300000,
+                                                        "createdAt": "2025-02-16T19:10:21.744044"
                                                     },
                                                     {
                                                         "id": 2,
-                                                        "totalBalance": 20000000,
-                                                        "reservedPrice": 300000
+                                                        "balance": 20000000,
+                                                        "reservedPrice": 300000,
+                                                        "createdAt": "2025-02-16T19:10:21.744044"
                                                     }
                                                 ],
                                                 "page": {
@@ -93,8 +95,12 @@ public interface AccountApi {
                                             "message": "요청이 성공하였습니다.",
                                             "data": {
                                                 "id": 2,
-                                                "totalBalance": 20000000,
-                                                "reservedPrice": 300000
+                                                "balance": 8000000,
+                                                "reservedPrice": 0,
+                                                "createdAt": "2025-02-16T19:10:21.744044",
+                                                "totalRate0fReturn": -25.0,
+                                                "totalEvaluatedAmount": 1500000,
+                                                "totalProfitAmount": -500000
                                             }
                                         }
                                     """)
