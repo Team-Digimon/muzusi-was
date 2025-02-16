@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface HoldingRepository extends JpaRepository<Holding, Long> {
@@ -26,5 +27,8 @@ public interface HoldingRepository extends JpaRepository<Holding, Long> {
             "AND stock_code = :stockCode", nativeQuery = true)
     void deleteByLatestAccountHolding(@Param("userId") Long userId, @Param("stockCode") String stockCode);
 
-
+    @Query(value = "SELECT * FROM holding " +
+            "WHERE account_id = (SELECT id FROM account WHERE user_id = :userId ORDER BY created_at DESC LIMIT 1)",
+            nativeQuery = true)
+    List<Holding> findLatestAccountAllHolding(@Param("userId") Long userId);
 }

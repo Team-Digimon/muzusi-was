@@ -5,6 +5,7 @@ import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.repository.HoldingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +19,10 @@ public class HoldingService {
 
     public Optional<Holding> readByUserIdAndStockCode(Long userId, String stockCode) {
         return holdingRepository.findLatestAccountHolding(userId, stockCode);
+    }
+
+    public List<Holding> readByUserId(Long userId) {
+        return holdingRepository.findLatestAccountAllHolding(userId);
     }
 
     public boolean existsByUserIdAndStockCode(Long userId, String stockCode) {
