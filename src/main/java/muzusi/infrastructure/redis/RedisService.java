@@ -5,9 +5,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +64,16 @@ public class RedisService {
 
     public Object getHash(String key, String field) {
         return redisTemplate.opsForHash().get(key, field);
+    }
+
+    public Map<String, Object> getHashMultiple(String key, List<String> fields) {
+        if (fields.isEmpty()) return Collections.emptyMap();
+
+        List<Object> values = redisTemplate.opsForHash().multiGet(key, new ArrayList<>(fields));
+
+        return IntStream.range(0, fields.size())
+                .filter(i -> values.get(i) != null)
+                .boxed()
+                .collect(Collectors.toMap(fields::get, values::get));
     }
 }
