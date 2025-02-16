@@ -1,7 +1,11 @@
 package muzusi.application.account.service;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.account.dto.AccountDetailsDto;
 import muzusi.application.account.dto.AccountInfoDto;
+import muzusi.application.account.dto.AccountSummaryDto;
+import muzusi.application.holding.service.UserHoldingService;
+import muzusi.domain.account.entity.Account;
 import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.user.entity.User;
@@ -22,6 +26,7 @@ public class UserAccountService {
     private final UserService userService;
     private final AccountService accountService;
     private final AccountManagementService accountManagementService;
+    private final UserHoldingService userHoldingService;
 
     /**
      * 새로운 계좌를 등록하기 위한 메서드.
@@ -68,10 +73,12 @@ public class UserAccountService {
      * @return : 사용자의 현재 계좌 정보
      */
     @Transactional(readOnly = true)
-    public AccountInfoDto getAccount(Long userId) {
-        return AccountInfoDto.fromEntity(
-                accountService.readByUserId(userId)
-                        .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND))
-        );
+    public AccountDetailsDto getAccount(Long userId) {
+        Account account = accountService.readByUserId(userId)
+                .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
+
+        AccountSummaryDto summaryDto = userHoldingService.calculateTotalRateOfReturn(userId);
+
+        return AccountDetailsDto.from(account, summaryDto);
     }
 }
