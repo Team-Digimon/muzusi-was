@@ -45,7 +45,7 @@ public class KisStockMinutesService {
             if (++count % 15 == 0) {
                 Thread.sleep(1000L);
             }
-            StockChartInfoDto stockChartInfoDto = kisStockClient.getStockMinutesChartInfo(code, LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth()-1, 9, 10));
+            StockChartInfoDto stockChartInfoDto = kisStockClient.getStockMinutesChartInfo(code, now);
             inquirePriceMap.put(code, stockChartInfoDto);
 
             if (count == BATCH_SIZE) {
