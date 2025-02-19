@@ -36,6 +36,12 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         this.session = session;
     }
 
+    /**
+     * 한국투자증권 주식 체결가 메시지 수신 및 처리 메서드
+     *
+     * @param session : 연결 세션
+     * @param message : 수신 메시지
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
@@ -61,10 +67,26 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         }
     }
 
+
+    /**
+     * 주식 체결가 데이터 내 시간 형식 변환 메서드
+     *
+     * @param time : HHMMSS
+     * @return     : HH:MM:SS
+     */
     private String convertTime(String time) {
         return time.substring(0,2) + ":" + time.substring(2,4) + ":" + time.substring(4);
     }
 
+    /**
+     * 특정 종목 체결가 웹소켓 구독 등록 요청 및 요청량 관리 메서드
+     *
+     * - 호출 유량 초과 시 연결 미진행
+     * - 종목 별 호출량 증가
+     * - 한국투자증권 주식 체결가 구독 등록 요청
+     *
+     * @param stockCode : 주식 종목 코드
+     */
     public void connect(String stockCode) {
         if (subscribedStocks.size() >= MAX_CONNECTION)
             throw new CustomException(StockErrorType.MAX_REQUEST_WEB_SOCKET);
@@ -72,6 +94,14 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         request(stockCode, "1");
     }
 
+    /**
+     * 특정 종목 체결가 웹소켓 구독 해체 요청 및 요청량 관리 메서드
+     *
+     * - 종목 별 호출량 감소
+     * - 호출량이 0이 되면, 한국투자증권 주식 체결가 구독 해제 요청
+     *
+     * @param stockCode : 주식 종목 코드
+     */
     public void disconnect(String stockCode) {
         subscribedStocks.compute(stockCode, (k, v) -> {
             if (v == null)
@@ -85,6 +115,12 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         });
     }
 
+    /**
+     * 특정 종목 체결가 웹소켓 연결 요청 메서드
+     *
+     * @param trKey  : 주식 종목 코드
+     * @param trType : 요청 타입(1: 등록, 2: 해제)
+     */
     private void request(String trKey, String trType){
         Map<String, String> header = new HashMap<>();
         KisAuthDto.WebSocketKey webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());

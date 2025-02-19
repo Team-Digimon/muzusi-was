@@ -17,6 +17,11 @@ public abstract class KisWebSocketHandler extends TextWebSocketHandler {
     protected static WebSocketSession session;
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
+    /**
+     * 웹 소켓 연결 지속을 위한 메서드
+     *
+     * - 연결 유지를 위한 PINGPONG 메시지 송신
+     */
     public void keepConnection() {
         Map<String, String> header = new HashMap<>();
         header.put("tr_id", "PINGPONG");
@@ -26,7 +31,7 @@ public abstract class KisWebSocketHandler extends TextWebSocketHandler {
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(input)));
         } catch (IOException e) {
-            log.error("[ERROR] {}", e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
