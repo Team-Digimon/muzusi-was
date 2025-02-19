@@ -1,7 +1,7 @@
 package muzusi.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.trade.service.TradeNotificationListener;
+import muzusi.application.websocket.service.TradeNotificationListener;
 import muzusi.infrastructure.redis.constant.ChannelConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

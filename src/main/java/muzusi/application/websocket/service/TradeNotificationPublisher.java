@@ -1,4 +1,4 @@
-package muzusi.application.trade.service;
+package muzusi.application.websocket.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.trade.dto.TradeNotificationDto;

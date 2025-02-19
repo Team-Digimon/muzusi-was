@@ -1,7 +1,7 @@
 package muzusi.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.service.KisRealTimeTradeHandler;
+import muzusi.infrastructure.kis.KisRealTimeTradeHandler;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

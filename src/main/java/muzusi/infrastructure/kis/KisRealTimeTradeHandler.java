@@ -1,11 +1,11 @@
-package muzusi.application.kis.service;
+package muzusi.infrastructure.kis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.trade.dto.TradeNotificationDto;
-import muzusi.application.trade.service.TradeNotificationPublisher;
+import muzusi.application.websocket.service.TradeNotificationPublisher;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;

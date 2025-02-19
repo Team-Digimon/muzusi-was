@@ -2,7 +2,7 @@ package muzusi.application.websocket.scheduler;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.service.KisWebSocketHandler;
+import muzusi.infrastructure.kis.KisWebSocketHandler;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;

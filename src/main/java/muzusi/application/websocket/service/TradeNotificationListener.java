@@ -1,4 +1,4 @@
-package muzusi.application.trade.service;
+package muzusi.application.websocket.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
