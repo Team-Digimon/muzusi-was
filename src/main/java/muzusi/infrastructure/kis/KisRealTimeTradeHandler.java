@@ -46,21 +46,21 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
 
-        if(!payload.startsWith("{") && !payload.contains("PINGPONG")){
+        if (!payload.startsWith("{") && !payload.contains("PINGPONG")) {
             String[] parts = payload.split("\\^");
             String[] metas = parts[0].split("\\|");
             int tradeCount = Integer.parseInt(metas[2]);
             String stockCode = metas[3];
 
-            for (int idx = 0, i = 0 ; i < tradeCount ; i++) {
+            for (int idx = 0, i = 0; i < tradeCount; i++) {
                 tradeNotificationPublisher.publishTradeNotification(TradeNotificationDto.builder()
                         .stockCode(stockCode)
-                        .time(convertTime(parts[idx+1]))
-                        .price(Long.valueOf(parts[idx+2]))
-                        .stockCount(Long.valueOf(parts[idx+12]))
-                        .volume(Long.valueOf(parts[idx+13]))
-                        .tradeType((parts[idx+21].equals("1")) ? TradeType.BUY : TradeType.SELL)
-                        .changeRate(Double.valueOf(parts[idx+5]))
+                        .time(convertTime(parts[idx + 1]))
+                        .price(Long.valueOf(parts[idx + 2]))
+                        .stockCount(Long.valueOf(parts[idx + 12]))
+                        .volume(Long.valueOf(parts[idx + 13]))
+                        .tradeType((parts[idx + 21].equals("1")) ? TradeType.BUY : TradeType.SELL)
+                        .changeRate(Double.valueOf(parts[idx + 5]))
                         .build());
                 idx += 46;
             }
@@ -75,7 +75,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      * @return     : HH:MM:SS
      */
     private String convertTime(String time) {
-        return time.substring(0,2) + ":" + time.substring(2,4) + ":" + time.substring(4);
+        return time.substring(0, 2) + ":" + time.substring(2, 4) + ":" + time.substring(4);
     }
 
     /**
@@ -107,7 +107,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
             if (v == null)
                 return null;
             else if (v > 1)
-                return v-1;
+                return v - 1;
             else {
                 request(stockCode, "2");
                 return null;
@@ -121,7 +121,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      * @param trKey  : 주식 종목 코드
      * @param trType : 요청 타입(1: 등록, 2: 해제)
      */
-    private void request(String trKey, String trType){
+    private void request(String trKey, String trType) {
         Map<String, String> header = new HashMap<>();
         KisAuthDto.WebSocketKey webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
         header.put("approval_key", webSocketKey.getValue());

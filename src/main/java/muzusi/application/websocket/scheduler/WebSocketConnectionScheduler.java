@@ -25,7 +25,7 @@ public class WebSocketConnectionScheduler {
         DayOfWeek dayOfWeek = now.getDayOfWeek();
         boolean isWeek = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
         boolean isEnabled = ((now.getHour() > 8) || (now.getHour() == 8 && now.getMinute() >= 55))
-                                && ((now.getHour() < 15) || (now.getHour() == 15 && now.getMinute() < 30));
+                            && ((now.getHour() < 15) || (now.getHour() == 15 && now.getMinute() < 30));
 
         if (!isWeek && isEnabled && !connection.isConnected())
             connection.start();
