@@ -21,4 +21,13 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             "WHERE a.user_id = :userId " +
             "ORDER BY a.created_at DESC LIMIT 1", nativeQuery = true)
     LocalDateTime findLatestCreatedAt(@Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM account a " +
+            "WHERE a.id = ( " +
+            "    SELECT a2.id FROM account a2 " +
+            "    WHERE a2.user_id = a.user_id " +
+            "    ORDER BY a2.created_at DESC " +
+            "    LIMIT 1 " +
+            ")", nativeQuery = true)
+    List<Account> findLatestAccountsForAllUsers();
 }
