@@ -1,6 +1,8 @@
 package muzusi.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.websocket.service.TradeNotificationListener;
+import muzusi.infrastructure.redis.constant.ChannelConstant;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -45,34 +48,23 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
-            ChannelTopic chart,
-            ChannelTopic koreaStockPulse,
             ChannelTopic trade,
-            ChannelTopic stockRanking
+            MessageListenerAdapter tradeNotificationListenerAdapter
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
+        container.addMessageListener(tradeNotificationListenerAdapter, trade);
 
         return container;
     }
 
-    @Bean(name = "chart")
-    public ChannelTopic chart() {
-        return new ChannelTopic("chart");
-    }
-
-    @Bean(name = "koreaStockPulse")
-    public ChannelTopic koreaStockPulse() {
-        return new ChannelTopic("korea-stock-pulse");
+    @Bean(name = "tradeNotificationListenerAdapter")
+    public MessageListenerAdapter tradeNotificationListener(TradeNotificationListener tradeNotificationListener) {
+            return new MessageListenerAdapter(tradeNotificationListener, "onMessage");
     }
 
     @Bean(name = "trade")
     public ChannelTopic trade(){
-        return new ChannelTopic("trade");
-    }
-
-    @Bean(name = "stockRanking")
-    public ChannelTopic ranking(){
-        return new ChannelTopic("stock-ranking");
+        return new ChannelTopic(ChannelConstant.TRADE.getValue());
     }
 }

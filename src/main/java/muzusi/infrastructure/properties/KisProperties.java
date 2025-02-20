@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 @Getter @Setter
 public class KisProperties {
     private String domain;
+    private String webSocketDomain;
     private String appKey;
     private String appSecret;
 
