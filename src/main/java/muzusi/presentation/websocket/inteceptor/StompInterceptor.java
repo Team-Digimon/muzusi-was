@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StompInterceptor implements ChannelInterceptor {
     private final KisRealTimeTradeHandler kisRealTimeTradeHandler;
+    private final static String STOCK_CODE_HEADER_NAME = "stockCode";
 
     /**
      * 특정 종목 구독 및 해제 시 한국투자증권 웹소켓 연결 관리를 위한 메서드
@@ -27,17 +28,18 @@ public class StompInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+        String stockCode = extractStockCode(accessor);
 
-        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-            String stockCode = accessor.getDestination().replace("/sub/","");
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand()))
             kisRealTimeTradeHandler.connect(stockCode);
-        }
 
-        if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand())) {
-            String stockCode = accessor.getDestination().replace("/unsub/","");
+        if (StompCommand.DISCONNECT.equals(accessor.getCommand()) && stockCode != null)
             kisRealTimeTradeHandler.disconnect(stockCode);
-        }
 
-        return ChannelInterceptor.super.preSend(message, channel);
+        return message;
+    }
+
+    private String extractStockCode(StompHeaderAccessor accessor) {
+        return accessor.getFirstNativeHeader(STOCK_CODE_HEADER_NAME);
     }
 }
