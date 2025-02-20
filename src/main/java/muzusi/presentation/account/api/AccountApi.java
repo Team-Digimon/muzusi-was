@@ -100,7 +100,17 @@ public interface AccountApi {
                                                 "createdAt": "2025-02-16T19:10:21.744044",
                                                 "totalRate0fReturn": -25.0,
                                                 "totalEvaluatedAmount": 1500000,
-                                                "totalProfitAmount": -500000
+                                                "totalProfitAmount": -500000,
+                                                "accountProfits": [
+                                                    {
+                                                        "totalBalance": 9500000,
+                                                        "createdAt": "2025-02-21"
+                                                    },
+                                                    {
+                                                        "totalBalance": 9300000,
+                                                        "createdAt": "2025-02-20"
+                                                    }
+                                                ]
                                             }
                                         }
                                     """)
