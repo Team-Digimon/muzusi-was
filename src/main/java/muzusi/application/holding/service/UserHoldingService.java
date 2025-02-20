@@ -46,12 +46,12 @@ public class UserHoldingService {
     /**
      * 보유 종목들에 대한 총 수익률을 계산하는 메서드
      *
-     * @param userId : 사용자 ID
+     * @param accountId : 계좌 ID
      * @return : 총 수익률, 평가금액, 수익금액
      */
     @Transactional(readOnly = true)
-    public AccountSummaryDto calculateTotalRateOfReturn(Long userId) {
-        List<Holding> holdings = holdingService.readByUserId(userId);
+    public AccountSummaryDto calculateTotalRateOfReturn(Long accountId) {
+        List<Holding> holdings = holdingService.readByAccountId(accountId);
         if (holdings.isEmpty()) return AccountSummaryDto.of(0.0, 0, 0);
 
         Map<String, Object> stockPrices = getStockPrices(holdings);

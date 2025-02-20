@@ -25,6 +25,10 @@ public class HoldingService {
         return holdingRepository.findLatestAccountAllHolding(userId);
     }
 
+    public List<Holding> readByAccountId(Long accountId) {
+        return holdingRepository.findByAccount_Id(accountId);
+    }
+
     public boolean existsByUserIdAndStockCode(Long userId, String stockCode) {
         return holdingRepository.existsByLatestAccountHolding(userId, stockCode) == 1;
     }

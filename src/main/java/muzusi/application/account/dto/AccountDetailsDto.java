@@ -3,6 +3,7 @@ package muzusi.application.account.dto;
 import muzusi.domain.account.entity.Account;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record AccountDetailsDto(
         Long id,
@@ -11,9 +12,10 @@ public record AccountDetailsDto(
         LocalDateTime createdAt,
         double totalRateOfReturn,
         long totalEvaluatedAmount,
-        long totalProfitAmount
+        long totalProfitAmount,
+        List<AccountProfitInfoDto> accountProfits
 ) {
-    public static AccountDetailsDto from(Account account, AccountSummaryDto summary) {
+    public static AccountDetailsDto from(Account account, AccountSummaryDto summary, List<AccountProfitInfoDto> accountProfits) {
         return new AccountDetailsDto(
                 account.getId(),
                 account.getBalance(),
@@ -21,7 +23,8 @@ public record AccountDetailsDto(
                 account.getCreatedAt(),
                 summary.totalRateOfReturn(),
                 summary.totalEvaluatedAmount(),
-                summary.totalProfitAmount()
+                summary.totalProfitAmount(),
+                accountProfits
         );
     }
 }

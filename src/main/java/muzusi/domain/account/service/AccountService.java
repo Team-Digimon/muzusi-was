@@ -30,6 +30,10 @@ public class AccountService {
         return accountRepository.findLatestAccount(userId);
     }
 
+    public List<Account> readAll() {
+        return accountRepository.findLatestAccountsForAllUsers();
+    }
+
     public LocalDateTime readCreatedAt(Long userId) {
         return accountRepository.findLatestCreatedAt(userId);
     }
