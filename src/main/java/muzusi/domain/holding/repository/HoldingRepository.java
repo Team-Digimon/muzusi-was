@@ -31,4 +31,6 @@ public interface HoldingRepository extends JpaRepository<Holding, Long> {
             "WHERE account_id = (SELECT id FROM account WHERE user_id = :userId ORDER BY created_at DESC LIMIT 1)",
             nativeQuery = true)
     List<Holding> findLatestAccountAllHolding(@Param("userId") Long userId);
+
+    List<Holding> findByAccount_Id(Long accountId);
 }
