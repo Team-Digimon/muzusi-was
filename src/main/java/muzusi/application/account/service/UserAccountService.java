@@ -77,7 +77,7 @@ public class UserAccountService {
         Account account = accountService.readByUserId(userId)
                 .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
 
-        AccountSummaryDto summaryDto = userHoldingService.calculateTotalRateOfReturn(userId);
+        AccountSummaryDto summaryDto = userHoldingService.calculateTotalRateOfReturn(account.getId());
 
         return AccountDetailsDto.from(account, summaryDto);
     }
