@@ -3,10 +3,13 @@ package muzusi.application.account.service;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.account.dto.AccountDetailsDto;
 import muzusi.application.account.dto.AccountInfoDto;
+import muzusi.application.account.dto.AccountProfitInfoDto;
 import muzusi.application.account.dto.AccountSummaryDto;
 import muzusi.application.holding.service.UserHoldingService;
 import muzusi.domain.account.entity.Account;
+import muzusi.domain.account.entity.AccountProfit;
 import muzusi.domain.account.exception.AccountErrorType;
+import muzusi.domain.account.service.AccountProfitService;
 import muzusi.domain.account.service.AccountService;
 import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
@@ -25,6 +28,7 @@ import java.util.List;
 public class UserAccountService {
     private final UserService userService;
     private final AccountService accountService;
+    private final AccountProfitService accountProfitService;
     private final AccountManagementService accountManagementService;
     private final UserHoldingService userHoldingService;
 
@@ -77,8 +81,14 @@ public class UserAccountService {
         Account account = accountService.readByUserId(userId)
                 .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
 
+        List<AccountProfitInfoDto> accountProfits =
+                accountProfitService.readByAccountId(account.getId())
+                        .stream()
+                        .map(AccountProfitInfoDto::fromEntity)
+                        .toList();
+
         AccountSummaryDto summaryDto = userHoldingService.calculateTotalRateOfReturn(account.getId());
 
-        return AccountDetailsDto.from(account, summaryDto);
+        return AccountDetailsDto.from(account, summaryDto, accountProfits);
     }
 }
