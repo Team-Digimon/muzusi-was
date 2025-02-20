@@ -18,6 +18,6 @@ public class AccountProfitService {
     }
 
     public List<AccountProfit> readByAccountId(Long accountId) {
-        return accountProfitRepository.findByAccount_idOrderByCreatedAtAsc(accountId, PageRequest.of(0, 14));
+        return accountProfitRepository.findByAccount_idOrderByCreatedAtDesc(accountId, PageRequest.of(0, 14));
     }
 }

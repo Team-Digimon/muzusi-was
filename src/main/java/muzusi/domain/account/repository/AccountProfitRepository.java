@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AccountProfitRepository extends JpaRepository<AccountProfit, Long> {
-    List<AccountProfit> findByAccount_idOrderByCreatedAtAsc(Long accountId, Pageable pageable);
+    List<AccountProfit> findByAccount_idOrderByCreatedAtDesc(Long accountId, Pageable pageable);
 }
