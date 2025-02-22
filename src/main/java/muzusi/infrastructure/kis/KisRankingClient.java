@@ -3,12 +3,9 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.global.exception.KisApiException;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
-import muzusi.infrastructure.redis.constant.KisConstant;
-import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -28,7 +25,7 @@ import java.util.Map;
 public class KisRankingClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-    private final RedisService redisService;
+    private final KisAuthProvider kisAuthProvider;
 
     public List<StockRankDto> getVolumeRank() {
         HttpHeaders headers = getHttpHeaders("FHPST01710000");
@@ -141,8 +138,7 @@ public class KisRankingClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
-        headers.add("authorization", accessToken.getValue());
+        headers.add("authorization", kisAuthProvider.getAccessToken().getValue());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
         headers.add("tr_id", trId);
