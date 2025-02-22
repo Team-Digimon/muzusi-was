@@ -3,12 +3,10 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.global.exception.KisApiException;
+import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
-import muzusi.infrastructure.redis.RedisService;
-import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,13 +23,13 @@ import java.time.format.DateTimeFormatter;
 public class KisStockClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-    private final RedisService redisService;
+    private final KisAuthProvider kisAuthProvider;
     private static final int MINUTES_GAP = 10;
 
     public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
         HttpHeaders headers = new HttpHeaders();
-        KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
-        headers.add("authorization", accessToken.getValue());
+
+        headers.add("authorization", kisAuthProvider.getAccessToken().getValue());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
         headers.add("tr_id", "FHKST03010200");
@@ -62,12 +60,12 @@ public class KisStockClient {
             long high = Long.MIN_VALUE, low = Long.MAX_VALUE;
             long open = 0L, close = 0L, volume = 0L;
 
-            for (int i = 0 ; i < Math.min(MINUTES_GAP, output2.size()); i++) {
+            for (int i = 0; i < Math.min(MINUTES_GAP, output2.size()); i++) {
                 JsonNode stockInfo = output2.get(i);
                 if (i == 0) {
                     close = stockInfo.get("stck_prpr").asLong();
                 }
-                if (i == Math.min(MINUTES_GAP, output2.size())-1) {
+                if (i == Math.min(MINUTES_GAP, output2.size()) - 1) {
                     open = stockInfo.get("stck_prpr").asLong();
                 }
                 low = Math.min(low, stockInfo.get("stck_prpr").asLong());

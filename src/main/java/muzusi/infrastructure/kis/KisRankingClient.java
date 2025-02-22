@@ -3,11 +3,9 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.global.exception.KisApiException;
-import muzusi.infrastructure.redis.constant.KisConstant;
-import muzusi.infrastructure.redis.RedisService;
+import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +25,7 @@ import java.util.Map;
 public class KisRankingClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-    private final RedisService redisService;
+    private final KisAuthProvider kisAuthProvider;
 
     public List<StockRankDto> getVolumeRank() {
         HttpHeaders headers = getHttpHeaders("FHPST01710000");
@@ -89,20 +87,20 @@ public class KisRankingClient {
         HttpHeaders headers = getHttpHeaders("FHPST01700000");
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.FLUCTUATION_RANK))
-                .queryParam("fid_rsfl_rate2","")
-                .queryParam("fid_cond_mrkt_div_code","J")
-                .queryParam("fid_cond_scr_div_code","20170")
-                .queryParam("fid_input_iscd","0000")
-                .queryParam("fid_rank_sort_cls_code",fluctuation)
-                .queryParam("fid_input_cnt_1","0")
-                .queryParam("fid_prc_cls_code","1")
-                .queryParam("fid_input_price_1","")
-                .queryParam("fid_input_price_2","")
-                .queryParam("fid_vol_cnt","")
-                .queryParam("fid_trgt_cls_code","0")
-                .queryParam("fid_trgt_exls_cls_code","0")
-                .queryParam("fid_div_cls_code","0")
-                .queryParam("fid_rsfl_rate1","")
+                .queryParam("fid_rsfl_rate2", "")
+                .queryParam("fid_cond_mrkt_div_code", "J")
+                .queryParam("fid_cond_scr_div_code", "20170")
+                .queryParam("fid_input_iscd", "0000")
+                .queryParam("fid_rank_sort_cls_code", fluctuation)
+                .queryParam("fid_input_cnt_1", "0")
+                .queryParam("fid_prc_cls_code", "1")
+                .queryParam("fid_input_price_1", "")
+                .queryParam("fid_input_price_2", "")
+                .queryParam("fid_vol_cnt", "")
+                .queryParam("fid_trgt_cls_code", "0")
+                .queryParam("fid_trgt_exls_cls_code", "0")
+                .queryParam("fid_div_cls_code", "0")
+                .queryParam("fid_rsfl_rate1", "")
                 .build()
                 .toUriString();
 
@@ -140,8 +138,7 @@ public class KisRankingClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        KisAuthDto.AccessToken accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
-        headers.add("authorization", accessToken.getValue());
+        headers.add("authorization", kisAuthProvider.getAccessToken().getValue());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
         headers.add("tr_id", trId);

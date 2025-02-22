@@ -3,14 +3,11 @@ package muzusi.infrastructure.kis;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.trade.dto.TradeNotificationDto;
 import muzusi.application.websocket.service.TradeNotificationPublisher;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
-import muzusi.infrastructure.redis.RedisService;
-import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -25,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private final TradeNotificationPublisher tradeNotificationPublisher;
     private final ObjectMapper objectMapper;
-    private final RedisService redisService;
+    private final KisAuthProvider kisAuthProvider;
 
     private static final String TR_ID = "H0STCNT0";
     private static final int MAX_CONNECTION = 41;
@@ -123,8 +120,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      */
     private void request(String trKey, String trType) {
         Map<String, String> header = new HashMap<>();
-        KisAuthDto.WebSocketKey webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
-        header.put("approval_key", webSocketKey.getValue());
+        header.put("approval_key", kisAuthProvider.getWebSocketKey().getValue());
         header.put("custtype", "P");
         header.put("tr_type", trType);
         header.put("content-type", "utf-8");

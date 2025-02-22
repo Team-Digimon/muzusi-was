@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.global.exception.KisOAuthApiException;
+import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ public class KisOAuthClient {
 
     /**
      * 한국투자증권 접근 토큰 발급 메서드
+     *
      * @return String : 한국투자증권 API 접속토큰
      */
     public String getAccessToken() {
@@ -49,14 +51,15 @@ public class KisOAuthClient {
 
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
-            return rootNode.path("token_type").asText() + " "  + rootNode.path("access_token").asText();
-        } catch (Exception e){
+            return rootNode.path("token_type").asText() + " " + rootNode.path("access_token").asText();
+        } catch (Exception e) {
             throw new KisOAuthApiException(e);
         }
     }
 
     /**
      * 한국투자증권 웹소켓 접속키 발급 메서드
+     *
      * @return String : 한국투자증권 웹소켓 접속키
      */
     public String getWebSocketKey() {
@@ -83,7 +86,7 @@ public class KisOAuthClient {
             JsonNode rootNode = objectMapper.readTree(response.getBody());
 
             return rootNode.path("approval_key").asText();
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new KisOAuthApiException(e);
         }
     }
