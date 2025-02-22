@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.global.exception.KisApiException;
+import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;

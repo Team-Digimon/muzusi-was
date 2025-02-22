@@ -2,7 +2,7 @@ package muzusi.infrastructure.properties;
 
 import lombok.Getter;
 import lombok.Setter;
-import muzusi.infrastructure.kis.KisUrlConstant;
+import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
