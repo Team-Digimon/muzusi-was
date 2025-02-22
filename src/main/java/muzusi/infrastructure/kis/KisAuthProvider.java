@@ -21,7 +21,7 @@ public class KisAuthProvider {
 
     public KisAuthDto.WebSocketKey getWebSocketKey() {
         if (this.webSocketKey == null)
-            this.webSocketKey = (KisAuthDto.WebSocketKey) redisService.get((KisConstant.WEBSOCKET_KEY_PREFIX.getValue()));
+            this.webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
         return this.webSocketKey;
     }
 }
