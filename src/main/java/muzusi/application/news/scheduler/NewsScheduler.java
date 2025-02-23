@@ -15,7 +15,7 @@ public class NewsScheduler {
         newsManagementService.createPostsFromNews();
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 55 23 * * *")
     public void runNewsDeleteJob() {
         newsManagementService.deleteNews();
     }

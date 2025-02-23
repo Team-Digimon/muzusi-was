@@ -27,15 +27,11 @@ public class NewsService {
         return newsRepository.findByKeyword(keyword, pageable);
     }
 
-    public List<Long> readIdsByDate(LocalDateTime dateTime) {
-        return newsRepository.findIdsByPubDateBefore(dateTime);
-    }
-
     public boolean existsByLink(String link) {
         return newsRepository.existsByLink(link);
     }
 
-    public void deleteByIds(List<Long> ids) {
-        newsRepository.deleteByIds(ids);
+    public void deleteByDateTime(LocalDateTime dateTime) {
+        newsRepository.deleteByDateTimeBefore(dateTime);
     }
 }
