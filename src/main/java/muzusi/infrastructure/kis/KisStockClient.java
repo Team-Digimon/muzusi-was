@@ -23,16 +23,12 @@ import java.time.format.DateTimeFormatter;
 public class KisStockClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-    private final KisAuthProvider kisAuthProvider;
+    private final KisRequestFactory kisRequestFactory;
     private static final int MINUTES_GAP = 10;
+    private static final String MINUTES_CHART_TR_ID = "FHKST03010200";
 
     public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
-        HttpHeaders headers = new HttpHeaders();
-
-        headers.add("authorization", kisAuthProvider.getAccessToken().getValue());
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
-        headers.add("tr_id", "FHKST03010200");
+        HttpHeaders headers = kisRequestFactory.getHttpHeader(MINUTES_CHART_TR_ID);
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.TIME_ITEM_CHART_PRICE))
                 .queryParam("FID_ETC_CLS_CODE", "")

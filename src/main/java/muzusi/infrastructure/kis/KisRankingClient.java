@@ -10,7 +10,6 @@ import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,10 +24,12 @@ import java.util.Map;
 public class KisRankingClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-    private final KisAuthProvider kisAuthProvider;
+    private final KisRequestFactory kisRequestFactory;
+    private final static String VOLUME_RANK_TR_ID = "FHPST01710000";
+    private final static String FLUCTUATION_RANK_TR_ID = "FHPST01700000";
 
     public List<StockRankDto> getVolumeRank() {
-        HttpHeaders headers = getHttpHeaders("FHPST01710000");
+        HttpHeaders headers = kisRequestFactory.getHttpHeader(VOLUME_RANK_TR_ID);
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.VOLUME_RANK))
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")
@@ -84,7 +85,7 @@ public class KisRankingClient {
     }
 
     private List<StockRankDto> getFluctuationRank(String fluctuation) {
-        HttpHeaders headers = getHttpHeaders("FHPST01700000");
+        HttpHeaders headers = kisRequestFactory.getHttpHeader(FLUCTUATION_RANK_TR_ID);
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.FLUCTUATION_RANK))
                 .queryParam("fid_rsfl_rate2", "")
@@ -132,19 +133,6 @@ public class KisRankingClient {
         } catch (Exception e) {
             throw new KisApiException(e);
         }
-    }
-
-    private HttpHeaders getHttpHeaders(String trId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        headers.add("authorization", kisAuthProvider.getAccessToken().getValue());
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
-        headers.add("tr_id", trId);
-        headers.add("custtype", "P");
-
-        return headers;
     }
 
     private List<StockRankDto> getRankStocks(JsonNode node, Map<String, String> body) {
