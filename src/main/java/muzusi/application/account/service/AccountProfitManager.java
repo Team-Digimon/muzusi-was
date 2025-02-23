@@ -8,6 +8,7 @@ import muzusi.domain.account.service.AccountService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,5 +42,14 @@ public class AccountProfitManager {
                 });
 
         accountProfitService.saveAll(accountProfits);
+    }
+
+    /**
+     * 14일이 지난 계좌 수익 데이터를 삭제하는 메서드
+     */
+    @Transactional
+    public void deleteOldAccountProfits() {
+        LocalDate dateTime = LocalDate.now().minusDays(14);
+        accountProfitService.deleteByDateTime(dateTime);
     }
 }
