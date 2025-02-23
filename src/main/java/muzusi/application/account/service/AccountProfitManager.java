@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AccountProfitUpdateExecutor {
+public class AccountProfitManager {
     private final AccountProfitService accountProfitService;
     private final UserHoldingService userHoldingService;
     private final AccountService accountService;
