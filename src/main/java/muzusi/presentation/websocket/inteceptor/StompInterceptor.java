@@ -33,7 +33,7 @@ public class StompInterceptor implements ChannelInterceptor {
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand()))
             kisRealTimeTradeHandler.connect(stockCode);
 
-        if (StompCommand.DISCONNECT.equals(accessor.getCommand()) && stockCode != null)
+        if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand()))
             kisRealTimeTradeHandler.disconnect(stockCode);
 
         return message;
