@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/main/generated
+
+### Mac OS ###
+.DS_Store
