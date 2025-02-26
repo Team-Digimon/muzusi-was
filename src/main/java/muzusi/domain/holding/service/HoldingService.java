@@ -30,7 +30,7 @@ public class HoldingService {
     }
 
     public boolean existsByUserIdAndStockCode(Long userId, String stockCode) {
-        return holdingRepository.existsByLatestAccountHolding(userId, stockCode) == 1;
+        return holdingRepository.existsByLatestAccountHolding(userId, stockCode);
     }
 
     public void deleteByUserIdAndStockCode(Long userId, String stockCode) {
