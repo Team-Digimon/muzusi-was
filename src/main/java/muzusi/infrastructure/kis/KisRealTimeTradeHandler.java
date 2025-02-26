@@ -85,10 +85,16 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      * @param stockCode : 주식 종목 코드
      */
     public void connect(String stockCode) {
-        if (subscribedStocks.size() >= MAX_CONNECTION)
-            throw new CustomException(StockErrorType.MAX_REQUEST_WEB_SOCKET);
-        subscribedStocks.compute(stockCode, (k, v) -> v == null ? 1 : v + 1);
-        request(stockCode, "1");
+        subscribedStocks.compute(stockCode, (k, v) -> {
+            if (v == null) {
+                if (subscribedStocks.size() >= MAX_CONNECTION)
+                    throw new CustomException(StockErrorType.MAX_REQUEST_WEB_SOCKET);
+                request(stockCode, "1");
+                return 1;
+            } else {
+                return v + 1;
+            }
+        });
     }
 
     /**
