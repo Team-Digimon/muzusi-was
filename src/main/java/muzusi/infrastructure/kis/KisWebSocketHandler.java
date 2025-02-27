@@ -2,6 +2,7 @@ package muzusi.infrastructure.kis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -16,6 +17,18 @@ import java.util.Map;
 public abstract class KisWebSocketHandler extends TextWebSocketHandler {
     protected static WebSocketSession session;
     protected final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        this.session = session;
+        super.afterConnectionEstablished(session);
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.warn("KIS session closed");
+        super.afterConnectionClosed(session, status);
+    }
 
     /**
      * 웹 소켓 연결 지속을 위한 메서드

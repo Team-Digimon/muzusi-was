@@ -9,7 +9,6 @@ import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -37,17 +36,6 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      */
     public List<String> getConnectingStockCodes() {
         return subscribedStocks.keySet().stream().toList();
-    }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        this.session = session;
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.warn("KIS session closed");
-        super.afterConnectionClosed(session, status);
     }
 
     /**
