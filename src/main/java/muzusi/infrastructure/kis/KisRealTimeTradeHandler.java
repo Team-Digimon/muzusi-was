@@ -29,6 +29,11 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private static final int MAX_CONNECTION = 41;
     private final ConcurrentHashMap<String, Integer> subscribedStocks = new ConcurrentHashMap<>(MAX_CONNECTION);
 
+    /**
+     * 현재 구독 중인 주식 종목 코드 목록을 반환하는 메서드
+     * 
+     * @return : 현재 구독 주식 종목 코드 목록
+     */
     public List<String> getConnectingStockCodes() {
         return subscribedStocks.keySet().stream().toList();
     }
