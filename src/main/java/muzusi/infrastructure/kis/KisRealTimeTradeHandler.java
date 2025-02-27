@@ -13,6 +13,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +28,10 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private static final String TR_ID = "H0STCNT0";
     private static final int MAX_CONNECTION = 41;
     private final ConcurrentHashMap<String, Integer> subscribedStocks = new ConcurrentHashMap<>(MAX_CONNECTION);
+
+    public List<String> getConnectingStockCodes() {
+        return subscribedStocks.keySet().stream().toList();
+    }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
