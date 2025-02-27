@@ -2,7 +2,7 @@ package muzusi.application.websocket.scheduler;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import muzusi.infrastructure.kis.KisWebSocketHandler;
+import muzusi.infrastructure.kis.KisRealTimeTradeHandler;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class WebSocketConnectionScheduler {
     private final WebSocketConnectionManager connection;
-    private final KisWebSocketHandler kisRealTimeTradeHandler;
+    private final KisRealTimeTradeHandler kisRealTimeTradeHandler;
 
     @PostConstruct
     public void init() {
@@ -38,13 +38,16 @@ public class WebSocketConnectionScheduler {
 
     @Scheduled(cron = "0 30 15 * * 1-5")
     public void runDisconnectWebSocketToKis() {
+        kisRealTimeTradeHandler.getConnectingStockCodes()
+                .forEach(kisRealTimeTradeHandler::disconnect);
+
         if (connection.isConnected())
             connection.stop();
     }
 
     @Schedules({
             @Scheduled(cron = "0 * 9-14 * * 1-5"),
-            @Scheduled(cron = "0 0-30 15 * * 1-5")
+            @Scheduled(cron = "0 0-29 15 * * 1-5")
     })
     public void runKeepConnectionJob() {
         kisRealTimeTradeHandler.keepConnection();

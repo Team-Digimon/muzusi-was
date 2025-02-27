@@ -9,10 +9,12 @@ import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,9 +30,24 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private static final int MAX_CONNECTION = 41;
     private final ConcurrentHashMap<String, Integer> subscribedStocks = new ConcurrentHashMap<>(MAX_CONNECTION);
 
+    /**
+     * 현재 구독 중인 주식 종목 코드 목록을 반환하는 메서드
+     * 
+     * @return : 현재 구독 주식 종목 코드 목록
+     */
+    public List<String> getConnectingStockCodes() {
+        return subscribedStocks.keySet().stream().toList();
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         this.session = session;
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.warn("KIS session closed");
+        super.afterConnectionClosed(session, status);
     }
 
     /**
@@ -118,6 +135,8 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         });
     }
 
+
+
     /**
      * 특정 종목 체결가 웹소켓 연결 요청 메서드
      *
@@ -125,6 +144,12 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      * @param trType : 요청 타입(1: 등록, 2: 해제)
      */
     private void request(String trKey, String trType) {
+
+        if (session == null || !session.isOpen()) {
+            log.error("KIS session closed in request");
+            return;
+        }
+
         Map<String, String> header = new HashMap<>();
         header.put("approval_key", kisAuthProvider.getWebSocketKey().getValue());
         header.put("custtype", "P");
@@ -140,6 +165,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         Map<String, Object> request = new HashMap<>();
         request.put("header", header);
         request.put("body", body);
+
 
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(request)));

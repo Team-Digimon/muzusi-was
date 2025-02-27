@@ -23,6 +23,11 @@ public abstract class KisWebSocketHandler extends TextWebSocketHandler {
      * - 연결 유지를 위한 PINGPONG 메시지 송신
      */
     public void keepConnection() {
+        if (session == null || !session.isOpen()) {
+            log.error("KIS session closed in keep connection");
+            return;
+        }
+
         Map<String, String> header = new HashMap<>();
         header.put("tr_id", "PINGPONG");
         header.put("datetime", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
