@@ -4,22 +4,21 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
-import muzusi.infrastructure.redis.RedisService;
-import muzusi.infrastructure.redis.constant.KisConstant;
+import muzusi.infrastructure.kis.KisAuthService;
 import muzusi.infrastructure.kis.KisOAuthClient;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class KisOAuthService {
     private final KisOAuthClient kisOAuthClient;
-    private final RedisService redisService;
+    private final KisAuthService kisAuthService;
+
 
     @PostConstruct
-    public void issueWebSocketKey() {
+    public void saveKisAuthKey() {
+        this.saveAccessToken();
         this.saveWebSocketKey();
     }
 
@@ -35,7 +34,8 @@ public class KisOAuthService {
                     .value(response)
                     .build();
 
-            redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
+            kisAuthService.deleteAccessToken();
+            kisAuthService.saveAccessToken(accessToken);
         }
     }
 
@@ -51,7 +51,8 @@ public class KisOAuthService {
                     .value(kisOAuthClient.getWebSocketKey())
                     .build();
 
-            redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
+            kisAuthService.deleteWebSocketKey();
+            kisAuthService.saveWebSocketKey(webSocketKey);
         }
     }
 }

@@ -24,7 +24,7 @@ public class KisScheduler {
         kisOAuthService.saveAccessToken();
     }
 
-    @Scheduled(cron = "0 0 0 1 1 ?")
+    @Scheduled(cron = "0 55 8 * * ?")
     public void runIssueWebSocketKeyJob() {
         kisOAuthService.saveWebSocketKey();
     }

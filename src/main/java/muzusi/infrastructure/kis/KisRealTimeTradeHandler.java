@@ -9,7 +9,6 @@ import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -24,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private final TradeNotificationPublisher tradeNotificationPublisher;
     private final ObjectMapper objectMapper;
-    private final KisAuthProvider kisAuthProvider;
+    private final KisAuthService kisAuthService;
 
     private static final String TR_ID = "H0STCNT0";
     private static final int MAX_CONNECTION = 41;
@@ -37,17 +36,6 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
      */
     public List<String> getConnectingStockCodes() {
         return subscribedStocks.keySet().stream().toList();
-    }
-
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-        this.session = session;
-    }
-
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        log.warn("KIS session closed");
-        super.afterConnectionClosed(session, status);
     }
 
     /**
@@ -151,7 +139,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         }
 
         Map<String, String> header = new HashMap<>();
-        header.put("approval_key", kisAuthProvider.getWebSocketKey().getValue());
+        header.put("approval_key", kisAuthService.getWebSocketKey().getValue());
         header.put("custtype", "P");
         header.put("tr_type", trType);
         header.put("content-type", "utf-8");
