@@ -51,6 +51,7 @@ public class KisOAuthService {
                     .value(kisOAuthClient.getWebSocketKey())
                     .build();
 
+            kisAuthService.deleteWebSocketKey();
             kisAuthService.saveWebSocketKey(webSocketKey);
         }
     }

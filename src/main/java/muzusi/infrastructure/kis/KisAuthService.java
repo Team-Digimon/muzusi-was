@@ -35,7 +35,11 @@ public class KisAuthService {
         redisService.set(KisConstant.ACCESS_TOKEN_PREFIX.getValue(), accessToken, Duration.ofDays(1));
     }
 
+    public void deleteWebSocketKey() {
+        redisService.del(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
+    }
+
     public void saveWebSocketKey(KisAuthDto.WebSocketKey webSocketKey) {
-        redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(365));
+        redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(1));
     }
 }
