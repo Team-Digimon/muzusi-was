@@ -1,6 +1,7 @@
 package muzusi.presentation.websocket.inteceptor;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.stock.service.StockSearchService;
 import muzusi.infrastructure.kis.KisRealTimeTradeHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StompInterceptor implements ChannelInterceptor {
     private final KisRealTimeTradeHandler kisRealTimeTradeHandler;
+    private final StockSearchService stockSearchService;
+
     private final static String STOCK_CODE_HEADER_NAME = "stockCode";
 
     /**
@@ -30,8 +33,10 @@ public class StompInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         String stockCode = extractStockCode(accessor);
 
-        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand()))
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            stockSearchService.increaseStockSearchCount(stockCode);
             kisRealTimeTradeHandler.connect(stockCode);
+        }
 
         if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand()))
             kisRealTimeTradeHandler.disconnect(stockCode);
