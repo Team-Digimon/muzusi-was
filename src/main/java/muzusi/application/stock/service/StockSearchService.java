@@ -23,4 +23,13 @@ public class StockSearchService {
                 .stream().map(StockItemDto::fromEntity)
                 .toList();
     }
+
+    /**
+     * 종목 검색 횟수를 증가시키는 메서드
+     *
+     * @param stockCode : 종목 코드
+     */
+    public void increaseStockSearchCount(String stockCode) {
+        stockItemService.updateSearchCount(stockCode);
+    }
 }
