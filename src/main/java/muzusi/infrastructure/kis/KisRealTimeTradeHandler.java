@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class KisRealTimeTradeHandler extends KisWebSocketHandler {
     private final TradeNotificationPublisher tradeNotificationPublisher;
     private final ObjectMapper objectMapper;
-    private final KisAuthProvider kisAuthProvider;
+    private final KisAuthService kisAuthService;
 
     private static final String TR_ID = "H0STCNT0";
     private static final int MAX_CONNECTION = 41;
@@ -139,7 +139,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         }
 
         Map<String, String> header = new HashMap<>();
-        header.put("approval_key", kisAuthProvider.getWebSocketKey().getValue());
+        header.put("approval_key", kisAuthService.getWebSocketKey().getValue());
         header.put("custtype", "P");
         header.put("tr_type", trType);
         header.put("content-type", "utf-8");
