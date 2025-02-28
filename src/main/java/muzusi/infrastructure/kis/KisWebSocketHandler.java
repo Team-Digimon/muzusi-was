@@ -21,6 +21,7 @@ public abstract class KisWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         this.session = session;
+        log.warn("KIS session connected: {}", session.getId());
         super.afterConnectionEstablished(session);
     }
 
