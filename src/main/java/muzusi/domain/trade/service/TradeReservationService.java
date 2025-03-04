@@ -41,6 +41,10 @@ public class TradeReservationService {
         tradeReservationRepository.deleteById(id);
     }
 
+    public void deleteAllByIds(List<String> ids) {
+        tradeReservationRepository.deleteAllById(ids);
+    }
+
     public void deleteAll() {
         tradeReservationRepository.deleteAll();
     }
