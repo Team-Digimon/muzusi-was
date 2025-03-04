@@ -5,8 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.infrastructure.kis.KisAuthService;
-import muzusi.infrastructure.kis.KisOAuthClient;
+import muzusi.infrastructure.kis.rest.KisOAuthClient;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -41,18 +43,16 @@ public class KisOAuthService {
 
     /**
      * 한국투자증권 웹소켓 접속키 발급 API 호출 및 저장 메서드
-     * 웹소켓 접속키 발급 오류 발생 시, DB 데이터 갱신 미실시
      */
     public void saveWebSocketKey() {
-        String response = kisOAuthClient.getWebSocketKey();
+        List<String> webSocketKeys = kisOAuthClient.getAllWebSocketKey();
 
-        if (response != null) {
-            KisAuthDto.WebSocketKey webSocketKey = KisAuthDto.WebSocketKey.builder()
-                    .value(kisOAuthClient.getWebSocketKey())
-                    .build();
+        kisAuthService.deleteWebSocketKey();
 
-            kisAuthService.deleteWebSocketKey();
-            kisAuthService.saveWebSocketKey(webSocketKey);
+        for (String webSocketKey : webSocketKeys) {
+            kisAuthService.saveWebSocketKey(KisAuthDto.WebSocketKey.builder()
+                    .value(webSocketKey)
+                    .build());
         }
     }
 }

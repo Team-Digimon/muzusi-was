@@ -7,13 +7,14 @@ import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class KisAuthService {
     private final RedisService redisService;
     private KisAuthDto.AccessToken accessToken;
-    private KisAuthDto.WebSocketKey webSocketKey;
+    private List<KisAuthDto.WebSocketKey> webSocketKey;
 
     public KisAuthDto.AccessToken getAccessToken() {
         if (this.accessToken == null)
@@ -21,9 +22,10 @@ public class KisAuthService {
         return this.accessToken;
     }
 
-    public KisAuthDto.WebSocketKey getWebSocketKey() {
+    public List<KisAuthDto.WebSocketKey> getWebSocketKey() {
         if (this.webSocketKey == null)
-            this.webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
+            this.webSocketKey = redisService.getList(KisConstant.WEBSOCKET_KEY_PREFIX.getValue())
+                    .stream().map(key -> (KisAuthDto.WebSocketKey) key).toList();
         return this.webSocketKey;
     }
 
@@ -40,6 +42,6 @@ public class KisAuthService {
     }
 
     public void saveWebSocketKey(KisAuthDto.WebSocketKey webSocketKey) {
-        redisService.set(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey, Duration.ofDays(1));
+        redisService.setList(KisConstant.WEBSOCKET_KEY_PREFIX.getValue(), webSocketKey);
     }
 }

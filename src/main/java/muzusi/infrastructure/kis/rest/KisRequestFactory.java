@@ -1,6 +1,7 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.rest;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.infrastructure.kis.KisAuthService;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -17,8 +18,8 @@ public class KisRequestFactory {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         headers.add("authorization", kisAuthService.getAccessToken().getValue());
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
+        headers.add("appkey", kisProperties.getAppKey().get(0));
+        headers.add("appsecret", kisProperties.getAppSecret().get(0));
         headers.add("tr_id", trId);
         headers.add("custtype", "P");
 
