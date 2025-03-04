@@ -16,6 +16,10 @@ public class TradeService {
         tradeRepository.save(trade);
     }
 
+    public void saveAll(List<Trade> trades) {
+        tradeRepository.saveAllInBatch(trades);
+    }
+
     public List<Trade> readByAccountId(Long accountId) {
         return tradeRepository.findByAccount_Id(accountId);
     }
