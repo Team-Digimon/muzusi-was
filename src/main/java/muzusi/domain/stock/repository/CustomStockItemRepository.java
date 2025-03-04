@@ -1,5 +1,5 @@
 package muzusi.domain.stock.repository;
 
-public interface StockItemCustomRepository {
+public interface CustomStockItemRepository {
     void incrementSearchCount(String stockCode);
 }
