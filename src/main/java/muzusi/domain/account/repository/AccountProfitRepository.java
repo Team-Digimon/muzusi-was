@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface AccountProfitRepository extends JpaRepository<AccountProfit, Long> {
+public interface AccountProfitRepository extends JpaRepository<AccountProfit, Long>, CustomAccountProfitRepository {
     List<AccountProfit> findByAccount_idOrderByCreatedAtDesc(Long accountId, Pageable pageable);
 
     @Modifying
