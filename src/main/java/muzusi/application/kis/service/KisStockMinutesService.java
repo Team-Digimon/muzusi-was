@@ -7,7 +7,7 @@ import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.kis.rest.KisStockClient;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;

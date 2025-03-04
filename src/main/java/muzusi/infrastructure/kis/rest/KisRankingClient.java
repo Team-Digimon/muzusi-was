@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
