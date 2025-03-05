@@ -12,19 +12,13 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class KisAuthService {
     private final RedisService redisService;
-    private KisAuthDto.AccessToken accessToken;
-    private KisAuthDto.WebSocketKey webSocketKey;
 
     public KisAuthDto.AccessToken getAccessToken() {
-        if (this.accessToken == null)
-            this.accessToken = (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
-        return this.accessToken;
+        return (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
     }
 
     public KisAuthDto.WebSocketKey getWebSocketKey() {
-        if (this.webSocketKey == null)
-            this.webSocketKey = (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
-        return this.webSocketKey;
+        return (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
     }
 
     public void deleteAccessToken() {
