@@ -24,6 +24,14 @@ public class KisWebSocketSessionManager {
                 .build());
     }
 
+    public void deleteSession(WebSocketSession webSocketSession) {
+        for (Session session : sessions) {
+            if (session.getWebSocketSession().getId().equals(webSocketSession.getId())) {
+                sessions.remove(session);
+            }
+        }
+    }
+
     public void addWebSocketKey(List<KisAuthDto.WebSocketKey> webSocketKeys) {
         for (int idx = 0; idx < Math.min(sessions.size(), webSocketKeys.size()); idx++) {
             sessions.get(idx).setWebSocketKey(webSocketKeys.get(idx));
