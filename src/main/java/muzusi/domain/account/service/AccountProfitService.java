@@ -15,7 +15,7 @@ public class AccountProfitService {
     private final AccountProfitRepository accountProfitRepository;
 
     public void saveAll(List<AccountProfit> accountProfits) {
-        accountProfitRepository.saveAll(accountProfits);
+        accountProfitRepository.saveAllInBatch(accountProfits);
     }
 
     public List<AccountProfit> readByAccountId(Long accountId) {

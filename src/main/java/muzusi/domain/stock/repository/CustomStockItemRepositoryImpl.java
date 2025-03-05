@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
 @RequiredArgsConstructor
-public class StockItemCustomRepositoryImpl implements StockItemCustomRepository {
+public class CustomStockItemRepositoryImpl implements CustomStockItemRepository {
     private final MongoTemplate mongoTemplate;
 
     @Override

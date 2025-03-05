@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -139,8 +140,8 @@ class TradeReservationProcessorTest {
         verify(accountService, times(1)).readByUserId(1L);
         verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, never()).save(any(Holding.class));
-        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
+        verify(tradeReservationService, times(1)).deleteAllByIds(anyList());
+        verify(tradeService, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -165,8 +166,8 @@ class TradeReservationProcessorTest {
 
         verify(accountService, times(1)).readByUserId(1L);
         verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
-        verify(tradeReservationService, times(2)).deleteById(sellReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
+        verify(tradeReservationService, times(1)).deleteAllByIds(anyList());
+        verify(tradeService, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -197,8 +198,8 @@ class TradeReservationProcessorTest {
         verify(accountService, times(1)).readByUserId(1L);
         verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, times(1)).save(any(Holding.class));
-        verify(tradeReservationService, times(2)).deleteById(buyReservation1.getId());
-        verify(tradeService, times(2)).save(any(Trade.class));
+        verify(tradeReservationService, times(1)).deleteAllByIds(anyList());
+        verify(tradeService, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -228,7 +229,7 @@ class TradeReservationProcessorTest {
         verify(accountService, times(1)).readByUserId(1L);
         verify(holdingService, times(1)).readByUserIdAndStockCode(1L, "005390");
         verify(holdingService, times(1)).deleteByUserIdAndStockCode(1L, "005390");
-        verify(tradeReservationService, times(1)).deleteById(fullSellReservation.getId());
-        verify(tradeService, times(1)).save(any(Trade.class));
+        verify(tradeReservationService, times(1)).deleteAllByIds(anyList());
+        verify(tradeService, times(1)).saveAll(anyList());
     }
 }

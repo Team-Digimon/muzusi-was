@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface StockItemRepository extends MongoRepository<StockItem, String>, StockItemCustomRepository {
+public interface StockItemRepository extends MongoRepository<StockItem, String>, CustomStockItemRepository {
 
     @Query(value = "{'stockName': {$regex: ?0, $options: 'i'}}", sort = "{'searchCount': -1, 'stockName': 1}")
     List<StockItem> findByKeyword(String keyword, Pageable pageable);

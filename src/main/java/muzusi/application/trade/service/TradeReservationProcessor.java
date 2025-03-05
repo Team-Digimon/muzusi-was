@@ -53,15 +53,15 @@ public class TradeReservationProcessor {
         Map<Long, List<TradeReservation>> totalBuyAmountMap = totalAmounts.getLeft();
         Map<Long, List<TradeReservation>> totalSellStockMap = totalAmounts.getRight();
 
-        processBuyOrders(totalBuyAmountMap);
-        processSellOrders(totalSellStockMap);
+        processBuyOrders(totalBuyAmountMap, stockCode);
+        processSellOrders(totalSellStockMap, stockCode);
     }
 
     /**
      * 예약 내역 중 체결 가능한 내역 매수/매도 별 userId로 구분하여 값 수집
      *
      * @param stockCode : 주식 코드
-     * @param lowPrice : 특정 시간대 주식 저가
+     * @param lowPrice  : 특정 시간대 주식 저가
      * @param highPrice : 특정 시간대 주식 고가
      * @return : userId별 매수/매도 Pair 쌍
      */
@@ -93,8 +93,12 @@ public class TradeReservationProcessor {
      * - 예약 체결 내역 생성 (trade)
      *
      * @param totalBuyAmountMap : 예약 내역
+     * @param stockCode : 종목 코드
      */
-    private void processBuyOrders(Map<Long, List<TradeReservation>> totalBuyAmountMap) {
+    private void processBuyOrders(Map<Long, List<TradeReservation>> totalBuyAmountMap, String stockCode) {
+        List<String> tradeReservationIds = new ArrayList<>();
+        List<Trade> trades = new ArrayList<>();
+
         totalBuyAmountMap.forEach((userId, reservations) -> {
             Account account = accountService.readByUserId(userId)
                     .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
@@ -110,8 +114,13 @@ public class TradeReservationProcessor {
             account.clearReservedPrice(totalPrice);
             holding.addStock(totalStockCount, averagePrice);
 
-            reservations.forEach(reservation -> finalizeTrade(reservation, account));
+            reservations.forEach(reservation -> {
+                tradeReservationIds.add(reservation.getId());
+                trades.add(createTradeEntity(reservation, account));
+            });
         });
+
+        finalizeTrade(tradeReservationIds, trades, stockCode);
     }
 
     /**
@@ -120,8 +129,12 @@ public class TradeReservationProcessor {
      * - 예약 체결 내역 생성 (trade)
      *
      * @param totalSellStockMap : 예약 내역
+     * @param stockCode : 종목 코드
      */
-    private void processSellOrders(Map<Long, List<TradeReservation>> totalSellStockMap) {
+    private void processSellOrders(Map<Long, List<TradeReservation>> totalSellStockMap, String stockCode) {
+        List<String> tradeReservationIds = new ArrayList<>();
+        List<Trade> trades = new ArrayList<>();
+
         totalSellStockMap.forEach((userId, reservations) -> {
             Account account = accountService.readByUserId(userId)
                     .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
@@ -140,8 +153,13 @@ public class TradeReservationProcessor {
                 holdingService.deleteByUserIdAndStockCode(userId, firstReservation.getStockCode());
             }
 
-            reservations.forEach(reservation -> finalizeTrade(reservation, account));
+            reservations.forEach(reservation -> {
+                tradeReservationIds.add(reservation.getId());
+                trades.add(createTradeEntity(reservation, account));
+            });
         });
+
+        finalizeTrade(tradeReservationIds, trades, stockCode);
     }
 
     /**
@@ -164,27 +182,36 @@ public class TradeReservationProcessor {
     }
 
     /**
+     * Trade Entity 생성
+     */
+    private Trade createTradeEntity(TradeReservation reservation, Account account) {
+        return Trade.builder()
+                .stockPrice(reservation.getInputPrice())
+                .stockCount(reservation.getStockCount())
+                .stockName(reservation.getStockName())
+                .stockCode(reservation.getStockCode())
+                .tradeType(reservation.getTradeType())
+                .account(account)
+                .build();
+    }
+
+    /**
      * 거래 완료 후 처리 (예약 삭제 및 거래 내역 추가)
      * 1. 예약 내역 삭제
      * 2. 거래 내역 추가
      * 3. 종목 코드에 예약 내역 없으면, redis 값 삭제
      */
-    private void finalizeTrade(TradeReservation reservation, Account account) {
-        tradeReservationService.deleteById(reservation.getId());
+    private void finalizeTrade(List<String> tradeReservationIds, List<Trade> trades, String stockCode) {
+        if (!tradeReservationIds.isEmpty()) {
+            tradeReservationService.deleteAllByIds(tradeReservationIds);
+        }
 
-        tradeService.save(
-                Trade.builder()
-                        .stockPrice(reservation.getInputPrice())
-                        .stockCount(reservation.getStockCount())
-                        .stockName(reservation.getStockName())
-                        .stockCode(reservation.getStockCode())
-                        .tradeType(reservation.getTradeType())
-                        .account(account)
-                        .build()
-        );
+        if (!trades.isEmpty()) {
+            tradeService.saveAll(trades);
+        }
 
-        if (!tradeReservationService.existsByStockCode(reservation.getStockCode())) {
-            redisService.removeFromSet(TradeConstant.RESERVATION_PREFIX.getValue(), reservation.getStockCode());
+        if (!tradeReservationService.existsByStockCode(stockCode)) {
+            redisService.removeFromSet(TradeConstant.RESERVATION_PREFIX.getValue(), stockCode);
         }
     }
 }
