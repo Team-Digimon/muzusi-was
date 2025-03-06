@@ -1,15 +1,20 @@
 package muzusi.domain.trade.repository;
 
 import muzusi.domain.trade.entity.TradeReservation;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TradeReservationRepository extends MongoRepository<TradeReservation, String> {
+public interface TradeReservationRepository extends JpaRepository<TradeReservation, Long> {
     List<TradeReservation> findByStockCode(String stockCode);
     boolean existsByStockCode(String stockCode);
-
-    @Query(value = "{ 'userId': ?0 }", sort = "{ 'createdAt': -1 }")
     List<TradeReservation> findByUserIdOrderByCreatedAtDesc(Long userId);
+
+    @Modifying
+    @Query("DELETE FROM trade_reservation t WHERE t.id IN :ids")
+    void deleteAllByIds(@Param("ids") List<Long> ids);
+
 }
