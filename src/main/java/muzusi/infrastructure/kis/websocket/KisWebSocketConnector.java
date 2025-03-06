@@ -31,6 +31,12 @@ public class KisWebSocketConnector {
         private final String value;
     }
 
+    /**
+     * 한국투자증권 웹소켓 특정 종목 구독 요청 메서드
+     *
+     * @param trId : 트랜잭션 아이디
+     * @param stockCode : 주식 종목 코드
+     */
     public void subscribe(String trId, String stockCode) {
         SessionConnectionDto session = kisWebSocketSessionManager.getSessionToSubscribe(trId, stockCode);
 
@@ -40,6 +46,12 @@ public class KisWebSocketConnector {
         sendMessage(session.getSession(), session.getWebSocketKey(), trId, stockCode, RequestType.SUBSCRIBE);
     }
 
+    /**
+     * 한국투자증권 웹소켓 특정 종목 구독 해제 요청 메서드
+     * 
+     * @param trId : 트랜잭션 아이디
+     * @param stockCode : 주식 종목 코드
+     */
     public void unsubscribe(String trId, String stockCode) {
         SessionConnectionDto session = kisWebSocketSessionManager.getSessionToUnsubscribe(trId, stockCode);
 
@@ -49,6 +61,15 @@ public class KisWebSocketConnector {
         sendMessage(session.getSession(), session.getWebSocketKey(), trId, stockCode, RequestType.UNSUBSCRIBE);
     }
 
+    /**
+     * 한국투자증권 웹소켓 메시지 전달 메서드
+     *
+     * @param session : 웹소켓 세션
+     * @param webSocketKey : 세션 별 접속키
+     * @param trId : 트랜잭션 아이디
+     * @param stockCode : 주식 종목 코드
+     * @param requestType : 구독/해제 여부
+     */
     private void sendMessage(WebSocketSession session, String webSocketKey, String trId, String stockCode, RequestType requestType) {
         Map<String, String> header = new HashMap<>();
         header.put("approval_key", webSocketKey);
@@ -75,6 +96,11 @@ public class KisWebSocketConnector {
         }
     }
 
+    /**
+     * 한국투자증권 웹소켓 세션 연결 유지 요청 메서드
+     * 
+     * @param session : 웹소켓 세션
+     */
     public void keepConnection(WebSocketSession session) {
         if (session == null || !session.isOpen())
             throw new KisApiException(new RuntimeException("Session is closed"));

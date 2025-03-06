@@ -18,12 +18,18 @@ public class KisWebSocketRouter extends TextWebSocketHandler {
     private final RealTimeTradePublisher realTimeTradePublisher;
     private final KisWebSocketSessionManager kisWebSocketSessionManager;
 
+    /**
+     * 세션 연결 시, 세션 관리자에 세션을 등록하는 메서드
+     */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         kisWebSocketSessionManager.addSession(session);
         super.afterConnectionEstablished(session);
     }
 
+    /**
+     * 웹소켓 메시지 수신 시 적절한 처리 클래스로 메시지를 분배하는 메서드
+     */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
@@ -33,12 +39,15 @@ public class KisWebSocketRouter extends TextWebSocketHandler {
             String[] metas = parts[0].split("\\|");
 
             switch (KisWebSocketTransactionType.of(metas[1])) {
-                case H0STCNT0 -> realTimeTradePublisher.execute(payload);
+                case REAL_TIME_TRADE -> realTimeTradePublisher.execute(payload);
                 default -> throw new KisApiException(new RuntimeException("No handler class for Response"));
             }
         }
     }
 
+    /**
+     * 세션 종료 시, 세션 관리자에서 세션을 삭제하는 메서드
+     */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         kisWebSocketSessionManager.deleteSession(session);

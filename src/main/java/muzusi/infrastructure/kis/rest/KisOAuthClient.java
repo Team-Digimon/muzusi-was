@@ -60,24 +60,18 @@ public class KisOAuthClient {
         }
     }
 
+    /**
+     * 모든 한국투자증권 인증키를 통한 웹소켓 접속키 발급 메서드
+     *
+     * @return : 웹소켓 접속키 목록
+     */
     public List<String> getAllWebSocketKey() {
         List<String> webSocketKeys = new ArrayList<>();
 
-        for (Pair<String, String> authKey : getAuthKey())
+        for (Pair<String, String> authKey : kisProperties.getAuthKeys())
             webSocketKeys.add(getWebSocketKey(authKey.getLeft(), authKey.getRight()));
 
         return webSocketKeys;
-    }
-
-    private List<Pair<String, String>> getAuthKey() {
-        List<String> appKeys = kisProperties.getAppKey();
-        List<String> appSecrets = kisProperties.getAppSecret();
-        List<Pair<String, String>> authKeys = new ArrayList<>();
-
-        for (int idx = 0; idx < Math.max(appKeys.size(), appSecrets.size()); idx++)
-            authKeys.add(Pair.of(appKeys.get(idx), appSecrets.get(idx)));
-
-        return authKeys;
     }
 
     /**
