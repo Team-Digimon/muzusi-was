@@ -158,7 +158,7 @@ class TradeReservationHandlerTest {
     @DisplayName("예약 매수 취소 테스트")
     void cancelReservationPurchaseTest() {
         // given
-        String tradeReservationId = "tradeReservationId";
+        Long tradeReservationId = 1L;
         given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(buyTradeReservation));
         given(accountService.readByUserId(1L)).willReturn(Optional.ofNullable(account));
         Long currentAccountBalance = account.getBalance();
@@ -178,7 +178,7 @@ class TradeReservationHandlerTest {
     @DisplayName("예약 매도 취소 테스트")
     void cancelReservationSaleTest() {
         // given
-        String tradeReservationId = "tradeReservationId";
+        Long tradeReservationId = 1L;
         given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(sellTradeReservation));
         given(holdingService.readByUserIdAndStockCode(1L, "000610")).willReturn(Optional.ofNullable(holding));
         int currentReservedStockCount = holding.getReservedStockCount();
@@ -195,7 +195,7 @@ class TradeReservationHandlerTest {
     @DisplayName("예약 취소에 대한 권한 없음")
     void cancelReservationFailedByForbidden() {
         // given
-        String tradeReservationId = "tradeReservationId";
+        Long tradeReservationId = 1L;
         given(tradeReservationService.readById(tradeReservationId)).willReturn(Optional.ofNullable(sellTradeReservation));
         Long anotherUserId = 2L;
 
