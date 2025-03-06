@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum KisWebSocketTransactionType {
-    H0STCNT0("H0STCNT0");
+    REAL_TIME_TRADE("H0STCNT0");
 
     private final String value;
 
