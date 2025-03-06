@@ -21,7 +21,7 @@ public class TradeReservationService {
         return tradeReservationRepository.findAll();
     }
 
-    public Optional<TradeReservation> readById(String id) {
+    public Optional<TradeReservation> readById(Long id) {
         return tradeReservationRepository.findById(id);
     }
 
@@ -37,12 +37,12 @@ public class TradeReservationService {
         return tradeReservationRepository.existsByStockCode(stockCode);
     }
 
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
         tradeReservationRepository.deleteById(id);
     }
 
-    public void deleteAllByIds(List<String> ids) {
-        tradeReservationRepository.deleteAllById(ids);
+    public void deleteAllByIds(List<Long> ids) {
+        tradeReservationRepository.deleteAllByIds(ids);
     }
 
     public void deleteAll() {

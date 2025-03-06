@@ -127,5 +127,5 @@ public interface TradeApi {
                     }))
     })
     ResponseEntity<?> cancelTradeReservation(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                             @PathVariable String tradeReservationId);
+                                             @PathVariable Long tradeReservationId);
 }
