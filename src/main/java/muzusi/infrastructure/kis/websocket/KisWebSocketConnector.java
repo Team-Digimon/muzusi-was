@@ -37,7 +37,7 @@ public class KisWebSocketConnector {
      * @param trId : 트랜잭션 아이디
      * @param stockCode : 주식 종목 코드
      */
-    public void subscribe(String trId, String stockCode) {
+    public synchronized void subscribe(String trId, String stockCode) {
         SessionConnectionDto session = kisWebSocketSessionManager.getSessionToSubscribe(trId, stockCode);
 
         if (session == null)
@@ -52,7 +52,7 @@ public class KisWebSocketConnector {
      * @param trId : 트랜잭션 아이디
      * @param stockCode : 주식 종목 코드
      */
-    public void unsubscribe(String trId, String stockCode) {
+    public synchronized void unsubscribe(String trId, String stockCode) {
         SessionConnectionDto session = kisWebSocketSessionManager.getSessionToUnsubscribe(trId, stockCode);
 
         if (session == null)
@@ -75,7 +75,6 @@ public class KisWebSocketConnector {
         header.put("approval_key", webSocketKey);
         header.put("custtype", "P");
         header.put("tr_type", requestType.getValue());
-        header.put("tr_type", "1");
         header.put("content-type", "utf-8");
 
         Map<String, Object> body = new HashMap<>();
@@ -87,7 +86,6 @@ public class KisWebSocketConnector {
         Map<String, Object> request = new HashMap<>();
         request.put("header", header);
         request.put("body", body);
-
 
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(request)));
