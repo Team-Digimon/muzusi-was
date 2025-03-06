@@ -96,7 +96,7 @@ public class TradeReservationProcessor {
      * @param stockCode : 종목 코드
      */
     private void processBuyOrders(Map<Long, List<TradeReservation>> totalBuyAmountMap, String stockCode) {
-        List<String> tradeReservationIds = new ArrayList<>();
+        List<Long> tradeReservationIds = new ArrayList<>();
         List<Trade> trades = new ArrayList<>();
 
         totalBuyAmountMap.forEach((userId, reservations) -> {
@@ -132,7 +132,7 @@ public class TradeReservationProcessor {
      * @param stockCode : 종목 코드
      */
     private void processSellOrders(Map<Long, List<TradeReservation>> totalSellStockMap, String stockCode) {
-        List<String> tradeReservationIds = new ArrayList<>();
+        List<Long> tradeReservationIds = new ArrayList<>();
         List<Trade> trades = new ArrayList<>();
 
         totalSellStockMap.forEach((userId, reservations) -> {
@@ -201,7 +201,7 @@ public class TradeReservationProcessor {
      * 2. 거래 내역 추가
      * 3. 종목 코드에 예약 내역 없으면, redis 값 삭제
      */
-    private void finalizeTrade(List<String> tradeReservationIds, List<Trade> trades, String stockCode) {
+    private void finalizeTrade(List<Long> tradeReservationIds, List<Trade> trades, String stockCode) {
         if (!tradeReservationIds.isEmpty()) {
             tradeReservationService.deleteAllByIds(tradeReservationIds);
         }

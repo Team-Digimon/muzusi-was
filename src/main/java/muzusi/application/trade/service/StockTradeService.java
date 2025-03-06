@@ -59,7 +59,7 @@ public class StockTradeService {
      * @param tradeReservationId : 예약주식 pk값
      */
     @Transactional
-    public void cancelTradeReservation(Long userId, String tradeReservationId) {
+    public void cancelTradeReservation(Long userId, Long tradeReservationId) {
         tradeReservationHandler.cancelTradeReservation(userId, tradeReservationId);
     }
 }

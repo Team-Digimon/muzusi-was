@@ -6,7 +6,7 @@ import muzusi.domain.trade.type.TradeType;
 import java.time.LocalDateTime;
 
 public record ReservationInfoDto(
-        String id,
+        Long id,
         Long userId,
         Long inputPrice,
         Integer stockCount,

@@ -97,7 +97,7 @@ public class TradeReservationHandler {
      * @param userId : 사용자 pk값
      * @param tradeReservationId : 예약주식 pk값
      */
-    public void cancelTradeReservation(Long userId, String tradeReservationId) {
+    public void cancelTradeReservation(Long userId, Long tradeReservationId) {
         TradeReservation reservation = tradeReservationService.readById(tradeReservationId)
                 .orElseThrow(() -> new CustomException(TradeErrorType.NOT_FOUND));
 
@@ -145,7 +145,7 @@ public class TradeReservationHandler {
      * @param tradeReservationId : 예약 내역 id
      * @param stockCode : 주식 종목 코드
      */
-    private void finalizeCancelReservation(String tradeReservationId, String stockCode) {
+    private void finalizeCancelReservation(Long tradeReservationId, String stockCode) {
         tradeReservationService.deleteById(tradeReservationId);
 
         if (!tradeReservationService.existsByStockCode(stockCode)) {
