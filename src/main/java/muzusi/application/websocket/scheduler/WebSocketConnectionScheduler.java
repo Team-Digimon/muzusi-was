@@ -2,7 +2,6 @@ package muzusi.application.websocket.scheduler;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import muzusi.infrastructure.kis.KisAuthService;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionManager;
 import muzusi.infrastructure.kis.websocket.Session;
@@ -18,16 +17,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-@DependsOn("kisWebSocketConfig")
+@DependsOn({"kisWebSocketConfig", "kisOAuthService"})
 @RequiredArgsConstructor
 public class WebSocketConnectionScheduler {
     private final List<WebSocketConnectionManager> connections;
     private final KisWebSocketSessionManager kisWebSocketSessionManager;
     private final KisWebSocketConnector kisWebSocketConnector;
-    private final KisAuthService kisAuthService;
 
     @PostConstruct
-    public void init() {
+    public void init() throws InterruptedException {
         LocalDateTime now = LocalDateTime.now();
         DayOfWeek dayOfWeek = now.getDayOfWeek();
         boolean isWeek = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
@@ -35,20 +33,19 @@ public class WebSocketConnectionScheduler {
                             && ((now.getHour() < 15) || (now.getHour() == 15 && now.getMinute() < 30));
 
         for (WebSocketConnectionManager connection : connections) {
-            if (!isWeek && isEnabled && !connection.isConnected())
+            if (!isWeek && isEnabled && !connection.isConnected()) {
                 connection.start();
+                Thread.sleep(1000L);
+            }
         }
     }
 
     @Scheduled(cron = "30 58 8 * * 1-5")
-    public void runConnectWebSocketSessionJob() {
-        for (WebSocketConnectionManager connection : connections)
+    public void runConnectWebSocketSessionJob() throws InterruptedException {
+        for (WebSocketConnectionManager connection : connections) {
             connection.start();
-    }
-
-    @Scheduled(cron = "0 59 8 * * 1-5")
-    public void runSaveWebSocketKeyJob() {
-        kisWebSocketSessionManager.addWebSocketKey(kisAuthService.getWebSocketKey());
+            Thread.sleep(1000L);
+        }
     }
 
     @Scheduled(cron = "0 30 15 * * 1-5")

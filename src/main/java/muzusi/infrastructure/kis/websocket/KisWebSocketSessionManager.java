@@ -4,19 +4,21 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisAuthDto;
+import muzusi.infrastructure.kis.KisAuthService;
 import muzusi.infrastructure.kis.dto.SessionConnectionDto;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Component
 @Getter
 @RequiredArgsConstructor
 public class KisWebSocketSessionManager {
-    private final List<Session> sessions = new ArrayList<>();
+    private final CopyOnWriteArrayList<Session> sessions = new CopyOnWriteArrayList<>();
+    private final KisAuthService kisAuthService;
 
     /**
      * 웹소켓 세션을 관리 세션 목록에 추가하는 메서드
@@ -24,8 +26,11 @@ public class KisWebSocketSessionManager {
      * @param session : 웹소켓 세션
      */
     public void addSession(WebSocketSession session) {
+        KisAuthDto.WebSocketKey webSocketKey = kisAuthService.getWebSocketKey().get(sessions.size());
+
         sessions.add(Session.builder()
                 .session(session)
+                .webSocketKey(webSocketKey.getValue())
                 .build());
     }
 
@@ -39,17 +44,6 @@ public class KisWebSocketSessionManager {
             if (session.getWebSocketSession().getId().equals(webSocketSession.getId())) {
                 sessions.remove(session);
             }
-        }
-    }
-
-    /**
-     * 웹소켓 세션 별 웹소켓 접속키를 추가하는 메서드
-     * 
-     * @param webSocketKeys : 웹소켓 접속키 리스트
-     */
-    public void addWebSocketKey(List<KisAuthDto.WebSocketKey> webSocketKeys) {
-        for (int idx = 0; idx < Math.min(sessions.size(), webSocketKeys.size()); idx++) {
-            sessions.get(idx).setWebSocketKey(webSocketKeys.get(idx));
         }
     }
 
