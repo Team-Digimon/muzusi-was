@@ -7,7 +7,6 @@ import muzusi.application.account.dto.AccountProfitInfoDto;
 import muzusi.application.account.dto.AccountSummaryDto;
 import muzusi.application.holding.service.UserHoldingService;
 import muzusi.domain.account.entity.Account;
-import muzusi.domain.account.entity.AccountProfit;
 import muzusi.domain.account.exception.AccountErrorType;
 import muzusi.domain.account.service.AccountProfitService;
 import muzusi.domain.account.service.AccountService;
@@ -53,8 +52,22 @@ public class UserAccountService {
         User foundUser = userService.readById(userId)
                 .orElseThrow(() -> new CustomException(UserErrorType.NOT_FOUND));
 
+        Account preAccount = accountService.readByUserId(userId)
+                .orElseThrow(() -> new CustomException(AccountErrorType.NOT_FOUND));
+
+        calculateAndUpdateTotalEvaluatedAmount(preAccount);
         foundUser.incrementAttemptCount();
         accountManagementService.createAndLinkAccount(foundUser);
+    }
+
+    /**
+     * 이전 계좌 보유 주식 수익률 업데이트
+     *
+     * @param account : 사용자의 이전 계좌
+     */
+    private void calculateAndUpdateTotalEvaluatedAmount(Account account) {
+        Long totalEvaluatedAmount = userHoldingService.calculateTotalRateOfReturn(account.getId()).totalEvaluatedAmount();
+        account.updateTotalEvaluatedAmount(totalEvaluatedAmount);
     }
 
     /**
