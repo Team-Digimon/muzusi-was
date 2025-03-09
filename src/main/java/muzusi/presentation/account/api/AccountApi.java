@@ -61,13 +61,13 @@ public interface AccountApi {
                                                     {
                                                         "id": 1,
                                                         "balance": 10000000,
-                                                        "reservedPrice": 300000,
+                                                        "totalEvaluatedAmount": 300000,
                                                         "createdAt": "2025-02-16T19:10:21.744044"
                                                     },
                                                     {
                                                         "id": 2,
                                                         "balance": 20000000,
-                                                        "reservedPrice": 300000,
+                                                        "totalEvaluatedAmount": 300000,
                                                         "createdAt": "2025-02-16T19:10:21.744044"
                                                     }
                                                 ],
