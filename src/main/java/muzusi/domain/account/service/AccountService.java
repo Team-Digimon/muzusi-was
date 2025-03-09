@@ -23,7 +23,7 @@ public class AccountService {
     }
 
     public List<Account> readAllByUserId(Long userId) {
-        return accountRepository.findByUser_Id(userId);
+        return accountRepository.findAllExceptLatestByUserId(userId);
     }
 
     public Optional<Account> readByUserId(Long userId) {

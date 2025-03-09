@@ -38,6 +38,9 @@ public class Account {
     @Column(name = "reserved_price")
     private Long reservedPrice = 0L;
 
+    @Column(name = "total_evaluated_amount")
+    private Long totalEvaluatedAmount = 0L;
+
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -92,5 +95,9 @@ public class Account {
      */
     public void clearReservedPrice(Long price) {
         this.reservedPrice -= price;
+    }
+
+    public void updateTotalEvaluatedAmount(Long totalEvaluatedAmount) {
+        this.totalEvaluatedAmount = totalEvaluatedAmount;
     }
 }

@@ -53,4 +53,19 @@ public class CustomAccountRepositoryImpl implements CustomAccountRepository {
                 ))
                 .fetch();
     }
+
+    @Override
+    public List<Account> findAllExceptLatestByUserId(Long userId) {
+        return jpaQueryFactory
+                .selectFrom(account)
+                .where(account.user.id.eq(userId)
+                        .and(account.createdAt.lt(
+                                jpaQueryFactory
+                                        .select(account.createdAt.max())
+                                        .from(account)
+                                        .where(account.user.id.eq(userId))
+                        )))
+                .orderBy(account.createdAt.asc())
+                .fetch();
+    }
 }
