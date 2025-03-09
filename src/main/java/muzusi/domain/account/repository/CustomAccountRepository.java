@@ -10,4 +10,5 @@ public interface CustomAccountRepository {
     Optional<Account> findLatestAccount(Long userId);
     LocalDateTime findLatestCreatedAt(Long userId);
     List<Account> findLatestAccountsForAllUsers();
+    List<Account> findAllExceptLatestByUserId(Long userId);
 }
