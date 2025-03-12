@@ -31,6 +31,7 @@ public class AccountProfit {
     private Long totalBalance;
 
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDate createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
