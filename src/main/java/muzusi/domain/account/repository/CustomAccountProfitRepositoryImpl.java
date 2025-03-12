@@ -17,7 +17,7 @@ public class CustomAccountProfitRepositoryImpl implements CustomAccountProfitRep
 
     @Override
     public void saveAllInBatch(List<AccountProfit> accountProfits) {
-        String sql = "INSERT INTO account_profit (total_balance, account_id, createdAt) " +
+        String sql = "INSERT INTO account_profit (total_balance, account_id, created_at) " +
                 "VALUES (?, ?, ?)";
 
         jdbcTemplate.batchUpdate(
