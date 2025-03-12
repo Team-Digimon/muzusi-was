@@ -7,7 +7,6 @@ import muzusi.domain.account.service.AccountService;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.exception.HoldingErrorType;
 import muzusi.domain.holding.service.HoldingService;
-import muzusi.domain.stock.entity.Stock;
 import muzusi.domain.trade.entity.Trade;
 import muzusi.domain.trade.service.TradeService;
 import muzusi.domain.trade.type.TradeType;
@@ -50,7 +49,6 @@ class StockTradeExecutorTest {
     private TradeReqDto buyTradeDto;
     private TradeReqDto sellTradeDto;
     private Account account;
-    private Stock stock;
     private Holding holding;
     private User user;
 
@@ -61,11 +59,6 @@ class StockTradeExecutorTest {
 
         account = Account.builder()
                 .balance(Account.INITIAL_BALANCE)
-                .build();
-
-        stock = Stock.builder()
-                .stockName("삼성전자")
-                .stockCode("000610")
                 .build();
 
         holding = Holding.builder()
