@@ -6,10 +6,9 @@ import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
+import muzusi.domain.stock.service.StockPriceService;
 import muzusi.infrastructure.data.StockCodeProvider;
 import muzusi.infrastructure.kis.KisStockClient;
-import muzusi.infrastructure.redis.RedisService;
-import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -26,10 +25,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class KisStockMinutesService {
     private final StockCodeProvider stockCodeProvider;
-    private final RedisService redisService;
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
-
+    private final StockPriceService stockPriceService;
     private static final int BATCH_SIZE = 500;
 
     /**
@@ -39,39 +37,35 @@ public class KisStockMinutesService {
      */
     public void saveStockMinutesChartAndInquirePrice() throws InterruptedException {
         int count = 0;
-        Map<String, Object> inquirePriceMap = new HashMap<>();
+        Map<String, StockChartInfoDto> stockChartInfoMap = new HashMap<>(BATCH_SIZE);
         LocalDateTime now = LocalDateTime.now();
+
         for (String code : stockCodeProvider.getAllStockCodes()) {
             if (++count % 15 == 0) {
                 Thread.sleep(1000L);
             }
-            StockChartInfoDto stockChartInfoDto = kisStockClient.getStockMinutesChartInfo(code, now);
-            inquirePriceMap.put(code, stockChartInfoDto);
+            StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now);
+            stockChartInfoMap.put(code, stockChartInfo);
 
             if (count == BATCH_SIZE) {
-                for (String key : inquirePriceMap.keySet()) {
-                    redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + key, inquirePriceMap.get(key));
-                }
-                redisService.addToHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), convertStockPriceMap(inquirePriceMap));
-                inquirePriceMap.clear();
+                stockMinutesService.saveAllInCache(stockChartInfoMap.values());
+                stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
+                stockChartInfoMap.clear();
                 count = 0;
             }
         }
 
-        if (!inquirePriceMap.isEmpty()) {
-            for (String key : inquirePriceMap.keySet()) {
-                redisService.setList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + key, inquirePriceMap.get(key));
-            }
-            redisService.addToHash(KisConstant.INQUIRE_PRICE_PREFIX.getValue(), convertStockPriceMap(inquirePriceMap));
+        if (!stockChartInfoMap.isEmpty()) {
+            stockMinutesService.saveAllInCache(stockChartInfoMap.values());
+            stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
         }
     }
 
-    private Map<String, Object> convertStockPriceMap(Map<String, Object> stockMinutesChartMap) {
-        return stockMinutesChartMap.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), extractStockPrice((StockChartInfoDto) entry.getValue())))
+    private Map<String, Object> convertToStockPriceMap(Map<String, StockChartInfoDto> stockChartInfoMap) {
+        return stockChartInfoMap.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), extractStockPrice(entry.getValue())))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
-
 
     private StockPriceDto extractStockPrice(StockChartInfoDto stockMinutesChartInfo) {
         return StockPriceDto.builder()
@@ -90,20 +84,16 @@ public class KisStockMinutesService {
         List<StockMinutes> stockMinutesList = new ArrayList<>(BATCH_SIZE);
         int count = 0;
 
-        for (String code : stockCodeProvider.getAllStockCodes()) {
-            String key = KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + code;
-
-            List<StockChartInfoDto> minutesCharts = redisService.getList(key).stream()
-                            .map(stockMinutesChart -> (StockChartInfoDto) stockMinutesChart)
-                            .toList();
+        for (String stockCode : stockCodeProvider.getAllStockCodes()) {
+            List<StockChartInfoDto> minutesCharts = stockMinutesService.readAllInCache(stockCode);
 
             stockMinutesList.add(StockMinutes.builder()
-                    .stockCode(code)
+                    .stockCode(stockCode)
                     .date(LocalDate.now(ZoneId.of("Asia/Seoul")))
                     .minutesChart(minutesCharts)
                     .build());
 
-            redisService.del(key);
+            stockMinutesService.deleteInCache(stockCode);
 
             if (++count == BATCH_SIZE) {
                stockMinutesService.saveAll(stockMinutesList);
