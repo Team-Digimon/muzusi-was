@@ -26,6 +26,7 @@ public class KisStockClient {
     private final KisRequestFactory kisRequestFactory;
     private static final int MINUTES_GAP = 10;
     private static final String MINUTES_CHART_TR_ID = "FHKST03010200";
+    private static final String INQUIRE_PRICE_TR_ID = "FHKST01010100";
 
     public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
         HttpHeaders headers = kisRequestFactory.getHttpHeader(MINUTES_CHART_TR_ID);
@@ -78,6 +79,35 @@ public class KisStockClient {
                     .close(close)
                     .volume(volume)
                     .build();
+        } catch (Exception e) {
+            throw new KisApiException(e);
+        }
+    }
+
+    public Long getStockInquirePrice(String stockCode) {
+        HttpHeaders headers = kisRequestFactory.getHttpHeader(INQUIRE_PRICE_TR_ID);
+
+        String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.INQUIRE_PRICE))
+                .queryParam("FID_COND_MRKT_DIV_CODE", "J")
+                .queryParam("FID_INPUT_ISCD", stockCode)
+                .build().toUriString();
+
+        HttpEntity<String> requestInfo = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                    uri,
+                    HttpMethod.GET,
+                    requestInfo,
+                    String.class
+            );
+
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            JsonNode output = rootNode.get("output");
+
+            return output.get("stck_prpr").asLong();
         } catch (Exception e) {
             throw new KisApiException(e);
         }

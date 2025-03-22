@@ -16,6 +16,10 @@ public class StockDailyService {
         stockDailyRepository.save(stockDaily);
     }
 
+    public void saveAll(List<StockDaily> stockDailies) {
+        stockDailyRepository.saveAll(stockDailies);
+    }
+
     public List<StockDaily> readByStockCode(String stockCode) {
         return stockDailyRepository.findByStockCodeOrderByDateAsc(stockCode);
     }
