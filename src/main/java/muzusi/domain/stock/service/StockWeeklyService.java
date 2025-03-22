@@ -16,6 +16,10 @@ public class StockWeeklyService {
         stockWeeklyRepository.save(stockWeekly);
     }
 
+    public void saveAll(List<StockWeekly> stockWeeklies) {
+        stockWeeklyRepository.saveAll(stockWeeklies);
+    }
+
     public List<StockWeekly> readByStockCode(String stockCode) {
         return stockWeeklyRepository.findByStockCodeOrderByDateAsc(stockCode);
     }
