@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StockHistoryService {
+public class StockChartQueryService {
     private final StockMinutesService stockMinutesService;
     private final StockDailyService stockDailyService;
     private final StockWeeklyService stockWeeklyService;

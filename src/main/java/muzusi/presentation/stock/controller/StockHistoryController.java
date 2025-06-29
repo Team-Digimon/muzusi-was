@@ -1,7 +1,7 @@
 package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.service.StockHistoryService;
+import muzusi.application.stock.service.StockChartQueryService;
 import muzusi.domain.stock.type.StockPeriodType;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockHistoryApi;
@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stocks")
 @RequiredArgsConstructor
 public class StockHistoryController implements StockHistoryApi {
-    private final StockHistoryService stockHistoryService;
+    private final StockChartQueryService stockChartQueryService;
 
     @Override
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockHistory(@PathVariable String stockCode,
                                              @RequestParam StockPeriodType period) {
         return ResponseEntity.ok(
-                SuccessResponse.from(stockHistoryService.getStockHistoryByType(stockCode, period))
+                SuccessResponse.from(stockChartQueryService.getStockHistoryByType(stockCode, period))
         );
     }
 }

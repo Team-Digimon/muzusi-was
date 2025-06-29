@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
-public class StockHistoryServiceTest {
+public class StockChartQueryServiceTest {
     
     @Mock
     private StockMinutesService stockMinutesService;
@@ -46,7 +46,7 @@ public class StockHistoryServiceTest {
     private StockYearlyService stockYearlyService;
     
     @InjectMocks
-    private StockHistoryService stockHistoryService;
+    private StockChartQueryService stockChartQueryService;
     
     private final String stockCode = "000001";
     
@@ -76,7 +76,7 @@ public class StockHistoryServiceTest {
             mockedLocalDateTime.when(LocalDateTime::now).thenReturn(mockNow);
             
             // when
-            List<StockChartInfoDto> result = stockHistoryService
+            List<StockChartInfoDto> result = stockChartQueryService
                     .getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY);
             
             // then
@@ -98,7 +98,7 @@ public class StockHistoryServiceTest {
             
             // when
             CustomException exception = assertThrows(CustomException.class, ()
-                    -> stockHistoryService.getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY));
+                    -> stockChartQueryService.getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY));
             
             // then
             assertEquals(exception.getErrorType(), StockErrorType.NOT_AVAILABLE_MINUTES_CHART);
@@ -119,7 +119,7 @@ public class StockHistoryServiceTest {
             
             // when
             CustomException exception = assertThrows(CustomException.class, ()
-                    -> stockHistoryService.getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY));
+                    -> stockChartQueryService.getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY));
             
             // then
             assertEquals(exception.getErrorType(), StockErrorType.NOT_AVAILABLE_MINUTES_CHART);
