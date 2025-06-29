@@ -19,4 +19,8 @@ public class StockYearlyService {
     public List<StockYearly> readByStockCode(String stockCode) {
         return stockYearlyRepository.findByStockCodeOrderByDateAsc(stockCode);
     }
+
+    public void saveAll(List<StockYearly> stockYearlies) {
+        stockYearlyRepository.saveAll(stockYearlies);
+    }
 }
