@@ -10,12 +10,9 @@ import muzusi.domain.stock.service.StockWeeklyService;
 import muzusi.domain.stock.service.StockYearlyService;
 import muzusi.domain.stock.type.StockPeriodType;
 import muzusi.global.exception.CustomException;
-import muzusi.infrastructure.redis.RedisService;
-import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -23,13 +20,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StockHistoryService {
+public class StockChartQueryService {
     private final StockMinutesService stockMinutesService;
     private final StockDailyService stockDailyService;
     private final StockWeeklyService stockWeeklyService;
     private final StockMonthlyService stockMonthlyService;
     private final StockYearlyService stockYearlyService;
-    private final RedisService redisService;
+    
+    private final LocalTime openTime = LocalTime.of(9, 10);
+    private final LocalTime closeTime = LocalTime.of(16, 0);
 
     /**
      * 과거 주식 차트 불러오는 메서드
@@ -68,17 +67,14 @@ public class StockHistoryService {
      */
     private List<StockChartInfoDto> getMinutesTodayChartByStockCode(String stockCode) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime open = LocalDateTime.of(now.toLocalDate(), LocalTime.of(9, 10));
-        LocalDateTime close = LocalDateTime.of(open.toLocalDate(), LocalTime.of(16, 0));
+        LocalTime time = now.toLocalTime();
         boolean isWeekend = now.getDayOfWeek() == DayOfWeek.SATURDAY || now.getDayOfWeek() == DayOfWeek.SUNDAY;
-
-        if (now.isBefore(open) || now.isAfter(close) || isWeekend) {
+        
+        if (time.isBefore(openTime) || time.isAfter(closeTime) || isWeekend) {
             throw new CustomException(StockErrorType.NOT_AVAILABLE_MINUTES_CHART);
         }
-
-        return redisService.getList(KisConstant.MINUTES_CHART_PREFIX.getValue() + ":" + stockCode)
-                .stream().map(stockChartInfo -> (StockChartInfoDto) stockChartInfo)
-                .toList();
+        
+        return stockMinutesService.readAllInCache(stockCode);
     }
 
     /**
