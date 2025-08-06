@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KisOAuthService {
+public class KisAuthUpdater {
     private final KisOAuthClient kisOAuthClient;
     private final KisAuthService kisAuthService;
 
