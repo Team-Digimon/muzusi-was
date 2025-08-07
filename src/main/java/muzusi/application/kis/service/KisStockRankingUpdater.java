@@ -6,7 +6,7 @@ import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
-import muzusi.infrastructure.kis.KisRankingClient;
+import muzusi.infrastructure.kis.ranking.KisRankingClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
