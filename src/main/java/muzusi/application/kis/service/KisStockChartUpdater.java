@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisStockMinutesService {
+public class KisStockChartUpdater {
     private final StockCodeProvider stockCodeProvider;
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;

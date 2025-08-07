@@ -1,7 +1,7 @@
 package muzusi.application.kis.scheduler;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.service.KisStockMinutesService;
+import muzusi.application.kis.service.KisStockChartUpdater;
 import muzusi.domain.stock.service.StockMinutesService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Component
 @RequiredArgsConstructor
 public class KisStockChartScheduler {
-    private final KisStockMinutesService kisStockMinutesService;
+    private final KisStockChartUpdater kisStockChartUpdater;
     private final StockMinutesService stockMinutesService;
     
     @Schedules({
@@ -21,12 +21,12 @@ public class KisStockChartScheduler {
             @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
     })
     public void runSaveStockMinutesChart() throws InterruptedException {
-        kisStockMinutesService.saveStockMinutesChartAndInquirePrice();
+        kisStockChartUpdater.saveStockMinutesChartAndInquirePrice();
     }
     
     @Scheduled(cron = "0 0 16 * * 1-5")
     public void runSaveDailyStockMinutesChartJob() {
-        kisStockMinutesService.saveDailyStockMinutesChart();
+        kisStockChartUpdater.saveDailyStockMinutesChart();
         stockMinutesService.deleteByDateBefore(LocalDate.now().minusDays(6));
     }
 }
