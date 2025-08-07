@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-public class StockChartService {
+public class StockChartCreationProcessor {
     private final StockDailyService stockDailyService;
     private final StockWeeklyService stockWeeklyService;
     private final StockMonthlyService stockMonthlyService;
