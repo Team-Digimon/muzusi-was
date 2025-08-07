@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
