@@ -16,7 +16,7 @@ public class KisRequestFactory {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        headers.add("authorization", kisAuthService.getAccessToken().getValue());
+        headers.add("authorization", kisAuthService.getAccessToken());
         headers.add("appkey", kisProperties.getAppKey());
         headers.add("appsecret", kisProperties.getAppSecret());
         headers.add("tr_id", trId);

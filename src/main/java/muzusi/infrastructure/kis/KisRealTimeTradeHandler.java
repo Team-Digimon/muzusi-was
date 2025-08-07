@@ -139,7 +139,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         }
 
         Map<String, String> header = new HashMap<>();
-        header.put("approval_key", kisAuthService.getWebSocketKey().getValue());
+        header.put("approval_key", kisAuthService.getWebSocketKey());
         header.put("custtype", "P");
         header.put("tr_type", trType);
         header.put("content-type", "utf-8");

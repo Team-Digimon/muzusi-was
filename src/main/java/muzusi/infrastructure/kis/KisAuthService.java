@@ -1,7 +1,6 @@
 package muzusi.infrastructure.kis;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisAuthDto;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Component;
@@ -13,12 +12,12 @@ import java.time.Duration;
 public class KisAuthService {
     private final RedisService redisService;
 
-    public KisAuthDto.AccessToken getAccessToken() {
-        return (KisAuthDto.AccessToken) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
+    public String getAccessToken() {
+        return (String) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
     }
 
-    public KisAuthDto.WebSocketKey getWebSocketKey() {
-        return (KisAuthDto.WebSocketKey) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
+    public String getWebSocketKey() {
+        return (String) redisService.get(KisConstant.WEBSOCKET_KEY_PREFIX.getValue());
     }
 
     public void deleteAccessToken() {
