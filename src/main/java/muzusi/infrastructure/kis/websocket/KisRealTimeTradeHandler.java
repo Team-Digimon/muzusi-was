@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.websocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import muzusi.application.websocket.service.TradeNotificationPublisher;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.kis.auth.KisAuthService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -139,7 +140,7 @@ public class KisRealTimeTradeHandler extends KisWebSocketHandler {
         }
 
         Map<String, String> header = new HashMap<>();
-        header.put("approval_key", kisAuthService.getWebSocketKey().getValue());
+        header.put("approval_key", kisAuthService.getWebSocketKey());
         header.put("custtype", "P");
         header.put("tr_type", trType);
         header.put("content-type", "utf-8");

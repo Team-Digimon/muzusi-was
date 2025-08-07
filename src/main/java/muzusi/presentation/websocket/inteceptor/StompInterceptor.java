@@ -2,7 +2,7 @@ package muzusi.presentation.websocket.inteceptor;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.service.StockSearchService;
-import muzusi.infrastructure.kis.KisRealTimeTradeHandler;
+import muzusi.infrastructure.kis.websocket.KisRealTimeTradeHandler;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;

@@ -10,7 +10,7 @@ import muzusi.domain.stock.service.StockMonthlyService;
 import muzusi.domain.stock.service.StockWeeklyService;
 import muzusi.domain.stock.service.StockYearlyService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.kis.stock.KisStockClient;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;
@@ -22,7 +22,7 @@ import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
-public class StockChartService {
+public class StockChartCreationProcessor {
     private final StockDailyService stockDailyService;
     private final StockWeeklyService stockWeeklyService;
     private final StockMonthlyService stockMonthlyService;

@@ -6,7 +6,7 @@ import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
-import muzusi.infrastructure.kis.KisRankingClient;
+import muzusi.infrastructure.kis.ranking.KisRankingClient;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,10 +15,15 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KisRankingService {
+public class KisStockRankingUpdater {
     private final KisRankingClient kisRankingClient;
     private final RedisService redisService;
-
+    
+    /**
+     * 거래량 기준 주식 순위를 저장하는 메서드
+     * - 한국투자증권 주식 거래량 순위 api 호출
+     * - 주식 순위는 Redis 내 저장
+     */
     public void saveVolumeRank() {
         List<StockRankDto> stockRankDtos = kisRankingClient.getVolumeRank();
 
@@ -30,7 +35,12 @@ public class KisRankingService {
 
         redisService.set(KisConstant.VOLUME_RANK_TIME_PREFIX.getValue(), KisDto.Time.of(LocalDateTime.now()));
     }
-
+    
+    /**
+     * 급상승/급하락 주식 순위를 저장하는 메서드
+     * - 한국투자증권 급상승/급하락 주식 순위 api 호출
+     * - 주식 순위는 Redis 내 저장
+     */
     public void saveFluctuationRank() {
         List<StockRankDto> risingRankStocks = kisRankingClient.getRisingFluctuationRank();
         List<StockRankDto> fallingRankStocks = kisRankingClient.getFallingFluctuationRank();

@@ -8,7 +8,7 @@ import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.kis.stock.KisStockClient;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisStockMinutesService {
+public class KisStockChartUpdater {
     private final StockCodeProvider stockCodeProvider;
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
