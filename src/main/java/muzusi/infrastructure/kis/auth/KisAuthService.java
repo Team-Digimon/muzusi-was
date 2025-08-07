@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.auth;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.infrastructure.redis.RedisService;

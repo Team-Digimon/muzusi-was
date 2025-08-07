@@ -8,6 +8,7 @@ import muzusi.application.websocket.service.TradeNotificationPublisher;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.trade.type.TradeType;
 import muzusi.global.exception.CustomException;
+import muzusi.infrastructure.kis.auth.KisAuthService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;

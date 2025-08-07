@@ -3,8 +3,8 @@ package muzusi.application.kis.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.infrastructure.kis.KisAuthService;
-import muzusi.infrastructure.kis.KisOAuthClient;
+import muzusi.infrastructure.kis.auth.KisAuthService;
+import muzusi.infrastructure.kis.auth.KisOAuthClient;
 import org.springframework.stereotype.Service;
 
 @Slf4j

@@ -1,6 +1,7 @@
 package muzusi.infrastructure.kis;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.infrastructure.kis.auth.KisAuthService;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
