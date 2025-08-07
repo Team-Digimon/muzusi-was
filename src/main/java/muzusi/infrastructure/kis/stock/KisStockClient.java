@@ -1,10 +1,11 @@
-package muzusi.infrastructure.kis;
+package muzusi.infrastructure.kis.stock;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.dto.StockChartInfoDto;
 import muzusi.global.exception.KisApiException;
+import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;

@@ -10,7 +10,7 @@ import muzusi.domain.stock.service.StockMonthlyService;
 import muzusi.domain.stock.service.StockWeeklyService;
 import muzusi.domain.stock.service.StockYearlyService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.kis.stock.KisStockClient;
 import org.springframework.stereotype.Component;
 
 import java.time.DayOfWeek;

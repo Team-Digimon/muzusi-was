@@ -8,7 +8,7 @@ import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.KisStockClient;
+import muzusi.infrastructure.kis.stock.KisStockClient;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
