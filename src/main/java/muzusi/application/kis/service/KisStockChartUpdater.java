@@ -3,7 +3,6 @@ package muzusi.application.kis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.dto.StockChartInfoDto;
-import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
@@ -60,20 +59,17 @@ public class KisStockChartUpdater {
             stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
         }
     }
-
+    
+    /**
+     * 주식 분봉 차트 Map 데이터를 주식 현재가 Map 데이터로 변환하는 메서드
+     *
+     * @param stockChartInfoMap 주식 종목 코드를 Key, 주식 분봉 차트 정보를 Value로 가지는 Map
+     * @return                  주식 종목 코드를 Key, 주식 현재가 정보를 Value로 가지는 Map
+     */
     private Map<String, Object> convertToStockPriceMap(Map<String, StockChartInfoDto> stockChartInfoMap) {
         return stockChartInfoMap.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), extractStockPrice(entry.getValue())))
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().toStockPrice()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private StockPriceDto extractStockPrice(StockChartInfoDto stockMinutesChartInfo) {
-        return StockPriceDto.builder()
-                .stockCode(stockMinutesChartInfo.stockCode())
-                .low(stockMinutesChartInfo.low())
-                .high(stockMinutesChartInfo.high())
-                .close(stockMinutesChartInfo.close())
-                .build();
     }
 
     /**
