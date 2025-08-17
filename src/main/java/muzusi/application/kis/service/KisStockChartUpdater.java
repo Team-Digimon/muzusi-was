@@ -31,6 +31,8 @@ public class KisStockChartUpdater {
 
     /**
      * 한국투자증권 주식 분봉데이터 호출 및 저장 메서드.
+     * - 주식 분봉 데이터 저장(캐싱)
+     * - 주식 분봉 데이터를 주식 현재가 정보로 파싱해 저장(캐싱)
      *
      * REST API 호출 유량 제한으로 인하여 초당 15개 단위 주식 데이터 호출 제한
      */
@@ -74,6 +76,7 @@ public class KisStockChartUpdater {
 
     /**
      * 주식 분봉데이터 이관 메서드.
+     *
      * Redis -> MongoDB
      */
     public void saveDailyStockMinutesChart() {
