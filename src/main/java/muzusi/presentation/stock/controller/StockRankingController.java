@@ -1,7 +1,7 @@
 package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.service.StockRankingService;
+import muzusi.application.stock.service.StockRankingQueryService;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockRankingApi;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stocks/rank")
 @RequiredArgsConstructor
 public class StockRankingController implements StockRankingApi {
-    private final StockRankingService stockRankingService;
+    private final StockRankingQueryService stockRankingQueryService;
 
     @GetMapping
     public ResponseEntity<?> getStockRanking(@RequestParam StockRankingType type) {
         return ResponseEntity.ok()
-                .body(SuccessResponse.from(stockRankingService.getStockRanking(type)));
+                .body(SuccessResponse.from(stockRankingQueryService.getStockRankingByType(type)));
     }
 }
