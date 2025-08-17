@@ -48,7 +48,7 @@ public class KisStockChartUpdater {
 
             if (count == BATCH_SIZE) {
                 stockMinutesService.saveAllInCache(stockChartInfoMap.values());
-                stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
+                stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
                 stockChartInfoMap.clear();
                 count = 0;
             }
@@ -56,7 +56,7 @@ public class KisStockChartUpdater {
 
         if (!stockChartInfoMap.isEmpty()) {
             stockMinutesService.saveAllInCache(stockChartInfoMap.values());
-            stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
+            stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
         }
     }
     

@@ -11,7 +11,7 @@ import java.util.Map;
 public class StockPriceService {
     private final StockPriceCacheRepository stockPriceCacheRepository;
 
-    public void saveAll(Map<String, Object> stockPriceMap) {
+    public void saveAllInCache(Map<String, Object> stockPriceMap) {
         stockPriceCacheRepository.saveAll(stockPriceMap);
     }
 }
