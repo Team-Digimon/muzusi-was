@@ -61,4 +61,13 @@ public record StockChartInfoDto(
                 stockYearly.getVolume()
         );
     }
+    
+    public StockPriceDto toStockPrice() {
+        return StockPriceDto.builder()
+                .stockCode(stockCode)
+                .low(low)
+                .high(high)
+                .close(close)
+                .build();
+    }
 }

@@ -1,5 +1,6 @@
 package muzusi.infrastructure.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class RedisService {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
@@ -24,6 +26,14 @@ public class RedisService {
 
     public List<Object> getList(String key) {
         return redisTemplate.opsForList().range(key, 0 , -1);
+    }
+    
+    public <T> List<T> getList(String key, Class<T> clazz) {
+        List<Object> list = redisTemplate.opsForList().range(key, 0 , -1);
+        
+        return list.stream()
+                .map(obj -> objectMapper.convertValue(obj, clazz))
+                .toList();
     }
 
     public void set(String key, Object value) {

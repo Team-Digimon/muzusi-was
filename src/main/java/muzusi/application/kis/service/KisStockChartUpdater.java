@@ -3,7 +3,6 @@ package muzusi.application.kis.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.dto.StockChartInfoDto;
-import muzusi.application.stock.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
@@ -32,6 +31,8 @@ public class KisStockChartUpdater {
 
     /**
      * 한국투자증권 주식 분봉데이터 호출 및 저장 메서드.
+     * - 주식 분봉 데이터 저장(캐싱)
+     * - 주식 분봉 데이터를 주식 현재가 정보로 파싱해 저장(캐싱)
      *
      * REST API 호출 유량 제한으로 인하여 초당 15개 단위 주식 데이터 호출 제한
      */
@@ -49,7 +50,7 @@ public class KisStockChartUpdater {
 
             if (count == BATCH_SIZE) {
                 stockMinutesService.saveAllInCache(stockChartInfoMap.values());
-                stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
+                stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
                 stockChartInfoMap.clear();
                 count = 0;
             }
@@ -57,27 +58,25 @@ public class KisStockChartUpdater {
 
         if (!stockChartInfoMap.isEmpty()) {
             stockMinutesService.saveAllInCache(stockChartInfoMap.values());
-            stockPriceService.saveAll(convertToStockPriceMap(stockChartInfoMap));
+            stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
         }
     }
-
+    
+    /**
+     * 주식 분봉 차트 Map 데이터를 주식 현재가 Map 데이터로 변환하는 메서드
+     *
+     * @param stockChartInfoMap 주식 종목 코드를 Key, 주식 분봉 차트 정보를 Value로 가지는 Map
+     * @return                  주식 종목 코드를 Key, 주식 현재가 정보를 Value로 가지는 Map
+     */
     private Map<String, Object> convertToStockPriceMap(Map<String, StockChartInfoDto> stockChartInfoMap) {
         return stockChartInfoMap.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), extractStockPrice(entry.getValue())))
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().toStockPrice()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private StockPriceDto extractStockPrice(StockChartInfoDto stockMinutesChartInfo) {
-        return StockPriceDto.builder()
-                .stockCode(stockMinutesChartInfo.stockCode())
-                .low(stockMinutesChartInfo.low())
-                .high(stockMinutesChartInfo.high())
-                .close(stockMinutesChartInfo.close())
-                .build();
     }
 
     /**
      * 주식 분봉데이터 이관 메서드.
+     *
      * Redis -> MongoDB
      */
     public void saveDailyStockMinutesChart() {
