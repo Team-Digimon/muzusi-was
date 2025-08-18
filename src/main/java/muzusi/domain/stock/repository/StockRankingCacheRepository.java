@@ -41,4 +41,27 @@ public class StockRankingCacheRepository {
                 "rank", ranking
         );
     }
+    
+    public void setByStockRankingType(StockRankingType stockRankingType, List<StockRankDto> values) {
+        switch (stockRankingType) {
+            case RISING -> redisService.setList(RISING_RANK_PREFIX, values);
+            case FALLING -> redisService.setList(FALLING_RANK_PREFIX, values);
+            case VOLUME -> redisService.setList(VOLUME_RANK_PREFIX, values);
+        }
+    }
+    
+    public void setTimeByStockRankingType(StockRankingType stockRankingType, KisDto.Time time) {
+        switch (stockRankingType) {
+            case RISING, FALLING -> redisService.set(RISING_FALLING_RANK_TIME_PREFIX, time);
+            case VOLUME -> redisService.set(VOLUME_RANK_TIME_PREFIX, time);
+        }
+    }
+    
+    public void deleteByStockRankingType(StockRankingType stockRankingType) {
+        switch (stockRankingType) {
+            case RISING -> redisService.del(RISING_RANK_PREFIX);
+            case FALLING -> redisService.del(FALLING_RANK_PREFIX);
+            case VOLUME -> redisService.del(VOLUME_RANK_PREFIX);
+        }
+    }
 }
