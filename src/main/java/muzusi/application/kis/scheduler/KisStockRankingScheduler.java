@@ -17,6 +17,6 @@ public class KisStockRankingScheduler {
     })
     public void runRankingJobAt3PM() {
         kisStockRankingUpdater.saveVolumeRank();
-        kisStockRankingUpdater.saveFluctuationRank();
+        kisStockRankingUpdater.saveFallingAndRisingRank();
     }
 }
