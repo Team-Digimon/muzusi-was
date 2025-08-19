@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,10 @@ public class RedisService {
 
     public void setList(String key, Object value) {
         redisTemplate.opsForList().rightPush(key, value);
+    }
+    
+    public <T> void setList(String key, Collection<T> values) {
+        redisTemplate.opsForList().rightPushAll(key, (Collection<Object>) values);
     }
 
     public void del(String key) {
