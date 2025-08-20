@@ -31,7 +31,6 @@ public class KisStockChartUpdater {
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
     private final StockPriceService stockPriceService;
-    private final KisErrorParser kisErrorParser;
     private final KisAuthService kisAuthService;
     
     private final RateLimiter rateLimiter = RateLimiter.create(15);
@@ -66,7 +65,7 @@ public class KisStockChartUpdater {
                     count = 0;
                 }
             } catch (Exception e) {
-                if (kisErrorParser.isApiRequestExceeded(e.getMessage())) {
+                if (KisErrorParser.isApiRequestExceeded(e.getMessage())) {
                     retrySaveStockMinutesChartAndInquirePrice(stockChartInfoMap, code, now, accessToken);
                 } else {
                     throw new KisApiException(e);
