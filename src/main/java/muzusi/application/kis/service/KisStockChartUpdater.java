@@ -9,6 +9,7 @@ import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
 import muzusi.global.exception.KisApiException;
 import muzusi.infrastructure.data.StockCodeProvider;
+import muzusi.infrastructure.kis.auth.KisAuthService;
 import muzusi.infrastructure.kis.stock.KisStockClient;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,7 @@ public class KisStockChartUpdater {
     private final StockMinutesService stockMinutesService;
     private final StockPriceService stockPriceService;
     private final KisErrorParser kisErrorParser;
+    private final KisAuthService kisAuthService;
     
     private final RateLimiter rateLimiter = RateLimiter.create(15);
     private static final int BATCH_SIZE = 500;
@@ -49,14 +51,15 @@ public class KisStockChartUpdater {
         int count = 0;
         Map<String, StockChartInfoDto> stockChartInfoMap = new HashMap<>(BATCH_SIZE);
         LocalDateTime now = LocalDateTime.now();
+        String accessToken = kisAuthService.getAccessToken();
 
         for (String code : stockCodeProvider.getAllStockCodes()) {
             try {
                 rateLimiter.acquire();
-                StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now);
+                StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now, accessToken);
                 stockChartInfoMap.put(code, stockChartInfo);
     
-                if (++count == BATCH_SIZE) {
+                if (++count >= BATCH_SIZE) {
                     stockMinutesService.saveAllInCache(stockChartInfoMap.values());
                     stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
                     stockChartInfoMap.clear();
@@ -64,7 +67,7 @@ public class KisStockChartUpdater {
                 }
             } catch (Exception e) {
                 if (kisErrorParser.isApiRequestExceeded(e.getMessage())) {
-                    retrySaveStockMinutesChartAndInquirePrice(stockChartInfoMap, code, now);
+                    retrySaveStockMinutesChartAndInquirePrice(stockChartInfoMap, code, now, accessToken);
                 } else {
                     throw new KisApiException(e);
                 }
@@ -78,23 +81,23 @@ public class KisStockChartUpdater {
     }
     
     /**
-     * 한국투자증권 주식 분봉 데이터 호출 시 API 호출 유량 초과로 인한  실패 시 재시도를 수행하는 메서드
+     * 한국투자증권 주식 분봉 데이터 호출 시 API 호출 유량 초과로 인한 실패 시 재시도를 수행하는 메서드
      *
      * - 안정성 보장을 위한 1초 쓰레드 정지
-     * - 현재 주식 분봉 차트 Map에 저장된 데이터를 모두 저장
      * - API 호출 유량 초과된 주식 종목 코드를 바탕으로 재시도 수행 및 주식 분봉 차트 Map에 저장
      *
      * @param stockChartInfoMap         주식 분봉 차트 Map
      * @param code                      API 호출 유량 초과가 발생한 주식 종목 코드
      * @param now                       주식 분봉 데이터 호출 시각
      */
-    private void retrySaveStockMinutesChartAndInquirePrice(Map<String, StockChartInfoDto> stockChartInfoMap, String code, LocalDateTime now) throws InterruptedException {
+    private void retrySaveStockMinutesChartAndInquirePrice(
+            Map<String, StockChartInfoDto> stockChartInfoMap,
+            String code,
+            LocalDateTime now,
+            String accessToken
+    ) throws InterruptedException {
         Thread.sleep(1000);
-        stockMinutesService.saveAllInCache(stockChartInfoMap.values());
-        stockPriceService.saveAllInCache(convertToStockPriceMap(stockChartInfoMap));
-        stockChartInfoMap.clear();
-        
-        StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now);
+        StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now, accessToken);
         stockChartInfoMap.put(code, stockChartInfo);
     }
     
