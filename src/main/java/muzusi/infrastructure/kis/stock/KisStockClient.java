@@ -29,8 +29,8 @@ public class KisStockClient {
     private static final String MINUTES_CHART_TR_ID = "FHKST03010200";
     private static final String INQUIRE_PRICE_TR_ID = "FHKST01010100";
 
-    public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time) {
-        HttpHeaders headers = kisRequestFactory.getHttpHeader(MINUTES_CHART_TR_ID);
+    public StockChartInfoDto getStockMinutesChartInfo(String code, LocalDateTime time, String accessToken) {
+        HttpHeaders headers = kisRequestFactory.getHttpHeader(MINUTES_CHART_TR_ID, accessToken);
 
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.TIME_ITEM_CHART_PRICE))
                 .queryParam("FID_ETC_CLS_CODE", "")
