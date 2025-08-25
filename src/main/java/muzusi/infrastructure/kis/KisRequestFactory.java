@@ -25,4 +25,17 @@ public class KisRequestFactory {
 
         return headers;
     }
+    
+    public HttpHeaders getHttpHeader(String trId, String accessToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        headers.add("authorization", accessToken);
+        headers.add("appkey", kisProperties.getAppKey());
+        headers.add("appsecret", kisProperties.getAppSecret());
+        headers.add("tr_id", trId);
+        headers.add("custtype", "P");
+        
+        return headers;
+    }
 }
