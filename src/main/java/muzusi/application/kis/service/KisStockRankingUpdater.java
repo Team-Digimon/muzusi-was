@@ -1,5 +1,6 @@
 package muzusi.application.kis.service;
 
+import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.kis.dto.KisDto;
@@ -17,6 +18,7 @@ import java.util.List;
 public class KisStockRankingUpdater {
     private final KisRankingClient kisRankingClient;
     private final StockRankingService stockRankingService;
+    private final RateLimiter kisRateLimiter;
     
     /**
      * 거래량 기준 주식 순위를 저장하는 메서드
@@ -24,6 +26,8 @@ public class KisStockRankingUpdater {
      * - 주식 순위는 Redis 내 저장
      */
     public void saveVolumeRank() {
+        kisRateLimiter.acquire();
+        
         List<StockRankDto> stockRanking = kisRankingClient.getVolumeRank();
 
         stockRankingService.deleteVolumeRankingCache();
@@ -39,6 +43,8 @@ public class KisStockRankingUpdater {
      * - 주식 순위는 Redis 내 저장
      */
     public void saveFallingAndRisingRank() {
+        kisRateLimiter.acquire();
+        
         List<StockRankDto> risingStockRanking = kisRankingClient.getRisingFluctuationRank();
         List<StockRankDto> fallingStockRanking = kisRankingClient.getFallingFluctuationRank();
 
