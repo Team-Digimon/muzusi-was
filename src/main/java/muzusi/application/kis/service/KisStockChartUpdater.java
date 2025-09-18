@@ -33,7 +33,7 @@ public class KisStockChartUpdater {
     private final StockPriceService stockPriceService;
     private final KisAuthService kisAuthService;
     
-    private final RateLimiter rateLimiter = RateLimiter.create(15);
+    private final RateLimiter kisRateLimiter;
     private static final int BATCH_SIZE = 500;
 
     /**
@@ -54,7 +54,7 @@ public class KisStockChartUpdater {
 
         for (String code : stockCodeProvider.getAllStockCodes()) {
             try {
-                rateLimiter.acquire();
+                kisRateLimiter.acquire();
                 StockChartInfoDto stockChartInfo = kisStockClient.getStockMinutesChartInfo(code, now, accessToken);
                 stockChartInfoMap.put(code, stockChartInfo);
     
