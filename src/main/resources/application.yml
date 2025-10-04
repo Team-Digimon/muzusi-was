@@ -67,9 +67,9 @@ news:
 
 kis:
   domain: ${KIS_DOMAIN:https://openapi.koreainvestment.com:9443}
-  appkey: ${KIS_APPKEY:appkey}
-  appsecret: ${KIS_APPSECRET:appsecret}
   web-socket-domain: ${KIS_WEBSOCKET_DOMAIN:ws://ops.koreainvestment.com:21000}
+  app-keys: ${KIS_APPKEYS}
+  app-secrets: ${KIS_APPSECRETS}
 
 data:
   stock-code-path: ${DATA_STOCK_CODE_PATH:data/stock/stock-code.csv}
