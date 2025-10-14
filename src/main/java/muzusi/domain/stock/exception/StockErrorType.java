@@ -14,6 +14,7 @@ public enum StockErrorType implements BaseErrorType {
     NOT_AVAILABLE_MINUTES_CHART(HttpStatus.BAD_REQUEST, "2003", "당일 주식 조회 가능 기간이 아닙니다."),
     UNSUPPORTED_MINUTES_PERIOD(HttpStatus.BAD_REQUEST, "2004", "주식 분봉 데이터 조회 시간이 아닙니다."),
     MAX_REQUEST_WEB_SOCKET(HttpStatus.BAD_REQUEST, "2005", "한국투자증권 웹소켓 호출 유량 초과"),
+    NOT_SUBSCRIBED_STOCK(HttpStatus.BAD_REQUEST, "2006", "구독 중인 주식 종목이 아닙니다.")
     ;
 
     private final HttpStatus status;
