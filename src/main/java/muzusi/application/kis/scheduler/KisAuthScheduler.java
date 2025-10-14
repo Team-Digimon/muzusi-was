@@ -17,6 +17,6 @@ public class KisAuthScheduler {
     
     @Scheduled(cron = "0 55 8 * * ?")
     public void runIssueWebSocketKeyJob() {
-        kisAuthUpdater.saveWebSocketKey();
+        kisAuthUpdater.saveWebSocketKeys();
     }
 }
