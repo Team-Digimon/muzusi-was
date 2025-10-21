@@ -22,20 +22,22 @@ import java.util.Map;
 public class KisOAuthClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
-
+    
     /**
-     * 한국투자증권 접근 토큰 발급 메서드
+     * 한국투자증권 접근 토큰 발급 요청 메서드
      *
-     * @return String : 한국투자증권 API 접속토큰
+     * @param appKey    한국투자증권 앱키
+     * @param appSecret 한국투자증권 앱시크릿
+     * @return          한국투자증권 접근 토큰
      */
-    public String getAccessToken() {
+    public String getAccessToken(String appKey, String appSecret) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", "client_credentials");
-        body.put("appkey", kisProperties.getAppKey());
-        body.put("appsecret", kisProperties.getAppSecret());
+        body.put("appkey", appKey);
+        body.put("appsecret", appSecret);
 
         HttpEntity<Map<String, String>> requestInfo = new HttpEntity<>(body, headers);
 
@@ -56,20 +58,22 @@ public class KisOAuthClient {
             throw new KisOAuthApiException(e);
         }
     }
-
+    
     /**
      * 한국투자증권 웹소켓 접속키 발급 메서드
      *
-     * @return String : 한국투자증권 웹소켓 접속키
+     * @param appKey    한국투자증권 앱키
+     * @param appSecret 한국투자증권 앱시크릿
+     * @return          한국투자증권 웹소켓 접속키
      */
-    public String getWebSocketKey() {
+    public String getWebSocketKey(String appKey, String appSecret) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", "client_credentials");
-        body.put("appkey", kisProperties.getAppKey());
-        body.put("secretkey", kisProperties.getAppSecret());
+        body.put("appkey", appKey);
+        body.put("secretkey", appSecret);
 
         HttpEntity<Map<String, String>> requestInfo = new HttpEntity<>(body, headers);
 

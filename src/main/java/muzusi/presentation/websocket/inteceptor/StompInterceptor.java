@@ -1,8 +1,9 @@
 package muzusi.presentation.websocket.inteceptor;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.service.StockSearchService;
-import muzusi.infrastructure.kis.websocket.KisRealTimeTradeHandler;
+import muzusi.application.websocket.service.KisSubscriptionManager;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -10,10 +11,11 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompInterceptor implements ChannelInterceptor {
-    private final KisRealTimeTradeHandler kisRealTimeTradeHandler;
+    private final KisSubscriptionManager kisSubscriptionManager;
     private final StockSearchService stockSearchService;
 
     private final static String STOCK_CODE_HEADER_NAME = "stockCode";
@@ -34,16 +36,34 @@ public class StompInterceptor implements ChannelInterceptor {
         String stockCode = extractStockCode(accessor);
 
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-            stockSearchService.increaseStockSearchCount(stockCode);
-            kisRealTimeTradeHandler.connect(stockCode);
+            try {
+                stockSearchService.increaseStockSearchCount(stockCode);
+                kisSubscriptionManager.subscribe(stockCode);
+            } catch (Exception e) {
+                log.error("[ERROR] Failed to subscribe stock {} - {}", stockCode, e.getMessage());
+                return null;
+            }
+            
         }
-
-        if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand()))
-            kisRealTimeTradeHandler.disconnect(stockCode);
+        
+        if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand())) {
+            try {
+                kisSubscriptionManager.unsubscribe(stockCode);
+            } catch (Exception e) {
+                log.error("[ERROR] Failed to unsubscribe stock {} - {}", stockCode, e.getMessage());
+                return null;
+            }
+        }
 
         return message;
     }
-
+    
+    /**
+     * STOMP 요청 메시지 헤더 내 주식 종목 코드 추출 메서드
+     *
+     * @param accessor  STOMP 헤더 접근 객체
+     * @return          주식 종목 코드
+     */
     private String extractStockCode(StompHeaderAccessor accessor) {
         return accessor.getFirstNativeHeader(STOCK_CODE_HEADER_NAME);
     }

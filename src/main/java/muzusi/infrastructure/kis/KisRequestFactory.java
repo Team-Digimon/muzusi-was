@@ -18,8 +18,8 @@ public class KisRequestFactory {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         headers.add("authorization", kisAuthService.getAccessToken());
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
+        headers.add("appkey", kisProperties.getAppKeys().get(0));
+        headers.add("appsecret", kisProperties.getAppSecrets().get(0));
         headers.add("tr_id", trId);
         headers.add("custtype", "P");
 
@@ -31,8 +31,8 @@ public class KisRequestFactory {
         headers.setContentType(MediaType.APPLICATION_JSON);
         
         headers.add("authorization", accessToken);
-        headers.add("appkey", kisProperties.getAppKey());
-        headers.add("appsecret", kisProperties.getAppSecret());
+        headers.add("appkey", kisProperties.getAppKeys().get(0));
+        headers.add("appsecret", kisProperties.getAppSecrets().get(0));
         headers.add("tr_id", trId);
         headers.add("custtype", "P");
         
