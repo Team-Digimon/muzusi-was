@@ -1,6 +1,6 @@
 package muzusi.infrastructure;
 
-import muzusi.infrastructure.kis.auth.KisAuthService;
+import muzusi.infrastructure.kis.auth.KisAuthStore;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionManager;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class KisWebSocketSessionManagerTest {
     private KisWebSocketConnector kisWebSocketConnector;
     
     @Mock
-    private KisAuthService kisAuthService;
+    private KisAuthStore kisAuthStore;
     
     @InjectMocks
     private KisWebSocketSessionManager kisWebSocketSessionManager;
@@ -47,7 +47,7 @@ public class KisWebSocketSessionManagerTest {
         when(session1.getId()).thenReturn("session1");
         when(session2.getId()).thenReturn("session2");
         
-        when(kisAuthService.getWebSocketKeys()).thenReturn(List.of(webSocketKey1, webSocketKey2));
+        when(kisAuthStore.getWebSocketKeys()).thenReturn(List.of(webSocketKey1, webSocketKey2));
         when(kisWebSocketConnector.connect()).thenReturn(session1).thenReturn(session2);
         
         // when
@@ -65,7 +65,7 @@ public class KisWebSocketSessionManagerTest {
         // given
         String webSocketKey1 = "webSocketKey1";
         String webSocketKey2 = "webSocketKey2";
-        when(kisAuthService.getWebSocketKeys()).thenReturn(List.of(webSocketKey1, webSocketKey2));
+        when(kisAuthStore.getWebSocketKeys()).thenReturn(List.of(webSocketKey1, webSocketKey2));
         when(kisWebSocketConnector.connect()).thenReturn(null);
         
         // when

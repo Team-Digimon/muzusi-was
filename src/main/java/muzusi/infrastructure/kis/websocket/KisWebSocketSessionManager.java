@@ -2,7 +2,7 @@ package muzusi.infrastructure.kis.websocket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.infrastructure.kis.auth.KisAuthService;
+import muzusi.infrastructure.kis.auth.KisAuthStore;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -17,7 +17,7 @@ import java.util.Map;
 public class KisWebSocketSessionManager {
     private final Map<String, KisWebSocketSession> sessions = new HashMap<>();
     private final KisWebSocketConnector kisWebSocketConnector;
-    private final KisAuthService kisAuthService;
+    private final KisAuthStore kisAuthStore;
     
     /**
      * 웹소켓 세션을 초기화하는 메서드
@@ -27,7 +27,7 @@ public class KisWebSocketSessionManager {
      * @return 한국투자증권 웹소켓과 연결된 세션의 아이디 목록
      */
     public List<String> initializeSessions() {
-        List<String> webSocketKeys = kisAuthService.getWebSocketKeys();
+        List<String> webSocketKeys = kisAuthStore.getWebSocketKeys();
         
         for (String webSocketKey : webSocketKeys) {
             WebSocketSession webSocketSession = kisWebSocketConnector.connect();
