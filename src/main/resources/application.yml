@@ -70,6 +70,7 @@ kis:
   web-socket-domain: ${KIS_WEBSOCKET_DOMAIN:ws://ops.koreainvestment.com:21000}
   app-keys: ${KIS_APPKEYS}
   app-secrets: ${KIS_APPSECRETS}
+  websocket-subscription-limit: ${KIS_WEBSOCKET_SUBSCRIPTION_LIMIT:41}
 
 data:
   stock-code-path: ${DATA_STOCK_CODE_PATH:data/stock/stock-code.csv}
