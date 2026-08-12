@@ -41,6 +41,9 @@ src/main/generated
 ### Mac OS ###
 .DS_Store
 
+### Env ###
+.env
+
 ### AI: CLAUDE ###
 CLAUDE.md
 context/*
