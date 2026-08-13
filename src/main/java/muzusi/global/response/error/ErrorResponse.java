@@ -14,4 +14,11 @@ public record ErrorResponse(
                 .message(error.getMessage())
                 .build();
     }
+    
+    public static ErrorResponse from(BaseErrorType error, String message){
+        return ErrorResponse.builder()
+                .code(error.getCode())
+                .message(message)
+                .build();
+    }
 }
