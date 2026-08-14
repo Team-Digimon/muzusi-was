@@ -24,6 +24,11 @@ public class RedisService {
     public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
     }
+    
+    public <T> T get(String key, Class<T> clazz) {
+        Object value = redisTemplate.opsForValue().get(key);
+        return objectMapper.convertValue(value, clazz);
+    }
 
     public List<Object> getList(String key) {
         return redisTemplate.opsForList().range(key, 0 , -1);
