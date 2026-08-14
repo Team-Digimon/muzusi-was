@@ -8,6 +8,8 @@ import java.util.Locale;
 public class DateTimeFormatterUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+    private static final DateTimeFormatter TIME_TO_STRING_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 주어진 시간을 LocalDateTime으로 변환하는 메서드
@@ -18,5 +20,9 @@ public class DateTimeFormatterUtil {
     public static LocalDateTime parseToLocalDateTime(String dateTimeStr) {
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER);
         return zonedDateTime.toLocalDateTime();
+    }
+    
+    public static String parseToString(LocalDateTime time) {
+        return time.format(TIME_TO_STRING_FORMATTER);
     }
 }
