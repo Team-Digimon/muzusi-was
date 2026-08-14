@@ -106,7 +106,7 @@ public class KisRealTimeTradeWebSocketHandler extends TextWebSocketHandler {
      * @return          페이로드의 에러 메시지 여부
      */
     private boolean isErrorMessage(String payload) {
-        return !payload.contains("\"rt_cd\": \"0\"");
+        return !payload.contains("\"rt_cd\":\"0\"");
     }
     
     /**

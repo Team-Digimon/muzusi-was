@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class KisAuthService {
+public class KisAuthStore {
     private final RedisService redisService;
 
     public String getAccessToken() {

@@ -9,7 +9,7 @@ import muzusi.domain.stock.service.StockMinutesService;
 import muzusi.domain.stock.service.StockPriceService;
 import muzusi.global.exception.KisApiException;
 import muzusi.infrastructure.data.StockCodeProvider;
-import muzusi.infrastructure.kis.auth.KisAuthService;
+import muzusi.infrastructure.kis.auth.KisAuthStore;
 import muzusi.infrastructure.kis.stock.KisStockClient;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,7 @@ public class KisStockChartUpdater {
     private final KisStockClient kisStockClient;
     private final StockMinutesService stockMinutesService;
     private final StockPriceService stockPriceService;
-    private final KisAuthService kisAuthService;
+    private final KisAuthStore kisAuthStore;
     
     private final RateLimiter kisRateLimiter;
     private static final int BATCH_SIZE = 500;
@@ -50,7 +50,7 @@ public class KisStockChartUpdater {
         int count = 0;
         Map<String, StockChartInfoDto> stockChartInfoMap = new HashMap<>(BATCH_SIZE);
         LocalDateTime now = LocalDateTime.now();
-        String accessToken = kisAuthService.getAccessToken();
+        String accessToken = kisAuthStore.getAccessToken();
 
         for (String code : stockCodeProvider.getAllStockCodes()) {
             try {

@@ -20,4 +20,12 @@ public class KisProperties {
     public String getUrl(KisUrlConstant kisUrlConstant) {
         return domain + kisUrlConstant.getUrl();
     }
+    
+    public String getAppKey() {
+        return appKeys.get(0);
+    }
+    
+    public String getAppSecret() {
+        return appSecrets.get(0);
+    }
 }

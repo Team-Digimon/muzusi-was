@@ -3,7 +3,7 @@ package muzusi.application.kis.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.infrastructure.kis.auth.KisAuthService;
+import muzusi.infrastructure.kis.auth.KisAuthStore;
 import muzusi.infrastructure.kis.auth.KisOAuthClient;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
 public class KisAuthUpdater {
     private final KisProperties kisProperties;
     private final KisOAuthClient kisOAuthClient;
-    private final KisAuthService kisAuthService;
+    private final KisAuthStore kisAuthStore;
     
     /**
      * 서버 애플리케이션 구동 시 액세스 토큰 및 웹 소켓 접속키 발급 메서드
@@ -40,8 +40,8 @@ public class KisAuthUpdater {
         String accessToken = kisOAuthClient.getAccessToken(appKey, appSecret);
 
         if (accessToken != null) {
-            kisAuthService.deleteAccessToken();
-            kisAuthService.saveAccessToken(accessToken);
+            kisAuthStore.deleteAccessToken();
+            kisAuthStore.saveAccessToken(accessToken);
         }
     }
 
@@ -64,8 +64,8 @@ public class KisAuthUpdater {
         }
         
         if (!webSocketKeys.isEmpty()) {
-            kisAuthService.deleteWebSocketKey();
-            kisAuthService.saveWebSocketKeys(webSocketKeys);
+            kisAuthStore.deleteWebSocketKey();
+            kisAuthStore.saveWebSocketKeys(webSocketKeys);
         }
     }
 }

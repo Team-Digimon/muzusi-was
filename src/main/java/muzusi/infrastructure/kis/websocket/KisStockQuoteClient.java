@@ -1,5 +1,6 @@
 package muzusi.infrastructure.kis.websocket;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,27 +8,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisRealTimeTradeWebSocketClient {
+public class KisStockQuoteClient {
     private final ObjectMapper objectMapper;
     private static final String TRADE_ID = "H0STCNT0";
     
     private enum TradeType {
-        SUBSCRIPTION(1),
-        UNSUBSCRIPTION(2);
+        SUBSCRIPTION("1"),
+        UNSUBSCRIPTION("2");
         
-        private final int value;
+        private final String value;
         
-        TradeType(int value) {
+        TradeType(String value) {
             this.value = value;
         }
         
-        public int getValue() {
+        public String getValue() {
             return this.value;
         }
     }
@@ -68,26 +66,37 @@ public class KisRealTimeTradeWebSocketClient {
             return;
         }
         
-        Map<String, String> header = new HashMap<>();
-        header.put("approval_key", webSocketKey);
-        header.put("custtype", "P");
-        header.put("tr_type", String.valueOf(tradeType.getValue()));
-        header.put("content-type", "utf-8");
-        
-        Map<String, Object> body = new HashMap<>();
-        Map<String, String> input = new HashMap<>();
-        input.put("tr_id", TRADE_ID);
-        input.put("tr_key", stockCode);
-        body.put("input", input);
-        
-        Map<String, Object> request = new HashMap<>();
-        request.put("header", header);
-        request.put("body", body);
+        KisStockQuoteRequest request = KisStockQuoteRequest.of(webSocketKey, stockCode, tradeType);
         
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(request)));
         } catch (Exception e) {
             log.error("[Error] Failed to send request KIS Websocket - {} / {}", stockCode, e.getMessage());
+        }
+    }
+    
+    private record KisStockQuoteRequest(Header header, Body body) {
+        private record Header(
+                @JsonProperty("approval_key") String approvalKey,
+                @JsonProperty("custtype") String custType,
+                @JsonProperty("tr_type") String trType,
+                @JsonProperty("content-type") String contentType
+        ) { }
+        
+        private record Body(
+                Input input
+        ) {
+            private record Input(
+                    @JsonProperty("tr_id") String trId,
+                    @JsonProperty("tr_key") String trKey
+            ) { }
+        }
+        
+        private static KisStockQuoteRequest of(String webSocketKey, String stockCode, TradeType type) {
+            return new KisStockQuoteRequest(
+                    new Header(webSocketKey, "P", type.getValue(), "utf-8"),
+                    new Body(new Body.Input(TRADE_ID, stockCode))
+            );
         }
     }
 }
