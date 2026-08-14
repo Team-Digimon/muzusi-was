@@ -24,8 +24,8 @@ public class KisMarketDataAuthAdapter implements MarketDataAuthPort {
      */
     @Override
     public void issueApiCredentials() {
-        String appKey = kisProperties.getAppKey();
-        String appSecret = kisProperties.getAppSecret();
+        String appKey = kisProperties.appKey();
+        String appSecret = kisProperties.appSecret();
         String accessToken = kisOAuthClient.getAccessToken(appKey, appSecret);
 
         kisAuthStore.deleteAccessToken();
