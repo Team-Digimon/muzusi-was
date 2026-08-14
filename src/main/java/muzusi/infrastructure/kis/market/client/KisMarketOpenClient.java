@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.market.adapter.client;
+package muzusi.infrastructure.kis.market.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
