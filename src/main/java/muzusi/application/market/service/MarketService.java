@@ -1,4 +1,4 @@
-package muzusi.application.market.port.service;
+package muzusi.application.market.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.market.port.MarketPort;
