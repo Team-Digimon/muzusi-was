@@ -13,6 +13,7 @@ public enum KisUrlConstant {
     INQUIRE_PRICE("/uapi/domestic-stock/v1/quotations/inquire-price"),
     TIME_ITEM_CHART_PRICE("/uapi/domestic-stock/v1/quotations/inquire-time-itemchartprice"),
     MARKET_OPEN("/uapi/domestic-stock/v1/quotations/chk-holiday"),
+    MULTI_PRICE("/uapi/domestic-stock/v1/quotations/intstock-multprice"),
     ;
 
     private final String url;
