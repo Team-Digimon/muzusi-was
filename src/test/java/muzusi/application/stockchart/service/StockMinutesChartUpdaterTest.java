@@ -32,7 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class StockChartUpdaterTest {
+class StockMinutesChartUpdaterTest {
 
     @Mock
     private StockCodePort stockCodePort;
@@ -50,7 +50,7 @@ class StockChartUpdaterTest {
     private RateLimiter kisRateLimiter;
 
     @InjectMocks
-    private StockChartUpdater stockChartUpdater;
+    private StockMinutesChartUpdater stockMinutesChartUpdater;
 
     private StockChartDto stockChartDto(String stockCode) {
         return StockChartDto.builder()
@@ -84,7 +84,7 @@ class StockChartUpdaterTest {
                     .willReturn(skHynixChart);
 
             // when
-            stockChartUpdater.updateStockMinutesChart();
+            stockMinutesChartUpdater.updateStockMinutesChart();
         }
 
         // then
@@ -110,7 +110,7 @@ class StockChartUpdaterTest {
                 .willReturn(samsungChart);
 
         // when
-        stockChartUpdater.updateStockMinutesChart();
+        stockMinutesChartUpdater.updateStockMinutesChart();
 
         // then
         verify(kisRateLimiter, times(1)).acquire();
@@ -134,7 +134,7 @@ class StockChartUpdaterTest {
                 .willReturn(skHynixChart);
 
         // when
-        stockChartUpdater.updateStockMinutesChart();
+        stockMinutesChartUpdater.updateStockMinutesChart();
 
         // then
         verify(kisRateLimiter, times(2)).acquire();
@@ -159,7 +159,7 @@ class StockChartUpdaterTest {
             mockedLocalDate.when(() -> LocalDate.now(ZoneId.of("Asia/Seoul"))).thenReturn(fixedToday);
 
             // when
-            stockChartUpdater.flushStockMinutesChart();
+            stockMinutesChartUpdater.flushStockMinutesChart();
 
             // then
             verify(stockMinutesService).deleteInCache("005930");
