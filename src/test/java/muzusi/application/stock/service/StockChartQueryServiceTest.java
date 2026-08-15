@@ -1,6 +1,6 @@
 package muzusi.application.stock.service;
 
-import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.stock.service.StockDailyService;
 import muzusi.domain.stock.service.StockMinutesService;
@@ -54,9 +54,9 @@ public class StockChartQueryServiceTest {
     @DisplayName("당일 분봉 조회 - 성공")
     void successToGetTodayMinutesChart() {
         // given
-        StockChartInfoDto stockChartInfoDto = StockChartInfoDto.builder()
+        muzusi.application.stockchart.dto.StockChartDto stockChartDto = muzusi.application.stockchart.dto.StockChartDto.builder()
                 .stockCode(stockCode)
-                .date(LocalDateTime.of(2025, 6, 30, 9, 0))
+                .dateTime("20250628 13:00:00")
                 .open(10000L)
                 .high(11000L)
                 .low(9000L)
@@ -65,7 +65,7 @@ public class StockChartQueryServiceTest {
                 .build();
         
         given(stockMinutesService.readAllInCache(stockCode))
-                .willReturn(List.of(stockChartInfoDto));
+                .willReturn(List.of(stockChartDto));
         
         try (MockedStatic<LocalDateTime> mockedLocalDateTime
                      = Mockito.mockStatic(LocalDateTime.class, Mockito.CALLS_REAL_METHODS)
@@ -76,7 +76,7 @@ public class StockChartQueryServiceTest {
             mockedLocalDateTime.when(LocalDateTime::now).thenReturn(mockNow);
             
             // when
-            List<StockChartInfoDto> result = stockChartQueryService
+            List<StockChartDto> result = stockChartQueryService
                     .getStockHistoryByType(stockCode, StockPeriodType.MINUTES_TODAY);
             
             // then

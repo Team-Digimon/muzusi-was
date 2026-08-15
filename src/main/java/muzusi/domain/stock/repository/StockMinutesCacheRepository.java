@@ -1,7 +1,7 @@
 package muzusi.domain.stock.repository;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
 import org.springframework.stereotype.Repository;
@@ -15,16 +15,14 @@ public class StockMinutesCacheRepository {
     private final RedisService redisService;
     private final static String KEY_PREFIX = KisConstant.MINUTES_CHART_PREFIX.getValue();
 
-    public void saveAll(Collection<StockChartInfoDto> stockChartInfoList) {
-        stockChartInfoList.forEach(stockChartInfo -> {
-            redisService.setList(KEY_PREFIX + ":" + stockChartInfo.stockCode(), stockChartInfo);
+    public void saveAll(Collection<StockChartDto> stockChartInfoList) {
+        stockChartInfoList.forEach(stockChart -> {
+            redisService.setList(KEY_PREFIX + ":" + stockChart.stockCode(), stockChart);
         });
     }
 
-    public List<StockChartInfoDto> findAll(String stockCode) {
-        return redisService.getList(KEY_PREFIX + ":" + stockCode).stream()
-                .map(stockCharInfo -> (StockChartInfoDto) stockCharInfo)
-                .toList();
+    public List<StockChartDto> findAll(String stockCode) {
+        return redisService.getList(KEY_PREFIX + ":" + stockCode, StockChartDto.class);
     }
 
     public void delete(String stockCode) {

@@ -1,7 +1,7 @@
 package muzusi.domain.stock.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.domain.stock.entity.StockMinutes;
 import muzusi.domain.stock.repository.StockMinutesCacheRepository;
 import muzusi.domain.stock.repository.StockMinutesRepository;
@@ -32,12 +32,12 @@ public class StockMinutesService {
     public void deleteByDateBefore(LocalDate date) {
         stockMinutesRepository.deleteByDateBefore(date);
     }
-
-    public void saveAllInCache(Collection<StockChartInfoDto> stockChartInfoList) {
-        stockMinutesCacheRepository.saveAll(stockChartInfoList);
+    
+    public void saveAllInCache(Collection<StockChartDto> stockCharts) {
+        stockMinutesCacheRepository.saveAll(stockCharts);
     }
 
-    public List<StockChartInfoDto> readAllInCache(String stockCode) {
+    public List<StockChartDto> readAllInCache(String stockCode) {
         return stockMinutesCacheRepository.findAll(stockCode);
     }
 

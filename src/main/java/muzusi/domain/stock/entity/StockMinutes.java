@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stockchart.dto.StockChartDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,10 +22,10 @@ public class StockMinutes {
 
     private LocalDate date;
 
-    private List<StockChartInfoDto> minutesChart;
+    private List<StockChartDto> minutesChart;
 
     @Builder
-    public StockMinutes(String stockCode, LocalDate date, List<StockChartInfoDto> minutesChart) {
+    public StockMinutes(String stockCode, LocalDate date, List<StockChartDto> minutesChart) {
         this.stockCode = stockCode;
         this.date = date;
         this.minutesChart = minutesChart;
