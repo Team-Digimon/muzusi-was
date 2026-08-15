@@ -5,6 +5,7 @@ import muzusi.domain.stock.entity.StockYearly;
 import muzusi.domain.stock.repository.StockYearlyRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,5 +23,9 @@ public class StockYearlyService {
 
     public void saveAll(List<StockYearly> stockYearlies) {
         stockYearlyRepository.saveAll(stockYearlies);
+    }
+
+    public boolean existsByDateBetween(LocalDateTime start, LocalDateTime end) {
+        return stockYearlyRepository.existsByDateBetween(start, end);
     }
 }

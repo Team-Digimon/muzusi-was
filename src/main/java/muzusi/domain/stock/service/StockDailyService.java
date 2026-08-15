@@ -5,6 +5,7 @@ import muzusi.domain.stock.entity.StockDaily;
 import muzusi.domain.stock.repository.StockDailyRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,5 +23,9 @@ public class StockDailyService {
 
     public List<StockDaily> readByStockCode(String stockCode) {
         return stockDailyRepository.findByStockCodeOrderByDateAsc(stockCode);
+    }
+
+    public boolean existsByDate(LocalDateTime date) {
+        return stockDailyRepository.existsByDate(date);
     }
 }
