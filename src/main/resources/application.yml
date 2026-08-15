@@ -73,6 +73,7 @@ kis:
   websocket-subscription-limit: ${KIS_WEBSOCKET_SUBSCRIPTION_LIMIT:41}
 
 data:
+  stock-code-size: ${DATA_STOCK_CODE_SIZE:2750}
   stock-code-path: ${DATA_STOCK_CODE_PATH:data/stock/stock-code.csv}
 
 webhook:
