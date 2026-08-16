@@ -5,6 +5,7 @@ import muzusi.domain.stock.entity.StockMonthly;
 import muzusi.domain.stock.repository.StockMonthlyRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,5 +23,9 @@ public class StockMonthlyService {
 
     public void saveAll(List<StockMonthly> stockMonthlies) {
         stockMonthlyRepository.saveAll(stockMonthlies);
+    }
+
+    public boolean existsByDateBetween(LocalDateTime start, LocalDateTime end) {
+        return stockMonthlyRepository.existsByDateBetween(start, end);
     }
 }

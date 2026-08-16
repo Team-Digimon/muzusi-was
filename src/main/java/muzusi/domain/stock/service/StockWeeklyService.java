@@ -5,6 +5,7 @@ import muzusi.domain.stock.entity.StockWeekly;
 import muzusi.domain.stock.repository.StockWeeklyRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,5 +23,9 @@ public class StockWeeklyService {
 
     public List<StockWeekly> readByStockCode(String stockCode) {
         return stockWeeklyRepository.findByStockCodeOrderByDateAsc(stockCode);
+    }
+
+    public boolean existsByDateBetween(LocalDateTime start, LocalDateTime end) {
+        return stockWeeklyRepository.existsByDateBetween(start, end);
     }
 }

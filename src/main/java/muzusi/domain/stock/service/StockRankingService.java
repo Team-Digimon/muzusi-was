@@ -1,7 +1,6 @@
 package muzusi.domain.stock.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.domain.stock.repository.StockRankingCacheRepository;
 import muzusi.domain.stock.type.StockRankingType;
@@ -23,11 +22,10 @@ public class StockRankingService {
         stockRankingCacheRepository.setByStockRankingType(StockRankingType.FALLING, values);
     }
     
-    public void setFallingAndRisingRankingTimeInCache(KisDto.Time time) {
+    public void setFallingAndRisingRankingTimeInCache(String time) {
         stockRankingCacheRepository.setTimeByStockRankingType(StockRankingType.FALLING, time);
     }
-    
-    public void setVolumeRankingTimeInCache(KisDto.Time time) {
+    public void setVolumeRankingTimeInCache(String time) {
         stockRankingCacheRepository.setTimeByStockRankingType(StockRankingType.VOLUME, time);
     }
     
@@ -52,7 +50,7 @@ public class StockRankingService {
     }
     
     public void deleteFallingRankingInCache() {
-        stockRankingCacheRepository.deleteByStockRankingType(StockRankingType.RISING);
+        stockRankingCacheRepository.deleteByStockRankingType(StockRankingType.FALLING);
     }
     
     public void deleteVolumeRankingCache() {

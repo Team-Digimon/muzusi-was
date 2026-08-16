@@ -21,11 +21,11 @@ public class KisProperties {
         return domain + kisUrlConstant.getUrl();
     }
     
-    public String getAppKey() {
+    public String appKey() {
         return appKeys.get(0);
     }
     
-    public String getAppSecret() {
+    public String appSecret() {
         return appSecrets.get(0);
     }
 }

@@ -1,11 +1,11 @@
 package muzusi.presentation.websocket.inteceptor;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.service.StockSearchService;
 import muzusi.application.stockquote.exception.StockQuoteException;
 import muzusi.application.stockquote.service.StockQuoteSubscriptionService;
 import muzusi.global.response.error.ErrorResponse;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -18,10 +18,20 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class StompInterceptor implements ChannelInterceptor {
     private final StockSearchService stockSearchService;
     private final StockQuoteSubscriptionService stockQuoteSubscriptionService;
+    
+    public StompInterceptor(
+            StockSearchService stockSearchService,
+            StockQuoteSubscriptionService stockQuoteSubscriptionService,
+            @Lazy SimpMessagingTemplate messagingTemplate
+    ) {
+        this.stockSearchService = stockSearchService;
+        this.stockQuoteSubscriptionService = stockQuoteSubscriptionService;
+        this.messagingTemplate = messagingTemplate;
+    }
+    
     private final SimpMessagingTemplate messagingTemplate;
 
     private static final String STOCK_CODE_HEADER_NAME = "stockCode";

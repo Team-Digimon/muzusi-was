@@ -1,7 +1,7 @@
 package muzusi.application.stock.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockChartInfoDto;
+import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.stock.service.StockDailyService;
 import muzusi.domain.stock.service.StockMinutesService;
@@ -44,18 +44,18 @@ public class StockChartQueryService {
      * @param stockPeriodType : 주식 차트 기간 유형 (MINUTES_TODAY, MINUTES_WEEK, DAILY, WEEKLY, MONTHLY, YEARLY)
      * @return 과거 주식 차트
      */
-    public List<StockChartInfoDto> getStockHistoryByType(String stockCode, StockPeriodType stockPeriodType) {
+    public List<StockChartDto> getStockHistoryByType(String stockCode, StockPeriodType stockPeriodType) {
         return switch (stockPeriodType) {
             case MINUTES_TODAY -> getMinutesTodayChartByStockCode(stockCode);
             case MINUTES_WEEK -> getMinutesWeekChartByStockCode(stockCode);
             case DAILY -> stockDailyService.readByStockCode(stockCode)
-                    .stream().map(StockChartInfoDto::from).toList();
+                    .stream().map(StockChartDto::from).toList();
             case WEEKLY -> stockWeeklyService.readByStockCode(stockCode)
-                    .stream().map(StockChartInfoDto::from).toList();
+                    .stream().map(StockChartDto::from).toList();
             case MONTHLY -> stockMonthlyService.readByStockCode(stockCode)
-                    .stream().map(StockChartInfoDto::from).toList();
+                    .stream().map(StockChartDto::from).toList();
             case YEARLY -> stockYearlyService.readByStockCode(stockCode)
-                    .stream().map(StockChartInfoDto::from).toList();
+                    .stream().map(StockChartDto::from).toList();
         };
     }
 
@@ -65,7 +65,7 @@ public class StockChartQueryService {
      * @param stockCode : 주식 코드
      * @return 당일 주식 분봉 차트
      */
-    private List<StockChartInfoDto> getMinutesTodayChartByStockCode(String stockCode) {
+    private List<StockChartDto> getMinutesTodayChartByStockCode(String stockCode) {
         LocalDateTime now = LocalDateTime.now();
         LocalTime time = now.toLocalTime();
         boolean isWeekend = now.getDayOfWeek() == DayOfWeek.SATURDAY || now.getDayOfWeek() == DayOfWeek.SUNDAY;
@@ -83,7 +83,7 @@ public class StockChartQueryService {
      * @param stockCode : 주식 코드
      * @return 지난 1주일 간 주식 분봉 차트
      */
-    private List<StockChartInfoDto> getMinutesWeekChartByStockCode(String stockCode) {
+    private List<StockChartDto> getMinutesWeekChartByStockCode(String stockCode) {
         return stockMinutesService.readByStockCode(stockCode).stream()
                 .flatMap(stockMinutes -> stockMinutes.getMinutesChart().stream())
                 .collect(Collectors.toList());

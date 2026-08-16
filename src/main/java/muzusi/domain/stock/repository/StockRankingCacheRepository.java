@@ -1,13 +1,11 @@
 package muzusi.domain.stock.repository;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.kis.dto.KisDto;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.infrastructure.redis.RedisService;
 import org.springframework.stereotype.Repository;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +29,7 @@ public class StockRankingCacheRepository {
     }
     
     private Map<String, Object> buildStockRankingResponse(String rankingKey, String timeKey) {
-        String time = ((KisDto.Time) redisService.get(timeKey)).getValue()
-                  .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String time = redisService.get(timeKey, String.class);
         
         List<StockRankDto> ranking = redisService.getList(rankingKey, StockRankDto.class);
         
@@ -50,7 +47,7 @@ public class StockRankingCacheRepository {
         }
     }
     
-    public void setTimeByStockRankingType(StockRankingType stockRankingType, KisDto.Time time) {
+    public void setTimeByStockRankingType(StockRankingType stockRankingType, String time) {
         switch (stockRankingType) {
             case RISING, FALLING -> redisService.set(RISING_FALLING_RANK_TIME_PREFIX, time);
             case VOLUME -> redisService.set(VOLUME_RANK_TIME_PREFIX, time);

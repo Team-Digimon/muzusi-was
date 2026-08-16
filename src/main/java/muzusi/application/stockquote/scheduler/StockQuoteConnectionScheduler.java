@@ -2,7 +2,7 @@ package muzusi.application.stockquote.scheduler;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.market.port.service.MarketService;
+import muzusi.application.market.service.MarketService;
 import muzusi.application.stockquote.service.StockQuoteSubscriptionService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
