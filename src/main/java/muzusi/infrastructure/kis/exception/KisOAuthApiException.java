@@ -1,4 +1,4 @@
-package muzusi.global.exception;
+package muzusi.infrastructure.kis.exception;
 
 public class KisOAuthApiException extends RuntimeException {
 

@@ -3,7 +3,7 @@ package muzusi.global.aop;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.kis.exception.KisApiException;
-import muzusi.global.exception.KisOAuthApiException;
+import muzusi.infrastructure.kis.exception.KisOAuthApiException;
 import muzusi.global.exception.NewsApiException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
