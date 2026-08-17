@@ -6,7 +6,7 @@ import muzusi.infrastructure.webhook.Embed;
 import muzusi.infrastructure.webhook.Message;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.exception.KisOAuthApiException;
-import muzusi.infrastructure.news.exception.NewsApiException;
+import muzusi.infrastructure.news.exception.NaverNewsApiException;
 import muzusi.infrastructure.webhook.DiscordWebhookClient;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,7 +28,7 @@ public class ExternalApiExceptionAspectForProd {
     public Object handleServiceExceptions(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             return joinPoint.proceed();
-        } catch (NewsApiException e) {
+        } catch (NaverNewsApiException e) {
             log.error("[NEWS ERROR] {}", e.getMessage());
             discordWebhookClient.sendWebhookMessage(getMessage("# NEWS ERROR", joinPoint, e));
             throw e;

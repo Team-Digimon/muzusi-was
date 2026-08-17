@@ -2,7 +2,7 @@ package muzusi.infrastructure.news;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.infrastructure.news.exception.NewsApiException;
+import muzusi.infrastructure.news.exception.NaverNewsApiException;
 import muzusi.infrastructure.properties.NewsProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,7 +57,7 @@ public class NewsApiClient {
                     ))
                     .toList();
         } catch (Exception e) {
-            throw new NewsApiException(e);
+            throw new NaverNewsApiException(e);
         }
     }
 

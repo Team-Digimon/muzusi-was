@@ -2,8 +2,8 @@ package muzusi.infrastructure.news.exception;
 
 import muzusi.global.exception.ExternalApiException;
 
-public class NewsApiException extends ExternalApiException {
-    public NewsApiException(Throwable cause) {
+public class NaverNewsApiException extends ExternalApiException {
+    public NaverNewsApiException(Throwable cause) {
         super(cause);
     }
 }
