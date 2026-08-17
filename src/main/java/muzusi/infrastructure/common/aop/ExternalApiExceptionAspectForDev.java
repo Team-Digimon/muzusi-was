@@ -1,4 +1,4 @@
-package muzusi.global.aop;
+package muzusi.infrastructure.common.aop;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
