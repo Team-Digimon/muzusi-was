@@ -6,7 +6,7 @@ import muzusi.infrastructure.webhook.Embed;
 import muzusi.infrastructure.webhook.Message;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.exception.KisOAuthApiException;
-import muzusi.global.exception.NewsApiException;
+import muzusi.infrastructure.news.exception.NewsApiException;
 import muzusi.infrastructure.webhook.DiscordWebhookClient;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

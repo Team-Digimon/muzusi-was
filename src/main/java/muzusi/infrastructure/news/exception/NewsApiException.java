@@ -1,4 +1,4 @@
-package muzusi.global.exception;
+package muzusi.infrastructure.news.exception;
 
 public class NewsApiException extends RuntimeException {
 

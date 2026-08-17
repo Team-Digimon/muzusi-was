@@ -2,9 +2,7 @@ package muzusi.infrastructure.news;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.global.exception.CustomException;
-import muzusi.global.exception.NewsApiException;
-import muzusi.global.response.error.type.CommonErrorType;
+import muzusi.infrastructure.news.exception.NewsApiException;
 import muzusi.infrastructure.properties.NewsProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
