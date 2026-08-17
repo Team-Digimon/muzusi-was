@@ -57,7 +57,7 @@ public class NewsApiClient {
                     ))
                     .toList();
         } catch (Exception e) {
-            throw new NaverNewsApiException(e);
+            throw new NaverNewsApiException("네이버 뉴스 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
 
