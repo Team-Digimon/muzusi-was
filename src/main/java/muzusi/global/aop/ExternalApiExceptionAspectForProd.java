@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.webhook.Embed;
 import muzusi.infrastructure.webhook.Message;
-import muzusi.global.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.global.exception.KisOAuthApiException;
 import muzusi.global.exception.NewsApiException;
 import muzusi.infrastructure.webhook.DiscordWebhookClient;

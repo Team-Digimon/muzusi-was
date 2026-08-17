@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.dto.StockRankDto;
-import muzusi.global.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
