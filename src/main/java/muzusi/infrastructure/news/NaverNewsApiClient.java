@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
-public class NewsApiClient {
+public class NaverNewsApiClient {
     private final NewsProperties newsProperties;
     private final ObjectMapper objectMapper;
 
