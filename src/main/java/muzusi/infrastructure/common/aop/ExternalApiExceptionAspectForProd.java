@@ -1,12 +1,12 @@
-package muzusi.global.aop;
+package muzusi.infrastructure.common.aop;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.webhook.Embed;
 import muzusi.infrastructure.webhook.Message;
-import muzusi.global.exception.KisApiException;
-import muzusi.global.exception.KisOAuthApiException;
-import muzusi.global.exception.NewsApiException;
+import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisOAuthApiException;
+import muzusi.infrastructure.news.exception.NaverNewsApiException;
 import muzusi.infrastructure.webhook.DiscordWebhookClient;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -28,18 +28,18 @@ public class ExternalApiExceptionAspectForProd {
     public Object handleServiceExceptions(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             return joinPoint.proceed();
-        } catch (NewsApiException e) {
+        } catch (NaverNewsApiException e) {
             log.error("[NEWS ERROR] {}", e.getMessage());
             discordWebhookClient.sendWebhookMessage(getMessage("# NEWS ERROR", joinPoint, e));
-            throw e;
-        } catch (KisApiException e) {
-            log.error("[KIS ERROR] {}", e.getMessage());
-            discordWebhookClient.sendWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
             throw e;
         } catch (KisOAuthApiException e) {
             log.error("[KIS OAUTH ERROR] {}", e.getMessage());
             discordWebhookClient.sendWebhookMessage(getCriticalMessage("# KIS ERROR - OAuth", joinPoint, e));
             return null;
+        } catch (KisApiException e) {
+            log.error("[KIS ERROR] {}", e.getMessage());
+            discordWebhookClient.sendWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
+            throw e;
         }
     }
 

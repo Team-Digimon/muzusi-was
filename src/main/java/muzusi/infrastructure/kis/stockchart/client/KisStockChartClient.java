@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stockchart.dto.StockChartDto;
-import muzusi.global.exception.ExternalApiException;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,7 +57,7 @@ public class KisStockChartClient {
             
             return parseStockChartResponse(rootNode, gap, stockCode, time);
         } catch (Exception e) {
-            throw new ExternalApiException(e, "한국투자증권 당일분봉조회 API 호출 중 에러가 발생하였습니다.");
+            throw new KisApiException("한국투자증권 당일분봉조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
     
@@ -74,7 +74,7 @@ public class KisStockChartClient {
         JsonNode output = rootNode.get("output2");
         
         if (output == null || output.isEmpty()) {
-            throw new ExternalApiException("한국투자증권 당일분봉조회 API 조회 결과가 비어있습니다.");
+            throw new KisApiException("한국투자증권 당일분봉조회 API 조회 결과가 비어있습니다.");
         }
         
         int windowSize = Math.min(gap, output.size());

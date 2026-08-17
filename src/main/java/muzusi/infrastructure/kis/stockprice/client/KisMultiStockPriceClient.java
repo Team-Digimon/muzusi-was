@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
-import muzusi.global.exception.ExternalApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -91,7 +91,7 @@ public class KisMultiStockPriceClient {
             
             return parseMultiStockPrice(rootNode);
         } catch (Exception e) {
-            throw new ExternalApiException(e, "한국투자증권 멀티종목 시세 조회 API 조회 중 오류가 발생하였습니다.");
+            throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 조회 중 오류가 발생하였습니다.", e);
         }
     }
     

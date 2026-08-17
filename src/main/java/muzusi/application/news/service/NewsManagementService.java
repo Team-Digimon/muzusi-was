@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import muzusi.domain.news.entity.News;
 import muzusi.domain.news.service.NewsService;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
-import muzusi.infrastructure.news.NewsApiClient;
+import muzusi.infrastructure.news.NaverNewsApiClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class NewsManagementService {
-    private final NewsApiClient newsApiClient;
+    private final NaverNewsApiClient naverNewsApiClient;
     private final NewsService newsService;
 
     private final static List<String> keywords = List.of("코스피", "코스닥");
@@ -26,7 +26,7 @@ public class NewsManagementService {
     @Transactional
     public void createPostsFromNews() {
         keywords.forEach(keyword ->
-                newsApiClient.fetchNews(keyword).stream()
+                naverNewsApiClient.fetchNews(keyword).stream()
                         .filter(content -> !newsService.existsByLink(content.get("link")))
                         .map(content ->
                                 News.builder()

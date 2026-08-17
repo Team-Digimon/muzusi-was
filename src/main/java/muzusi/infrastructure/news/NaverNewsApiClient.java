@@ -2,9 +2,7 @@ package muzusi.infrastructure.news;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.global.exception.CustomException;
-import muzusi.global.exception.NewsApiException;
-import muzusi.global.response.error.type.CommonErrorType;
+import muzusi.infrastructure.news.exception.NaverNewsApiException;
 import muzusi.infrastructure.properties.NewsProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +18,7 @@ import java.util.regex.Pattern;
 
 @Component
 @RequiredArgsConstructor
-public class NewsApiClient {
+public class NaverNewsApiClient {
     private final NewsProperties newsProperties;
     private final ObjectMapper objectMapper;
 
@@ -59,7 +57,7 @@ public class NewsApiClient {
                     ))
                     .toList();
         } catch (Exception e) {
-            throw new NewsApiException(e);
+            throw new NaverNewsApiException("네이버 뉴스 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
 
