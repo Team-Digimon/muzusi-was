@@ -32,14 +32,14 @@ public class ExternalApiExceptionAspectForProd {
             log.error("[NEWS ERROR] {}", e.getMessage());
             discordWebhookClient.sendWebhookMessage(getMessage("# NEWS ERROR", joinPoint, e));
             throw e;
-        } catch (KisApiException e) {
-            log.error("[KIS ERROR] {}", e.getMessage());
-            discordWebhookClient.sendWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
-            throw e;
         } catch (KisOAuthApiException e) {
             log.error("[KIS OAUTH ERROR] {}", e.getMessage());
             discordWebhookClient.sendWebhookMessage(getCriticalMessage("# KIS ERROR - OAuth", joinPoint, e));
             return null;
+        } catch (KisApiException e) {
+            log.error("[KIS ERROR] {}", e.getMessage());
+            discordWebhookClient.sendWebhookMessage(getMessage("# KIS ERROR", joinPoint, e));
+            throw e;
         }
     }
 

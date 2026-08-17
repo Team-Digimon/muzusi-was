@@ -1,8 +1,9 @@
 package muzusi.infrastructure.news.exception;
 
-public class NewsApiException extends RuntimeException {
+import muzusi.global.exception.ExternalApiException;
 
-    public NewsApiException(Throwable exception) {
-        super(exception.getMessage(), null, false, false);
+public class NewsApiException extends ExternalApiException {
+    public NewsApiException(Throwable cause) {
+        super(cause);
     }
 }

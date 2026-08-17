@@ -1,8 +1,8 @@
 package muzusi.infrastructure.kis.exception;
 
-public class KisOAuthApiException extends RuntimeException {
+public class KisOAuthApiException extends KisApiException {
 
-    public KisOAuthApiException(Throwable exception) {
-        super(exception.getMessage(), null, false, false);
+    public KisOAuthApiException(Throwable cause) {
+        super(cause);
     }
 }

@@ -1,8 +1,9 @@
 package muzusi.infrastructure.kis.exception;
 
-public class KisApiException extends RuntimeException {
+import muzusi.global.exception.ExternalApiException;
 
-    public KisApiException(Throwable exception) {
-        super(exception.getMessage(), null, false, false);
+public class KisApiException extends ExternalApiException {
+    public KisApiException(Throwable cause) {
+        super(cause);
     }
 }

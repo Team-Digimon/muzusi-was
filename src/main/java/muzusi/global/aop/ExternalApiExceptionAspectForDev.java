@@ -25,12 +25,12 @@ public class ExternalApiExceptionAspectForDev {
         } catch (NewsApiException e) {
             log.error("[NEWS ERROR] {}", e.getMessage());
             throw e;
-        } catch (KisApiException e) {
-            log.error("[KIS ERROR] {}", e.getMessage());
-            throw e;
         } catch (KisOAuthApiException e) {
             log.error("[KIS OAUTH ERROR] {}", e.getMessage());
             return null;
+        } catch (KisApiException e) {
+            log.error("[KIS ERROR] {}", e.getMessage());
+            throw e;
         }
     }
 }
