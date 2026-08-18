@@ -1,6 +1,5 @@
 package muzusi.application.stockranking.service;
 
-import com.google.common.util.concurrent.RateLimiter;
 import muzusi.application.stock.dto.StockRankDto;
 import muzusi.application.stockranking.port.FetchStockRankingPort;
 import muzusi.domain.stock.service.StockRankingService;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,9 +27,6 @@ class StockRankingUpdaterTest {
 
     @Mock
     private StockRankingService stockRankingService;
-
-    @Mock
-    private RateLimiter kisRateLimiter;
 
     @InjectMocks
     private StockRankingUpdater stockRankingUpdater;
@@ -64,7 +59,6 @@ class StockRankingUpdaterTest {
             stockRankingUpdater.updateVolumeRank();
 
             // then
-            verify(kisRateLimiter, times(1)).acquire();
             verify(fetchStockRankingPort).getVolumeRank();
             verify(stockRankingService).deleteVolumeRankingCache();
             verify(stockRankingService).setVolumeRankingInCache(volumeRank);
@@ -91,7 +85,6 @@ class StockRankingUpdaterTest {
             stockRankingUpdater.updateFluctuationRank();
 
             // then
-            verify(kisRateLimiter, times(1)).acquire();
             verify(fetchStockRankingPort).getRisingFluctuationRank();
             verify(fetchStockRankingPort).getFallingFluctuationRank();
             verify(stockRankingService).deleteRisingRankingInCache();

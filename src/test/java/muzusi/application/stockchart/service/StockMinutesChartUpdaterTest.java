@@ -1,6 +1,5 @@
 package muzusi.application.stockchart.service;
 
-import com.google.common.util.concurrent.RateLimiter;
 import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.application.stockcode.port.StockCodePort;
@@ -46,9 +45,6 @@ class StockMinutesChartUpdaterTest {
     @Mock
     private StockPriceService stockPriceService;
 
-    @Mock
-    private RateLimiter kisRateLimiter;
-
     @InjectMocks
     private StockMinutesChartUpdater stockMinutesChartUpdater;
 
@@ -88,7 +84,6 @@ class StockMinutesChartUpdaterTest {
         }
 
         // then
-        verify(kisRateLimiter, times(2)).acquire();
         verify(stockMinutesService).saveAllInCache(argThat(charts ->
                 charts.size() == 2 && charts.containsAll(List.of(samsungChart, skHynixChart))));
         verify(stockPriceService).saveAllInCache(argThat((Map<String, Object> priceMap) ->
@@ -113,7 +108,6 @@ class StockMinutesChartUpdaterTest {
         stockMinutesChartUpdater.updateStockMinutesChart();
 
         // then
-        verify(kisRateLimiter, times(1)).acquire();
         verify(fetchStockChartPort, times(2))
                 .getStockMinutesChart(eq("005930"), any(), eq(10));
         verify(stockMinutesService).saveAllInCache(argThat(charts ->
@@ -137,7 +131,6 @@ class StockMinutesChartUpdaterTest {
         stockMinutesChartUpdater.updateStockMinutesChart();
 
         // then
-        verify(kisRateLimiter, times(2)).acquire();
         verify(stockMinutesService).saveAllInCache(argThat(charts ->
                 charts.size() == 1 && charts.contains(skHynixChart)));
     }
