@@ -16,8 +16,6 @@ import java.util.List;
 public class StockRankingUpdater {
     private final FetchStockRankingPort fetchStockRankingPort;
     private final StockRankingService stockRankingService;
-    private final RateLimiter kisRateLimiter; // TODO: 향후 infrastructure 레이어로 이동
-
     /**
      * 주식 순위 포트를 통한 주식 거래량 순위 데이터 수집 후, 주식 거래량 순위를 갱신하는 메서드
      *
@@ -25,8 +23,6 @@ public class StockRankingUpdater {
      * <p> 주식 거래량 순위를 저장할 때, 갱신 시간도 같이 저장한다.
      */
     public void updateVolumeRank() {
-        kisRateLimiter.acquire();
-
         List<StockRankDto> volumeRank = fetchStockRankingPort.getVolumeRank();
         stockRankingService.deleteVolumeRankingCache();
         stockRankingService.setVolumeRankingInCache(volumeRank);
@@ -40,8 +36,6 @@ public class StockRankingUpdater {
      * <p> 주식 급등락 순위를 저장할 때, 갱신 시간도 같이 저장한다.
      */
     public void updateFluctuationRank() {
-        kisRateLimiter.acquire();
-
         List<StockRankDto> risingStockRanking = fetchStockRankingPort.getRisingFluctuationRank();
         List<StockRankDto> fallingStockRanking = fetchStockRankingPort.getFallingFluctuationRank();
 

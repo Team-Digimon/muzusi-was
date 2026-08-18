@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
@@ -30,6 +31,7 @@ public class KisMarketOpenClient {
     
     private static final String TR_ID = "CTCA0903R";
     
+    @KisRateLimit
     public boolean isMarketOpen() {
         HttpHeaders header = kisRequestFactory.getHttpHeader(TR_ID);
         
