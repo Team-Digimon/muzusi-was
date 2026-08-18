@@ -3,6 +3,7 @@ package muzusi.infrastructure.kis.auth;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.exception.KisOAuthApiException;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.properties.KisProperties;
@@ -32,6 +33,7 @@ public class KisOAuthClient {
      * @param appSecret 한국투자증권 앱시크릿
      * @return          한국투자증권 접근 토큰 {@code "type value"} (ex. {@code "Bearer xxx"})
      */
+    @KisRateLimit
     public String getAccessToken(String appKey, String appSecret) {
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", "client_credentials");
@@ -53,6 +55,7 @@ public class KisOAuthClient {
      * @param appSecret 한국투자증권 앱시크릿
      * @return          한국투자증권 웹소켓 접속키
      */
+    @KisRateLimit
     public String getWebSocketKey(String appKey, String appSecret) {
         Map<String, String> body = new HashMap<>();
         body.put("grant_type", "client_credentials");

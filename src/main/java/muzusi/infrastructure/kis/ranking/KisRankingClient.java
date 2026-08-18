@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stock.dto.StockRankDto;
+import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
@@ -29,6 +30,7 @@ public class KisRankingClient {
     private final static String VOLUME_RANK_TR_ID = "FHPST01710000";
     private final static String FLUCTUATION_RANK_TR_ID = "FHPST01700000";
 
+    @KisRateLimit
     public List<StockRankDto> getVolumeRank() {
         HttpHeaders headers = kisRequestFactory.getHttpHeader(VOLUME_RANK_TR_ID);
 
@@ -77,10 +79,12 @@ public class KisRankingClient {
         }
     }
 
+    @KisRateLimit
     public List<StockRankDto> getRisingFluctuationRank() {
         return getFluctuationRank("0");
     }
 
+    @KisRateLimit
     public List<StockRankDto> getFallingFluctuationRank() {
         return getFluctuationRank("1");
     }

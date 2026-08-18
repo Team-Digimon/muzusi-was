@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.stockchart.dto.StockChartDto;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
 import muzusi.infrastructure.kis.KisRequestFactory;
+import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
@@ -30,6 +31,7 @@ public class KisStockChartClient {
     private static final String STOCK_MINUTES_CHART_TR_ID = "FHKST03010200";
     private static final DateTimeFormatter HHMMSS_FORMATTER = DateTimeFormatter.ofPattern("HHmmss");
     
+    @KisRateLimit
     public StockChartDto getStockMinutesChart(String stockCode, LocalDateTime time, int gap) {
         HttpHeaders headers = requestFactory.getHttpHeader(STOCK_MINUTES_CHART_TR_ID);
         

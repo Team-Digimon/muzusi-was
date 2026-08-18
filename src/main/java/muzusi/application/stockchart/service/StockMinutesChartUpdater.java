@@ -29,7 +29,6 @@ public class StockMinutesChartUpdater {
     private final FetchStockChartPort fetchStockChartPort;
     private final StockMinutesService stockMinutesService;
     private final StockPriceService stockPriceService;
-    private final RateLimiter kisRateLimiter; // TODO: 향후 infrastructure 레이어로 분리
     
     private static final int CHART_MINUTES_GAP = 10;
     private static final int BATCH_SIZE = 500;
@@ -50,8 +49,6 @@ public class StockMinutesChartUpdater {
         
         for (String stockCode: stockCodePort.getAllStockCodes()) {
             try {
-                kisRateLimiter.acquire();
-                
                 StockChartDto stockChart = fetchStockChartPort.getStockMinutesChart(stockCode, now, CHART_MINUTES_GAP);
                 stockChartMap.put(stockCode, stockChart);
             } catch (Exception exception) {
