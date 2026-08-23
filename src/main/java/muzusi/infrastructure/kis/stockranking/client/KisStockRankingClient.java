@@ -3,7 +3,7 @@ package muzusi.infrastructure.kis.stockranking.client;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockRankDto;
+import muzusi.application.stockranking.dto.StockRankDto;
 import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;

@@ -1,7 +1,7 @@
 package muzusi.infrastructure.kis.stockranking.adapter;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockRankDto;
+import muzusi.application.stockranking.dto.StockRankDto;
 import muzusi.application.stockranking.port.FetchStockRankingPort;
 import muzusi.infrastructure.kis.stockranking.client.KisStockRankingClient;
 import org.springframework.stereotype.Component;

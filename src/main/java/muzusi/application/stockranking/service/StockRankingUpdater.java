@@ -1,8 +1,7 @@
 package muzusi.application.stockranking.service;
 
-import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockRankDto;
+import muzusi.application.stockranking.dto.StockRankDto;
 import muzusi.application.stockranking.port.FetchStockRankingPort;
 import muzusi.domain.stock.service.StockRankingService;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
