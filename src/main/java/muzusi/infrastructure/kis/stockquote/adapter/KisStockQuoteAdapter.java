@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.stockquote;
+package muzusi.infrastructure.kis.stockquote.adapter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

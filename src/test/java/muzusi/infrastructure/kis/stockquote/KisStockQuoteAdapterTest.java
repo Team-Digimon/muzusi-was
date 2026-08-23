@@ -1,6 +1,7 @@
 package muzusi.infrastructure.kis.stockquote;
 
 import muzusi.infrastructure.kis.auth.KisAuthStore;
+import muzusi.infrastructure.kis.stockquote.adapter.KisStockQuoteAdapter;
 import muzusi.infrastructure.kis.websocket.KisStockQuoteClient;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
