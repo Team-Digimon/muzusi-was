@@ -1,7 +1,7 @@
 package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.service.StockRankingQueryService;
+import muzusi.application.stockranking.service.StockRankingQueryService;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockRankingApi;
