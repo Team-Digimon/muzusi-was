@@ -1,4 +1,4 @@
-package muzusi.application.stock.dto;
+package muzusi.application.stockprice.dto;
 
 import lombok.Builder;
 

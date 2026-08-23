@@ -1,7 +1,7 @@
 package muzusi.application.stockchart.dto;
 
 import lombok.Builder;
-import muzusi.application.stock.dto.StockPriceDto;
+import muzusi.application.stockprice.dto.StockPriceDto;
 import muzusi.domain.stock.entity.StockDaily;
 import muzusi.domain.stock.entity.StockMonthly;
 import muzusi.domain.stock.entity.StockWeekly;

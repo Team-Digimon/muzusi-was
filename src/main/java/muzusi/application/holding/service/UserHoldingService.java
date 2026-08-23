@@ -3,7 +3,7 @@ package muzusi.application.holding.service;
 import lombok.RequiredArgsConstructor;
 import muzusi.application.account.dto.AccountSummaryDto;
 import muzusi.application.holding.dto.HoldingInfoDto;
-import muzusi.application.stock.dto.StockPriceDto;
+import muzusi.application.stockprice.dto.StockPriceDto;
 import muzusi.domain.holding.entity.Holding;
 import muzusi.domain.holding.service.HoldingService;
 import muzusi.infrastructure.redis.RedisService;
