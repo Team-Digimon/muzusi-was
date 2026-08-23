@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.ranking;
+package muzusi.infrastructure.kis.stockranking.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class KisRankingClient {
+public class KisStockRankingClient {
     private final KisProperties kisProperties;
     private final ObjectMapper objectMapper;
     private final KisRequestFactory kisRequestFactory;
