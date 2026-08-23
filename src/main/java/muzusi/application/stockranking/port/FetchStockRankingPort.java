@@ -1,6 +1,6 @@
 package muzusi.application.stockranking.port;
 
-import muzusi.application.stock.dto.StockRankDto;
+import muzusi.application.stockranking.dto.StockRankDto;
 
 import java.util.List;
 

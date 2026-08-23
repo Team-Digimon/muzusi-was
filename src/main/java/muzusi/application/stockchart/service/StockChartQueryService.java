@@ -1,4 +1,4 @@
-package muzusi.application.stock.service;
+package muzusi.application.stockchart.service;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stockchart.dto.StockChartDto;

@@ -1,6 +1,7 @@
 package muzusi.application.stock.service;
 
 import muzusi.application.stockchart.dto.StockChartDto;
+import muzusi.application.stockchart.service.StockChartQueryService;
 import muzusi.domain.stock.exception.StockErrorType;
 import muzusi.domain.stock.service.StockDailyService;
 import muzusi.domain.stock.service.StockMinutesService;

@@ -1,7 +1,7 @@
 package muzusi.infrastructure.config;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.presentation.websocket.inteceptor.StompInterceptor;
+import muzusi.presentation.websocket.interceptor.StompInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

@@ -1,4 +1,4 @@
-package muzusi.presentation.websocket.inteceptor;
+package muzusi.presentation.websocket.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stock.service.StockSearchService;

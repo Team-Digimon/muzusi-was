@@ -1,7 +1,7 @@
 package muzusi.domain.stock.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockRankDto;
+import muzusi.application.stockranking.dto.StockRankDto;
 import muzusi.domain.stock.repository.StockRankingCacheRepository;
 import muzusi.domain.stock.type.StockRankingType;
 import org.springframework.stereotype.Service;

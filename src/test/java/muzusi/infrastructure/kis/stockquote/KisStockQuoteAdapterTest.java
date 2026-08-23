@@ -1,7 +1,8 @@
 package muzusi.infrastructure.kis.stockquote;
 
 import muzusi.infrastructure.kis.auth.KisAuthStore;
-import muzusi.infrastructure.kis.websocket.KisStockQuoteClient;
+import muzusi.infrastructure.kis.stockquote.adapter.KisStockQuoteAdapter;
+import muzusi.infrastructure.kis.stockquote.requester.KisStockQuoteRequester;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ class KisStockQuoteAdapterTest {
     private KisWebSocketSessionStore kisWebSocketSessionStore;
 
     @Mock
-    private KisStockQuoteClient kisStockQuoteClient;
+    private KisStockQuoteRequester kisStockQuoteRequester;
 
     @InjectMocks
     private KisStockQuoteAdapter kisStockQuoteAdapter;
@@ -118,7 +119,7 @@ class KisStockQuoteAdapterTest {
             kisStockQuoteAdapter.subscribe(sessionId, stockCode);
 
             // then
-            verify(kisStockQuoteClient).subscribe(session, webSocketKey, stockCode);
+            verify(kisStockQuoteRequester).subscribe(session, webSocketKey, stockCode);
         }
 
         @Test
@@ -133,7 +134,7 @@ class KisStockQuoteAdapterTest {
             kisStockQuoteAdapter.subscribe(sessionId, stockCode);
 
             // then
-            verifyNoInteractions(kisStockQuoteClient);
+            verifyNoInteractions(kisStockQuoteRequester);
         }
     }
 
@@ -156,7 +157,7 @@ class KisStockQuoteAdapterTest {
             kisStockQuoteAdapter.unsubscribe(sessionId, stockCode);
 
             // then
-            verify(kisStockQuoteClient).unsubscribe(session, webSocketKey, stockCode);
+            verify(kisStockQuoteRequester).unsubscribe(session, webSocketKey, stockCode);
         }
 
         @Test
@@ -171,7 +172,7 @@ class KisStockQuoteAdapterTest {
             kisStockQuoteAdapter.unsubscribe(sessionId, stockCode);
 
             // then
-            verifyNoInteractions(kisStockQuoteClient);
+            verifyNoInteractions(kisStockQuoteRequester);
         }
     }
 }

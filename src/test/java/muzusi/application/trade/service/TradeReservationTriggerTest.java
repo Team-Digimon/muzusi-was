@@ -1,6 +1,6 @@
 package muzusi.application.trade.service;
 
-import muzusi.application.stock.dto.StockPriceDto;
+import muzusi.application.stockprice.dto.StockPriceDto;
 import muzusi.infrastructure.redis.RedisService;
 import muzusi.infrastructure.redis.constant.KisConstant;
 import muzusi.infrastructure.redis.constant.TradeConstant;
