@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stockquote.port.StockQuotePort;
 import muzusi.infrastructure.kis.auth.KisAuthStore;
-import muzusi.infrastructure.kis.websocket.KisStockQuoteClient;
+import muzusi.infrastructure.kis.stockquote.requester.KisStockQuoteRequester;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class KisStockQuoteAdapter implements StockQuotePort {
     private final KisWebSocketConnector kisWebSocketConnector;
     private final KisAuthStore kisAuthStore;
     private final KisWebSocketSessionStore kisWebSocketSessionStore;
-    private final KisStockQuoteClient kisStockQuoteClient;
+    private final KisStockQuoteRequester kisStockQuoteRequester;
     
     /**
      * 한국투자증권 웹소켓 세션을 연결하는 메서드
@@ -69,7 +69,7 @@ public class KisStockQuoteAdapter implements StockQuotePort {
         String webSocketKey = kisWebSocketSession.getWebSocketKey();
         WebSocketSession session = kisWebSocketSession.getWebSocketSession();
 
-        kisStockQuoteClient.subscribe(session, webSocketKey, stockCode);
+        kisStockQuoteRequester.subscribe(session, webSocketKey, stockCode);
     }
 
     /**
@@ -90,6 +90,6 @@ public class KisStockQuoteAdapter implements StockQuotePort {
         String webSocketKey = kisWebSocketSession.getWebSocketKey();
         WebSocketSession session = kisWebSocketSession.getWebSocketSession();
         
-        kisStockQuoteClient.unsubscribe(session, webSocketKey, stockCode);
+        kisStockQuoteRequester.unsubscribe(session, webSocketKey, stockCode);
     }
 }

@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.websocket;
+package muzusi.infrastructure.kis.stockquote.requester;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisStockQuoteClient {
+public class KisStockQuoteRequester {
     private final ObjectMapper objectMapper;
     private static final String TRADE_ID = "H0STCNT0";
     
