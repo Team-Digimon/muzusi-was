@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.market.adapter;
+package muzusi.infrastructure.market.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.market.port.MarketDataAuthPort;

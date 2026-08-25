@@ -1,8 +1,8 @@
-package muzusi.infrastructure.kis.market.adapter;
+package muzusi.infrastructure.market.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.market.port.MarketPort;
-import muzusi.infrastructure.kis.market.client.KisMarketOpenClient;
+import muzusi.infrastructure.market.client.kis.KisMarketOpenClient;
 import org.springframework.stereotype.Component;
 
 @Component
