@@ -1,4 +1,4 @@
-package muzusi.application.stock.dto;
+package muzusi.application.stocksearch.dto;
 
 import muzusi.domain.stock.entity.StockItem;
 

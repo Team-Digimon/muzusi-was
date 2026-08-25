@@ -1,7 +1,7 @@
 package muzusi.presentation.stock.controller;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.service.StockSearchService;
+import muzusi.application.stocksearch.service.StockSearchService;
 import muzusi.global.response.success.SuccessResponse;
 import muzusi.presentation.stock.api.StockApi;
 import org.springframework.http.ResponseEntity;

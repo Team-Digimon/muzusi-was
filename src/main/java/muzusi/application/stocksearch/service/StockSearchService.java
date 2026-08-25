@@ -1,7 +1,7 @@
-package muzusi.application.stock.service;
+package muzusi.application.stocksearch.service;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stock.dto.StockItemDto;
+import muzusi.application.stocksearch.dto.StockItemDto;
 import muzusi.domain.stock.service.StockItemService;
 import org.springframework.stereotype.Service;
 
