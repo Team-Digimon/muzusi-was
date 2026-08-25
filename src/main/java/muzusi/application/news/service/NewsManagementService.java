@@ -24,8 +24,9 @@ public class NewsManagementService {
     private final NewsService newsService;
 
     /**
-     * 뉴스 API 호출 및 저장 메서드
-     * 키워드에 맞게 뉴스 API를 호출한 후, DB에 존재 여부를 확인하고 저장을 진행한다.
+     * 뉴스 수집 및 저장 메서드
+     *
+     * <p> 키워드별로 뉴스를 수집한 후, DB에 존재 여부 및 중복 여부를 확인하고 저장을 진행한다.
      */
     @Transactional
     public void createPostsFromNews() {
