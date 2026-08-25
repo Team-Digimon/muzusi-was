@@ -1,8 +1,8 @@
-package muzusi.infrastructure.kis.stockchart.adapter;
+package muzusi.infrastructure.stockchart.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stockchart.port.FetchStockChartPort;
-import muzusi.infrastructure.kis.stockchart.client.KisStockChartClient;
+import muzusi.infrastructure.stockchart.client.kis.KisStockChartClient;
 import muzusi.application.stockchart.dto.StockChartDto;
 import org.springframework.stereotype.Component;
 
