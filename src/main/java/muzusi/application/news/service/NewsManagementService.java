@@ -22,6 +22,8 @@ import java.util.Set;
 public class NewsManagementService {
     private final FetchNewsPort fetchNewsPort;
     private final NewsService newsService;
+    
+    private static final int NEWS_RETENTION_DAYS = 1;
 
     /**
      * 뉴스 수집 및 저장 메서드
@@ -59,7 +61,7 @@ public class NewsManagementService {
      */
     @Transactional
     public void deleteNews() {
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(NEWS_RETENTION_DAYS);
         newsService.deleteByDateTime(dateTime);
     }
 }
