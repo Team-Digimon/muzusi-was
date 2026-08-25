@@ -1,8 +1,8 @@
-package muzusi.infrastructure.kis.stockprice.adapter;
+package muzusi.infrastructure.stockprice.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stockprice.port.FetchStockPricePort;
-import muzusi.infrastructure.kis.stockprice.client.KisMultiStockPriceClient;
+import muzusi.infrastructure.stockprice.client.kis.KisMultiStockPriceClient;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
