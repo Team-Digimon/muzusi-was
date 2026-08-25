@@ -56,8 +56,9 @@ public class NewsManagementService {
     }
     
     /**
-     * 오래된 뉴스를 삭제하는 메서드.
-     * 1일이 지난 뉴스들을 삭제한다.
+     * 오래된 뉴스를 삭제하는 메서드
+     *
+     * <p> 보관기간({@link #NEWS_RETENTION_DAYS})이 지난 뉴스들을 삭제한다.
      */
     @Transactional
     public void deleteNews() {
