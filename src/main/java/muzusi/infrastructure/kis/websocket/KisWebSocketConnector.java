@@ -2,7 +2,7 @@ package muzusi.infrastructure.kis.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.properties.KisProperties;
-import muzusi.infrastructure.stockquote.websocket.kis.KisRealTimeTradeWebSocketHandler;
+import muzusi.infrastructure.stockquote.websocket.kis.KisStockQuoteWebSocketHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
@@ -12,15 +12,15 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 @Component
 public class KisWebSocketConnector {
     private final WebSocketClient webSocketClient = new StandardWebSocketClient();
-    private final KisRealTimeTradeWebSocketHandler kisRealTimeTradeWebSocketHandler;
+    private final KisStockQuoteWebSocketHandler kisStockQuoteWebSocketHandler;
     private final String webSocketDomain;
     
     public KisWebSocketConnector(
             KisProperties kisProperties,
-            KisRealTimeTradeWebSocketHandler kisRealTimeTradeWebSocketHandler
+            KisStockQuoteWebSocketHandler kisStockQuoteWebSocketHandler
     ) {
         this.webSocketDomain = kisProperties.getWebSocketDomain();
-        this.kisRealTimeTradeWebSocketHandler = kisRealTimeTradeWebSocketHandler;
+        this.kisStockQuoteWebSocketHandler = kisStockQuoteWebSocketHandler;
     }
     
     /**
@@ -31,7 +31,7 @@ public class KisWebSocketConnector {
     public WebSocketSession connect() {
         try {
             WebSocketSession session = webSocketClient
-                    .execute(kisRealTimeTradeWebSocketHandler, webSocketDomain).join();
+                    .execute(kisStockQuoteWebSocketHandler, webSocketDomain).join();
             
             return session;
         } catch (Exception e) {

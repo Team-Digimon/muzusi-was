@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class KisRealTimeTradeWebSocketHandler extends TextWebSocketHandler {
+public class KisStockQuoteWebSocketHandler extends TextWebSocketHandler {
     private final TradeNotificationPublisher tradeNotificationPublisher;
     
     /**
