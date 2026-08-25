@@ -1,7 +1,7 @@
 package muzusi.presentation.websocket.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import muzusi.application.stock.service.StockSearchService;
+import muzusi.application.stocksearch.service.StockSearchService;
 import muzusi.application.stockquote.exception.StockQuoteException;
 import muzusi.application.stockquote.service.StockQuoteSubscriptionService;
 import muzusi.global.response.error.ErrorResponse;
