@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.stockranking.client;
+package muzusi.infrastructure.stockranking.client.kis;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
