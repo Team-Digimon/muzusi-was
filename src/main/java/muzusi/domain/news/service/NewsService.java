@@ -34,4 +34,8 @@ public class NewsService {
     public void deleteByDateTime(LocalDateTime dateTime) {
         newsRepository.deleteByDateTimeBefore(dateTime);
     }
+    
+    public void addAll(List<News> recentNews) {
+        newsRepository.saveAll(recentNews);
+    }
 }

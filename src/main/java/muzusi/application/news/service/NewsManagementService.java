@@ -1,52 +1,68 @@
 package muzusi.application.news.service;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.news.port.FetchNewsPort;
 import muzusi.domain.news.entity.News;
 import muzusi.domain.news.service.NewsService;
+import muzusi.domain.news.type.KeywordType;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
-import muzusi.infrastructure.news.NaverNewsApiClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class NewsManagementService {
-    private final NaverNewsApiClient naverNewsApiClient;
+    private final FetchNewsPort fetchNewsPort;
     private final NewsService newsService;
-
-    private final static List<String> keywords = List.of("코스피", "코스닥");
+    
+    private static final int NEWS_RETENTION_DAYS = 1;
 
     /**
-     * 뉴스 API 호출 및 저장 메서드
-     * 키워드에 맞게 뉴스 API를 호출한 후, DB에 존재 여부를 확인하고 저장을 진행한다.
+     * 뉴스 수집 및 저장 메서드
+     *
+     * <p> 키워드별로 뉴스를 수집한 후, DB에 존재 여부 및 중복 여부를 확인하고 저장을 진행한다.
      */
     @Transactional
     public void createPostsFromNews() {
-        keywords.forEach(keyword ->
-                naverNewsApiClient.fetchNews(keyword).stream()
-                        .filter(content -> !newsService.existsByLink(content.get("link")))
-                        .map(content ->
-                                News.builder()
-                                        .title(content.get("title"))
-                                        .link(content.get("link"))
-                                        .keyword(keyword)
-                                        .pubDate(DateTimeFormatterUtil.parseToLocalDateTime(content.get("pubDate")))
-                                        .build()
-                        )
-                        .forEach(newsService::save)
+        List<News> recentNews = new ArrayList<>();
+        Set<String> addedNewsLink = new HashSet<>();
+        
+        Arrays.stream(KeywordType.values()).forEach(
+                keyword -> {
+                    List<Map<String, String>> newsItems = fetchNewsPort.getNews(keyword.getName());
+                    
+                    newsItems.stream()
+                            .filter(news -> !newsService.existsByLink(news.get("link")))
+                            .filter(news -> addedNewsLink.add(news.get("link")))
+                            .map(news -> News.builder()
+                                    .title(news.get("title"))
+                                    .link(news.get("link"))
+                                    .keyword(keyword.getName())
+                                    .pubDate(DateTimeFormatterUtil.parseToLocalDateTime(news.get("pubDate")))
+                                    .build())
+                            .forEach(recentNews::add);
+                }
         );
+        
+        newsService.addAll(recentNews);
     }
-
+    
     /**
-     * 오래된 뉴스를 삭제하는 메서드.
-     * 1일이 지난 뉴스들을 삭제한다.
+     * 오래된 뉴스를 삭제하는 메서드
+     *
+     * <p> 보관기간({@link #NEWS_RETENTION_DAYS})이 지난 뉴스들을 삭제한다.
      */
     @Transactional
     public void deleteNews() {
-        LocalDateTime dateTime = LocalDateTime.now().minusDays(1);
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(NEWS_RETENTION_DAYS);
         newsService.deleteByDateTime(dateTime);
     }
 }

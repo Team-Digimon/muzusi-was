@@ -1,4 +1,4 @@
-package muzusi.infrastructure.news;
+package muzusi.infrastructure.news.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
