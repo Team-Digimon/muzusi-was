@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.websocket;
+package muzusi.infrastructure.stockquote.websocket.kis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

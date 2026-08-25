@@ -2,6 +2,7 @@ package muzusi.infrastructure.kis.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.properties.KisProperties;
+import muzusi.infrastructure.stockquote.websocket.kis.KisRealTimeTradeWebSocketHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
