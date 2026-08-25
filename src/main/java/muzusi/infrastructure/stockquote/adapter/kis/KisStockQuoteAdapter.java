@@ -1,10 +1,10 @@
-package muzusi.infrastructure.kis.stockquote.adapter;
+package muzusi.infrastructure.stockquote.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stockquote.port.StockQuotePort;
 import muzusi.infrastructure.kis.auth.KisAuthStore;
-import muzusi.infrastructure.kis.stockquote.requester.KisStockQuoteRequester;
+import muzusi.infrastructure.stockquote.requester.kis.KisStockQuoteRequester;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
 import org.springframework.stereotype.Component;

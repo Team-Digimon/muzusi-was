@@ -1,4 +1,4 @@
-package muzusi.infrastructure.kis.stockquote.requester;
+package muzusi.infrastructure.stockquote.requester.kis;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;

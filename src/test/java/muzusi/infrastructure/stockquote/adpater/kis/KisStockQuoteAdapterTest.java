@@ -1,8 +1,8 @@
-package muzusi.infrastructure.kis.stockquote;
+package muzusi.infrastructure.stockquote.adpater.kis;
 
 import muzusi.infrastructure.kis.auth.KisAuthStore;
-import muzusi.infrastructure.kis.stockquote.adapter.KisStockQuoteAdapter;
-import muzusi.infrastructure.kis.stockquote.requester.KisStockQuoteRequester;
+import muzusi.infrastructure.stockquote.adapter.kis.KisStockQuoteAdapter;
+import muzusi.infrastructure.stockquote.requester.kis.KisStockQuoteRequester;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
 import org.junit.jupiter.api.DisplayName;
