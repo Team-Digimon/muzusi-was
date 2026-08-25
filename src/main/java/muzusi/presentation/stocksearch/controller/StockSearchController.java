@@ -1,9 +1,9 @@
-package muzusi.presentation.stock.controller;
+package muzusi.presentation.stocksearch.controller;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stocksearch.service.StockSearchService;
 import muzusi.global.response.success.SuccessResponse;
-import muzusi.presentation.stock.api.StockApi;
+import muzusi.presentation.stocksearch.api.StockSearchApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/stocks")
 @RequiredArgsConstructor
-public class StockController implements StockApi {
+public class StockSearchController implements StockSearchApi {
     private final StockSearchService stockSearchService;
 
     @Override

@@ -1,10 +1,10 @@
-package muzusi.presentation.stock.controller;
+package muzusi.presentation.stockranking.controller;
 
 import lombok.RequiredArgsConstructor;
 import muzusi.application.stockranking.service.StockRankingQueryService;
 import muzusi.domain.stock.type.StockRankingType;
 import muzusi.global.response.success.SuccessResponse;
-import muzusi.presentation.stock.api.StockRankingApi;
+import muzusi.presentation.stockranking.api.StockRankingApi;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

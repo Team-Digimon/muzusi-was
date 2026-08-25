@@ -1,4 +1,4 @@
-package muzusi.presentation.stock.api;
+package muzusi.presentation.stockchart.api;
 
 import api.link.checker.annotation.ApiGroup;
 import api.link.checker.annotation.TrackApi;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @ApiGroup(value = "[주식 차트 조회 API]")
 @Tag(name = "[주식 차트 조회 API]", description = "주식 차트 조회 관련 API")
-public interface StockHistoryApi {
+public interface StockChartApi {
 
     @TrackApi(description = "주식 차트 조회")
     @Operation(summary = "주식 차트 조회", description = "주식 차트를 조회하는 API입니다.")

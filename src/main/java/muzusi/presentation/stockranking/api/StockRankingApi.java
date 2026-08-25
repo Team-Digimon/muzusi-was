@@ -1,4 +1,4 @@
-package muzusi.presentation.stock.api;
+package muzusi.presentation.stockranking.api;
 
 import api.link.checker.annotation.ApiGroup;
 import api.link.checker.annotation.TrackApi;

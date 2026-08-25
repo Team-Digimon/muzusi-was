@@ -1,4 +1,4 @@
-package muzusi.presentation.stock.api;
+package muzusi.presentation.stocksearch.api;
 
 import api.link.checker.annotation.ApiGroup;
 import api.link.checker.annotation.TrackApi;
@@ -9,12 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@ApiGroup(value = "[주식 API]")
-@Tag(name = "[주식 API]", description = "주식 관련 API")
-public interface StockApi {
+@ApiGroup(value = "[주식 검색어 자동완성 API]")
+@Tag(name = "[주식 검색어 자동완성 API]", description = "주식 검색어 자동완성 API")
+public interface StockSearchApi {
 
     @TrackApi(description = "주식 검색어 자동완성")
     @Operation(summary = "주식 검색어 자동완성", description = "주식 검색어 자동완성하는 API입니다.")
