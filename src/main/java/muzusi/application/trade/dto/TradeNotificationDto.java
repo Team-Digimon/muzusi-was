@@ -8,8 +8,8 @@ public record TradeNotificationDto(
     String stockCode,
     String time,
     Long price,
-    Long stockCount,
-    Long volume,
+    Long contingentVolume,
+    Long accumulatedVolume,
     TradeType tradeType,
     Double changeRate
 ) {

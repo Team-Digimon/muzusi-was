@@ -35,9 +35,13 @@ public class KisStockQuoteAdapter implements StockQuotePort {
         List<String> connectedSessionIds = new ArrayList<>();
         
         for (String webSocketKey : webSocketKeys) {
-            WebSocketSession session = kisWebSocketConnector.connect();
-            String connectedSessionId = kisWebSocketSessionStore.save(session, webSocketKey);
-            connectedSessionIds.add(connectedSessionId);
+            try {
+                WebSocketSession session = kisWebSocketConnector.connect();
+                String connectedSessionId = kisWebSocketSessionStore.save(session, webSocketKey);
+                connectedSessionIds.add(connectedSessionId);
+            } catch (Exception e) {
+                log.error("[Error] Failed to connect to KIS Websocket - {}", e.getMessage(), e);
+            }
         }
         
         return connectedSessionIds;
