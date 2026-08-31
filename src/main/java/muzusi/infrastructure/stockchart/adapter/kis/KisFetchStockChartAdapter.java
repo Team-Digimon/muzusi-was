@@ -1,6 +1,7 @@
 package muzusi.infrastructure.stockchart.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.stockcandle.dto.StockMinuteCandleDto;
 import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.infrastructure.stockchart.client.kis.KisStockChartClient;
 import muzusi.application.stockchart.dto.StockChartDto;
@@ -24,5 +25,10 @@ public class KisFetchStockChartAdapter implements FetchStockChartPort {
     @Override
     public StockChartDto getStockMinutesChart(String stockCode, LocalDateTime time, int gap) {
         return stockChartClient.getStockMinutesChart(stockCode, time, gap);
+    }
+    
+    @Override
+    public StockMinuteCandleDto getStockMinuteCandle(String stockCode, LocalDateTime time, int gap) {
+        return stockChartClient.getStockMinuteChart(stockCode, time, gap);
     }
 }
