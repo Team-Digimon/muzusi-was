@@ -15,4 +15,8 @@ public class StockMinuteCandleService {
     public void saveAll(List<StockMinuteCandle> stockMinuteCandles) {
         stockMinuteCandleRepository.saveAllInBatch(stockMinuteCandles);
     }
+    
+    public List<StockMinuteCandle> readByStockCode(String stockCode) {
+        return stockMinuteCandleRepository.findByIdStockCodeOrderByIdDateTimeAsc(stockCode);
+    }
 }
