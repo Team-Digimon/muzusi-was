@@ -20,13 +20,8 @@ public class KisFetchStockChartAdapter implements FetchStockChartPort {
      * @param stockCode 주식 종목 코드 번호
      * @param time      조회 시간
      * @param gap       차트 간격
-     * @return          차트 정보 DTO
+     * @return          분봉 DTO
      */
-    @Override
-    public StockChartDto getStockMinutesChart(String stockCode, LocalDateTime time, int gap) {
-        return stockChartClient.getStockMinutesChart(stockCode, time, gap);
-    }
-    
     @Override
     public StockMinuteCandleDto getStockMinuteCandle(String stockCode, LocalDateTime time, int gap) {
         return stockChartClient.getStockMinuteChart(stockCode, time, gap);
