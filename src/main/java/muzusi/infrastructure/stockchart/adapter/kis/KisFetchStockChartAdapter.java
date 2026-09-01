@@ -1,6 +1,7 @@
 package muzusi.infrastructure.stockchart.adapter.kis;
 
 import lombok.RequiredArgsConstructor;
+import muzusi.application.stockcandle.dto.StockMinuteCandleDto;
 import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.infrastructure.stockchart.client.kis.KisStockChartClient;
 import muzusi.application.stockchart.dto.StockChartDto;
@@ -19,10 +20,10 @@ public class KisFetchStockChartAdapter implements FetchStockChartPort {
      * @param stockCode 주식 종목 코드 번호
      * @param time      조회 시간
      * @param gap       차트 간격
-     * @return          차트 정보 DTO
+     * @return          분봉 DTO
      */
     @Override
-    public StockChartDto getStockMinutesChart(String stockCode, LocalDateTime time, int gap) {
-        return stockChartClient.getStockMinutesChart(stockCode, time, gap);
+    public StockMinuteCandleDto getStockMinuteCandle(String stockCode, LocalDateTime time, int gap) {
+        return stockChartClient.getStockMinuteChart(stockCode, time, gap);
     }
 }

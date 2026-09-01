@@ -20,10 +20,10 @@ public class StockChartController implements StockChartApi {
 
     @Override
     @GetMapping("/{stockCode}")
-    public ResponseEntity<?> getStockHistory(@PathVariable String stockCode,
-                                             @RequestParam StockPeriodType period) {
-        return ResponseEntity.ok(
-                SuccessResponse.from(stockChartQueryService.getStockHistoryByType(stockCode, period))
-        );
+    public ResponseEntity<?> getStockHistory(
+            @PathVariable String stockCode,
+            @RequestParam StockPeriodType period
+    ) {
+        return ResponseEntity.ok(SuccessResponse.from(stockChartQueryService.getStockHistoryByType(stockCode, period)));
     }
 }
