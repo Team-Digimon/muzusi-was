@@ -6,6 +6,7 @@ import muzusi.domain.stock.entity.StockDaily;
 import muzusi.domain.stock.entity.StockMonthly;
 import muzusi.domain.stock.entity.StockWeekly;
 import muzusi.domain.stock.entity.StockYearly;
+import muzusi.domain.stockcandle.entity.StockDailyCandle;
 import muzusi.domain.stockcandle.entity.StockMinuteCandle;
 import muzusi.global.util.datetime.DateTimeFormatterUtil;
 
@@ -28,6 +29,18 @@ public record StockChartDto(
                 .low(stockMinuteCandle.getLow())
                 .close(stockMinuteCandle.getClose())
                 .volume(stockMinuteCandle.getVolume())
+                .build();
+    }
+    
+    public static StockChartDto from(StockDailyCandle stockDailyCandle) {
+        return StockChartDto.builder()
+                .stockCode(stockDailyCandle.getId().getStockCode())
+                .dateTime(DateTimeFormatterUtil.parseToString(stockDailyCandle.getId().getDate().atStartOfDay()))
+                .open(stockDailyCandle.getOpen())
+                .high(stockDailyCandle.getHigh())
+                .low(stockDailyCandle.getLow())
+                .close(stockDailyCandle.getClose())
+                .volume(stockDailyCandle.getVolume())
                 .build();
     }
     
