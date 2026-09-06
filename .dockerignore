@@ -1,0 +1,22 @@
+# 빌드 산출물
+build/
+.gradle/
+src/main/generated/
+
+# IDE / 로컬
+.idea/
+*.iml
+.vscode/
+
+# git
+.git/
+.github/
+
+# 로컬 환경
+*.env
+.env
+docker-compose*.yml
+
+# 문서
+README.md
+HELP.md
