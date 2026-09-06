@@ -1,0 +1,47 @@
+name: muzusi
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: muzusi-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASS}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "${DATABASE_PORT}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  redis:
+    image: redis:7
+    container_name: muzusi-redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis-data:/data
+
+  mongodb:
+    image: mongo:6
+    container_name: muzusi-mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mysql-data:
+  redis-data:
+  mongo-data:
