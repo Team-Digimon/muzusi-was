@@ -1,16 +1,12 @@
-FROM openjdk:17 AS builder
-COPY gradlew .
-COPY gradle gradle
-COPY build.gradle .
-COPY settings.gradle .
+FROM gradle:8.11.1-jdk17 AS builder
+WORKDIR /app
+COPY build.gradle settings.gradle ./
 COPY src src
-RUN chmod +x ./gradlew
-RUN microdnf install findutils
-RUN ./gradlew build -x test
+RUN gradle build -x test --no-daemon
 
 
-FROM openjdk:17
+FROM eclipse-temurin:17-jre
 RUN mkdir /opt/app
-COPY --from=builder build/libs/*.jar /opt/app/spring-boot-application.jar
+COPY --from=builder /app/build/libs/*-SNAPSHOT.jar /opt/app/spring-boot-application.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dspring.profiles.active=prod", "-jar", "/opt/app/spring-boot-application.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-Dspring.profiles.active=prod", "-jar", "/opt/app/spring-boot-application.jar"]
