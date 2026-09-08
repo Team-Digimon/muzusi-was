@@ -1,58 +1,74 @@
 package muzusi.infrastructure.oauth;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import muzusi.application.auth.dto.UserInfoDto;
-import muzusi.infrastructure.properties.OAuthProperties;
+import muzusi.global.exception.CustomException;
+import muzusi.global.response.error.type.CommonErrorType;
+import muzusi.infrastructure.oauth.dto.AccessTokenResponse;
+import muzusi.infrastructure.oauth.dto.UserInfoResponse;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
+@Component
 @RequiredArgsConstructor
-public abstract class OAuthClient {
-    private final OAuthService oAuthService;
-    private final OAuthProperties.Platform oAuthProperties;
-
+public class OAuthClient {
+    
     /**
-     * 플랫폼의 access token을 가져오기 위한 파라미터 생성 메서드.
+     * OAuth 리소스 서버(플랫폼)에서 access token 발급 API 요청 메서드
      *
-     * @param code : 플랫폼 인증 코드
-     * @return : 파라미터 값
+     * @param tokenUrl      access token 발급 URL
+     * @param params        access token 발급 API 요청 파라미터
+     * @param response      응답 역직렬화 타입
+     * @return              access token
      */
-    protected abstract MultiValueMap<String, String> getAccessTokenParams(
-            OAuthProperties.Platform oAuthProperties,
-            String code
-    );
+    public String getAccessToken(String tokenUrl, MultiValueMap<String, String> params, Class<? extends AccessTokenResponse> response) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    /**
-     * 플랫폼의 사용자 정보를 추출하는 메서드.
-     *
-     * @param rootNode : 플랫폼의 사용자 정보 json
-     * @return : 추출한 사용자 정보
-     */
-    protected abstract UserInfoDto parseUserInfo(JsonNode rootNode);
-
-    public UserInfoDto fetchUserInfoFromPlatform(String code) {
-        String accessToken =
-                oAuthService.getAccessToken(getTokenUri(), getAccessTokenParams(oAuthProperties, code));
-
-        JsonNode userInfoNode = oAuthService.getUserInfo(getUserInfoUri(), accessToken);
-        return parseUserInfo(userInfoNode);
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            return restTemplate.exchange(
+                    tokenUrl,
+                    HttpMethod.POST,
+                    request,
+                    response
+            ).getBody().accessToken();
+        } catch (Exception e) {
+            throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
+        }
     }
-
+    
     /**
-     * 플랫폼의 access token을 받아오기 위한 uri를 가져오는 메서드.
+     * OAuth 리소스 서버(플랫폼)에서 사용자 정보 조회 API 요청 메서드
      *
-     * @return : token uri
+     * <p> 사용자 정보 조회 후 해당 플랫폼에서 고유 식별자({@code id}) 값을 반환한다.
+     *
+     * @param userInfoUrl       사용자 정보 조회 URL
+     * @param accessToken       access token
+     * @param responseType      응답 역직렬화 타입
+     * @return                  해당 플랫폼에서의 사용자 고유 식별자
      */
-    private String getTokenUri() {
-        return oAuthProperties.getTokenUri();
-    }
+    public String getUserIdentifier(String userInfoUrl, String accessToken, Class<? extends UserInfoResponse> responseType) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
 
-    /**
-     * 플랫폼의 사용자 정보를 가져오기 위해 uri를 가져오는 메서드.
-     *
-     * @return : userInfo uri
-     */
-    private String getUserInfoUri() {
-        return oAuthProperties.getUserInfoUri();
+        HttpEntity<?> request = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            return restTemplate.exchange(
+                    userInfoUrl,
+                    HttpMethod.GET,
+                    request,
+                    responseType
+            ).getBody().id();
+        } catch (Exception e) {
+            throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
+        }
     }
 }

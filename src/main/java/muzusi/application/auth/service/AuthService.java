@@ -9,7 +9,7 @@ import muzusi.application.auth.dto.TokenDto;
 import muzusi.application.auth.dto.UserInfoDto;
 import muzusi.application.auth.dto.UserStatusDto;
 import muzusi.application.auth.helper.JwtHelper;
-import muzusi.infrastructure.oauth.OAuthClient;
+import muzusi.infrastructure.oauth.OAuthProvider;
 import muzusi.domain.user.entity.User;
 import muzusi.domain.user.exception.UserErrorType;
 import muzusi.domain.user.service.UserService;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final OAuthClientFactory oAuthClientFactory;
+    private final OAuthProviderFactory oAuthProviderFactory;
     private final JwtHelper jwtHelper;
     private final UserService userService;
     private final AccountManagementService accountManagementService;
@@ -35,9 +35,8 @@ public class AuthService {
      */
     @Transactional
     public LoginDto signIn(OAuthPlatform platform, String code) {
-        OAuthClient oAuthClient = oAuthClientFactory.getPlatformService(platform);
-
-        UserInfoDto userInfoDto = oAuthClient.fetchUserInfoFromPlatform(code);
+        OAuthProvider oAuthProvider = oAuthProviderFactory.getPlatformService(platform);
+        UserInfoDto userInfoDto = oAuthProvider.fetchUserInfoFromPlatform(code);
         UserStatusDto userStatusDto = findOrRegisterUser(platform, userInfoDto.id());
         TokenDto tokenDto = jwtHelper.createToken(userStatusDto.user());
 
