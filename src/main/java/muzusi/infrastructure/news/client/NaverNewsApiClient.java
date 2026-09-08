@@ -1,17 +1,18 @@
 package muzusi.infrastructure.news.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import muzusi.infrastructure.news.exception.NaverNewsApiException;
-import muzusi.infrastructure.properties.NewsProperties;
+import muzusi.infrastructure.properties.NaverApiHubProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -19,53 +20,75 @@ import java.util.regex.Pattern;
 @Component
 @RequiredArgsConstructor
 public class NaverNewsApiClient {
-    private final NewsProperties newsProperties;
-    private final ObjectMapper objectMapper;
+    private final NaverApiHubProperties naverApiHubProperties;
 
     private static final Pattern HTML_TAG_PATTERN = Pattern.compile("<[^>]*>");
 
     public List<Map<String, String>> fetchNews(String query) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Naver-Client-Id", newsProperties.getClientId());
-        headers.add("X-Naver-Client-Secret", newsProperties.getClientSecret());
+        headers.add("X-NCP-APIGW-API-KEY-ID", naverApiHubProperties.getClientId());
+        headers.add("X-NCP-APIGW-API-KEY", naverApiHubProperties.getClientSecret());
 
-        String uri = UriComponentsBuilder.fromHttpUrl(newsProperties.getNewsApiUrl())
+        String uri = UriComponentsBuilder.fromHttpUrl(naverApiHubProperties.getSearchNewsUrl())
                 .queryParam("query", query)
                 .queryParam("display", "10")
                 .queryParam("start", "1")
                 .queryParam("sort", "date")
+                .encode()
                 .build()
                 .toUriString();
 
         RestTemplate restTemplate = new RestTemplate();
         try {
             HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(
+            NaverNewsResponse response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
                     requestEntity,
-                    String.class
-            );
-            Map<String, Object> responseMap = objectMapper.readValue(response.getBody(), Map.class);
-            List<Map<String, Object>> items = (List<Map<String, Object>>) responseMap.get("items");
-
-            return items.stream()
-                    .map(item -> Map.of(
-                            "title", stripHtml((String) item.get("title")),
-                            "link", (String) item.get("link"),
-                            "pubDate", (String) item.get("pubDate")
+                    NaverNewsResponse.class
+            ).getBody();
+            
+            if (response == null || response.items() == null) {
+                return Collections.emptyList();
+            }
+            
+            return response.items().stream().
+                    map(item -> Map.of(
+                            "title", stripHtml(item.title()),
+                            "link", item.link(),
+                            "pubDate", item.pubDate()
                     ))
                     .toList();
         } catch (Exception e) {
             throw new NaverNewsApiException("네이버 뉴스 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
-
+    
+    /**
+     * 문자열 포함된 html 태그를 제거하는 메서드
+     *
+     * <p> 네이버 뉴스 제목에 포함된 html 태그를 제거하기 위해 사용한다.
+     *
+     * @param input 입력 문자열
+     * @return      html 태그가 제거된 문자열
+     */
     private String stripHtml(String input) {
         if (input == null) {
             return null;
         }
         return HTML_TAG_PATTERN.matcher(input).replaceAll("");
     }
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    record NaverNewsResponse(List<Item> items) {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public record Item(
+                @JsonProperty(value = "title") String title,
+                @JsonProperty(value = "originallink") String originalLink,
+                @JsonProperty(value = "link") String link,
+                @JsonProperty(value = "description") String description,
+                @JsonProperty(value = "pubDate") String pubDate
+        ) { }
+    
+    }
 }
-
