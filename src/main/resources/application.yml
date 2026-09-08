@@ -60,10 +60,11 @@ token:
   refresh:
     in-redis: ${REDIS_REFRESH_EXPIRATION:648000}
 
-news:
-  clientId: ${NEWS_CLIENT_ID}
-  clientSecret: ${NEWS_CLIENT_SECRET}
-  newsApiUrl: ${NEWS_API_URL}
+naver:
+  api-hub:
+    client-id: ${NAVER_API_HUB_CLIENT_ID}
+    client-secret: ${NAVER_API_HUB_CLIENT_SECRET}
+    base-url: ${NAVER_API_HUB_BASE_URL}
 
 kis:
   domain: ${KIS_DOMAIN:https://openapi.koreainvestment.com:9443}
