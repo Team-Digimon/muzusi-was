@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.stockcandle.dto.StockMinuteCandleDto;
 import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.infrastructure.stockchart.client.kis.KisStockChartClient;
-import muzusi.application.stockchart.dto.StockChartDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class KisFetchStockChartAdapter implements FetchStockChartPort {
      * @return          분봉 DTO
      */
     @Override
-    public StockMinuteCandleDto getStockMinuteCandle(String stockCode, LocalDateTime time, int gap) {
+    public Optional<StockMinuteCandleDto> getStockMinuteCandle(String stockCode, LocalDateTime time, int gap) {
         return stockChartClient.getStockMinuteChart(stockCode, time, gap);
     }
 }

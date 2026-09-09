@@ -42,13 +42,13 @@ public class StockMinuteCandleCollector {
         
         for (String stockCode : stockCodePort.getAllStockCodes()) {
             try {
-                StockMinuteCandleDto stockMinuteCandleDto = fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
-                stockMinuteCandleDtoMap.put(stockCode, stockMinuteCandleDto);
+                fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP)
+                        .ifPresent(dto -> stockMinuteCandleDtoMap.put(stockCode, dto));
             } catch (Exception exception) {
                 if (exception instanceof ExternalApiRateLimitExceededException e) {
                     Thread.sleep(1000L);
-                    StockMinuteCandleDto stockMinuteCandle = fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
-                    stockMinuteCandleDtoMap.put(stockCode, stockMinuteCandle);
+                    fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP)
+                            .ifPresent(dto -> stockMinuteCandleDtoMap.put(stockCode, dto));
                 } else {
                     log.error("[Error] Failed to fetch '{}' StockMinuteCandle - {}", stockCode, exception.getMessage());
                 }
