@@ -1,11 +1,11 @@
-package muzusi.application.stockcode.exception;
+package muzusi.infrastructure.stockcode.exception;
 
 public class StockCodeException extends RuntimeException {
     public StockCodeException(String message) {
-        super(message, null, false, false);
+        super(message);
     }
     
     public StockCodeException(String message, Throwable cause) {
-        super(message, cause, false, false);
+        super(message, cause);
     }
 }

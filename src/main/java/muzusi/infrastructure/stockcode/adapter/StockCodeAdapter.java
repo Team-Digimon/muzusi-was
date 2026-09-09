@@ -1,7 +1,7 @@
 package muzusi.infrastructure.stockcode.adapter;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.application.stockcode.exception.StockCodeException;
+import muzusi.infrastructure.stockcode.exception.StockCodeException;
 import muzusi.application.stockcode.port.StockCodePort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
