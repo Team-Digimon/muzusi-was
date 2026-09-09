@@ -17,6 +17,11 @@ public class KisMarketDataAuthAdapter implements MarketDataAuthPort {
     private final KisOAuthClient kisOAuthClient;
     private final KisAuthStore kisAuthStore;
     
+    @Override
+    public boolean isApiCredentialsExists() {
+        return kisAuthStore.isAccessTokenExists();
+    }
+    
     /**
      * 한국투자증권 REST API 호출용 접근 토큰을 발급받아 저장하는 메서드
      *

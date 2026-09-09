@@ -13,6 +13,10 @@ import java.util.List;
 public class KisAuthStore {
     private final RedisService redisService;
 
+    public boolean isAccessTokenExists() {
+        return redisService.existed(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
+    }
+    
     public String getAccessToken() {
         return (String) redisService.get(KisConstant.ACCESS_TOKEN_PREFIX.getValue());
     }
