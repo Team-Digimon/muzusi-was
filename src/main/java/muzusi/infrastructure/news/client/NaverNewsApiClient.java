@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +30,14 @@ public class NaverNewsApiClient {
         headers.add("X-NCP-APIGW-API-KEY-ID", naverApiHubProperties.getClientId());
         headers.add("X-NCP-APIGW-API-KEY", naverApiHubProperties.getClientSecret());
 
-        String uri = UriComponentsBuilder.fromHttpUrl(naverApiHubProperties.getSearchNewsUrl())
+        URI uri = UriComponentsBuilder.fromHttpUrl(naverApiHubProperties.getSearchNewsUrl())
                 .queryParam("query", query)
                 .queryParam("display", "10")
                 .queryParam("start", "1")
                 .queryParam("sort", "date")
                 .encode()
                 .build()
-                .toUriString();
+                .toUri();
 
         RestTemplate restTemplate = new RestTemplate();
         try {
@@ -52,8 +53,8 @@ public class NaverNewsApiClient {
                 return Collections.emptyList();
             }
             
-            return response.items().stream().
-                    map(item -> Map.of(
+            return response.items().stream()
+                    .map(item -> Map.of(
                             "title", stripHtml(item.title()),
                             "link", item.link(),
                             "pubDate", item.pubDate()
@@ -89,6 +90,5 @@ public class NaverNewsApiClient {
                 @JsonProperty(value = "description") String description,
                 @JsonProperty(value = "pubDate") String pubDate
         ) { }
-    
     }
 }
