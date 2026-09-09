@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -72,9 +73,9 @@ class StockMinuteCandleCollectorTest {
             mockedLocalDateTime.when(LocalDateTime::now).thenReturn(fixedNow);
 
             given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), eq(fixedNow), eq(CHART_MINUTE_GAP)))
-                    .willReturn(samsungCandle);
+                    .willReturn(Optional.of(samsungCandle));
             given(fetchStockChartPort.getStockMinuteCandle(eq("000660"), eq(fixedNow), eq(CHART_MINUTE_GAP)))
-                    .willReturn(skHynixCandle);
+                    .willReturn(Optional.of(skHynixCandle));
 
             // when
             stockMinuteCandleCollector.collectAllStockMinuteCandle();
@@ -95,7 +96,7 @@ class StockMinuteCandleCollectorTest {
 
         given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
                 .willThrow(new ExternalApiRateLimitExceededException("유량 초과"))
-                .willReturn(candleDto("005930"));
+                .willReturn(Optional.of(candleDto("005930")));
 
         // when
         stockMinuteCandleCollector.collectAllStockMinuteCandle();
@@ -132,7 +133,7 @@ class StockMinuteCandleCollectorTest {
         willThrow(new RuntimeException("조회 실패"))
                 .given(fetchStockChartPort).getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP));
         given(fetchStockChartPort.getStockMinuteCandle(eq("000660"), any(), eq(CHART_MINUTE_GAP)))
-                .willReturn(candleDto("000660"));
+                .willReturn(Optional.of(candleDto("000660")));
 
         // when
         stockMinuteCandleCollector.collectAllStockMinuteCandle();
@@ -152,13 +153,51 @@ class StockMinuteCandleCollectorTest {
         given(stockCodePort.getAllStockCodes()).willReturn(stockCodes);
         stockCodes.forEach(code ->
                 given(fetchStockChartPort.getStockMinuteCandle(eq(code), any(), eq(CHART_MINUTE_GAP)))
-                        .willReturn(candleDto(code)));
+                        .willReturn(Optional.of(candleDto(code))));
 
         // when
         stockMinuteCandleCollector.collectAllStockMinuteCandle();
 
         // then
         verify(stockMinuteCandleService, times(2)).saveAll(any());
+    }
+
+    @Test
+    @DisplayName("10분봉 수집 - 조회 결과가 없는(Optional.empty) 종목은 저장 대상에서 제외하고 나머지를 수집한다")
+    void skipEmptyResultStockCode() throws InterruptedException {
+        // given
+        given(stockCodePort.getAllStockCodes()).willReturn(List.of("005930", "000660"));
+
+        given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
+                .willReturn(Optional.empty());
+        given(fetchStockChartPort.getStockMinuteCandle(eq("000660"), any(), eq(CHART_MINUTE_GAP)))
+                .willReturn(Optional.of(candleDto("000660")));
+
+        // when
+        stockMinuteCandleCollector.collectAllStockMinuteCandle();
+
+        // then
+        verify(stockMinuteCandleService).saveAll(argThat(candles ->
+                candles.size() == 1 && containsStockCode(candles, "000660")));
+    }
+
+    @Test
+    @DisplayName("10분봉 수집 - 유량 초과 재시도 후 조회 결과가 없으면 해당 종목은 저장하지 않는다")
+    void skipWhenRetryReturnsEmpty() throws InterruptedException {
+        // given
+        given(stockCodePort.getAllStockCodes()).willReturn(List.of("005930"));
+
+        given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
+                .willThrow(new ExternalApiRateLimitExceededException("유량 초과"))
+                .willReturn(Optional.empty());
+
+        // when
+        stockMinuteCandleCollector.collectAllStockMinuteCandle();
+
+        // then
+        verify(fetchStockChartPort, times(2))
+                .getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP));
+        verify(stockMinuteCandleService, never()).saveAll(any());
     }
 
     private boolean containsStockCode(List<StockMinuteCandle> candles, String stockCode) {

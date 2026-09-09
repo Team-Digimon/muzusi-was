@@ -40,7 +40,7 @@ public class KisOAuthClient {
         body.put("appkey", appKey);
         body.put("appsecret", appSecret);
         
-        JsonNode rootNode = requestCredential(kisProperties.getUrl(KisUrlConstant.ACCESS_TOKEN_ISSUE), body);
+        JsonNode rootNode = requestCredential(kisProperties.getUrl(KisUrlConstant.ACCESS_TOKEN_ISSUE), body, "접근 토큰");
         
         String tokenType = rootNode.path("token_type").asText();
         String tokenValue = rootNode.path("access_token").asText();
@@ -62,7 +62,7 @@ public class KisOAuthClient {
         body.put("appkey", appKey);
         body.put("secretkey", appSecret);
         
-        JsonNode rootNode = requestCredential(kisProperties.getUrl(KisUrlConstant.WEBSOCKET_KEY_ISSUE), body);
+        JsonNode rootNode = requestCredential(kisProperties.getUrl(KisUrlConstant.WEBSOCKET_KEY_ISSUE), body, "웹소켓 접속키");
         
         return rootNode.path("approval_key").asText();
     }
@@ -73,7 +73,7 @@ public class KisOAuthClient {
      * @param url       요청 URL
      * @return          응답을 {@link JsonNode}로 파싱한 결과
      */
-    private JsonNode requestCredential(String url, Map<String, String> body) {
+    private JsonNode requestCredential(String url, Map<String, String> body, String credentialType) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -91,7 +91,7 @@ public class KisOAuthClient {
 
             return objectMapper.readTree(response.getBody());
         } catch (Exception e) {
-            throw new KisOAuthApiException(e);
+            throw new KisOAuthApiException("한국투자증권 %s 발급 API 호출 중 에러가 발생하였습니다.".formatted(credentialType), e);
         }
     }
 }

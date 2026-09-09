@@ -57,8 +57,7 @@ public class KisMarketOpenClient {
             String result = extractIsMarketOpenResult(rootNode);
             return isMarketOpen(result);
         } catch (Exception e) {
-            log.error("[Error] Error occurred during KisMarketOpen");
-            throw new KisApiException(e);
+            throw new KisApiException("한국투자증권 국내휴장일 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
     

@@ -2,14 +2,14 @@ package muzusi.global.exception;
 
 public class ExternalApiException extends RuntimeException {
     public ExternalApiException(String message) {
-        super(message, null, false, false);
+        super(message);
     }
     
     public ExternalApiException(Throwable cause) {
-        super(cause.getMessage(), cause, false, false);
+        super(cause.getMessage(), cause);
     }
     
     public ExternalApiException(String message, Throwable cause) {
-        super(message, cause, false, false);
+        super(message, cause);
     }
 }

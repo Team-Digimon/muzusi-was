@@ -1,10 +1,9 @@
 package muzusi.infrastructure.oauth;
 
 import lombok.RequiredArgsConstructor;
-import muzusi.global.exception.CustomException;
-import muzusi.global.response.error.type.CommonErrorType;
 import muzusi.infrastructure.oauth.dto.AccessTokenResponse;
 import muzusi.infrastructure.oauth.dto.UserInfoResponse;
+import muzusi.infrastructure.oauth.exception.OAuthApiException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 @Component
 @RequiredArgsConstructor
 public class OAuthClient {
-    
     /**
      * OAuth 리소스 서버(플랫폼)에서 access token 발급 API 요청 메서드
      *
@@ -39,7 +37,7 @@ public class OAuthClient {
                     response
             ).getBody().accessToken();
         } catch (Exception e) {
-            throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
+            throw new OAuthApiException("OAuth Access Token 발급 중 에러가 발생하였습니다.", e);
         }
     }
     
@@ -68,7 +66,7 @@ public class OAuthClient {
                     responseType
             ).getBody().id();
         } catch (Exception e) {
-            throw new CustomException(CommonErrorType.INTERNAL_SERVER_ERROR);
+            throw new OAuthApiException("OAuth 사용자 정보 조회 중 에러가 발생하였습니다.", e);
         }
     }
 }

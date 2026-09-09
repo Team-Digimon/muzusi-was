@@ -91,7 +91,7 @@ public class KisMultiStockPriceClient {
             
             return parseMultiStockPrice(rootNode);
         } catch (Exception e) {
-            throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 조회 중 오류가 발생하였습니다.", e);
+            throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
     
