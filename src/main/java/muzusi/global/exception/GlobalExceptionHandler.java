@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import muzusi.global.response.error.ErrorResponse;
 import muzusi.global.response.error.type.BaseErrorType;
 import muzusi.global.response.error.type.CommonErrorType;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CustomException.class)
     protected ResponseEntity<?> handleCustomException(final CustomException e) {
         BaseErrorType error = e.getErrorType();
-        log.error("[Error Occurred] {}", error.getMessage());
+        log.warn("[Error Occurred] {} - {}", error.getCode(), error.getMessage());
         return ResponseEntity.status(error.getStatus()).body(ErrorResponse.from(error));
     }
 
@@ -34,14 +33,14 @@ public class GlobalExceptionHandler {
         for(FieldError fieldError : e.getBindingResult().getFieldErrors() ){
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
-        log.error("[Error occurred] {}", errors);
+        log.warn("[Error Occurred] {}", errors);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errors);
     }
 
     /* 일반 예외 처리 */
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<?> handleException(final Exception e) {
-        log.error("[Error Occurred] {}", e.getMessage());
+        log.error("[Error Occurred] {}", e.getMessage(), e);
         BaseErrorType error = CommonErrorType.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(error.getStatus()).body(ErrorResponse.from(error));
     }
