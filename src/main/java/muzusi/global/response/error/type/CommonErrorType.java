@@ -17,7 +17,9 @@ public enum CommonErrorType implements BaseErrorType {
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "0005", "Access Token이 잘못되었습니다."),
     INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "0006", "Access Token의 서명이 잘못되었습니다."),
     UNKNOWN_TOKEN_ERROR(HttpStatus.UNAUTHORIZED, "0007", "알 수 없는 토큰 에러입니다."),
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "0008", "Refresh Token이 존재하지 않습니다.")
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "0008", "Refresh Token이 존재하지 않습니다."),
+    EXTERNAL_API_ERROR(HttpStatus.BAD_GATEWAY, "0009", "외부 API 호출 중 에러가 발생하였습니다."),
+    INVALID_REQUEST(HttpStatus.BAD_REQUEST, "0010", "유효하지 않은 요청입니다."),
     ;
 
     private final HttpStatus status;
