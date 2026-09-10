@@ -57,21 +57,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-def querydslDir = 'src/main/generated'
-
-sourceSets {
-	main.java.srcDirs += [querydslDir]
-}
-
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
-}
-
-clean.doLast {
-	file(querydslDir).deleteDir()
-}
