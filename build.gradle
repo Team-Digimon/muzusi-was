@@ -6,7 +6,7 @@ plugins {
 }
 
 sentry {
-  includeSourceContext = true
+  includeSourceContext = System.getenv("SENTRY_AUTH_TOKEN") != null;
 
   org = "team-digimon"
   projectName = "muzusi"
