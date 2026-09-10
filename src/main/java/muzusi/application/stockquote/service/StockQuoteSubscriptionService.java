@@ -47,15 +47,14 @@ public class StockQuoteSubscriptionService {
         StockQuoteSubscriptionResult.Subscription result = registry.subscribe(stockCode);
 
         if (!result.isSuccess()) {
-            log.error("Failed to subscribe stock - {}", stockCode);
             throw new StockQuoteException(stockCode, StockQuoteErrorType.FAIL_SUBSCRIPTION);
         }
 
-        log.info("Success to subscribe stock - session: {} / stockCode: {}", result.sessionId(), stockCode);
+        log.debug("주식 종목 구독 성공 (session: {} / stockCode: {})", result.sessionId(), stockCode);
 
         if (result.isNewSubscription()) {
             stockQuotePort.subscribe(result.sessionId(), stockCode);
-            log.info("Try a new subscription connection - session: {} / stockCode: {}", result.sessionId(), stockCode);
+            log.debug("새로운 주식 종목 구독 - 한국투자증권 실시간 체결가 웹소켓 구독 요청 (session: {} / stockCode: {})", result.sessionId(), stockCode);
         }
     }
     
@@ -73,15 +72,14 @@ public class StockQuoteSubscriptionService {
         StockQuoteSubscriptionResult.Unsubscription result = registry.unsubscribe(stockCode);
         
         if (!result.isSuccess()) {
-            log.error("Failed to unsubscribe stock - {}", stockCode);
             throw new StockQuoteException(stockCode, StockQuoteErrorType.FAIL_UNSUBSCRIPTION);
         }
         
-        log.info("Success to unsubscribe stock - session: {} / stockCode: {}", result.sessionId(), stockCode);
+        log.debug("주식 종목 구독 해제 성공 (session: {}, stockCode: {})", result.sessionId(), stockCode);
         
         if (result.isDeleted()) {
             stockQuotePort.unsubscribe(result.sessionId(), stockCode);
-            log.info("Try a disconnect subscription connection - session: {} / stockCode: {}", result.sessionId(), stockCode);
+            log.debug("주식 종목 완전한 구독 해제 - 한국투자증권 실시간 체결가 웹소켓 구독 해제 요청 (session: {} / stockCode: {})", result.sessionId(), stockCode);
         }
     }
 }

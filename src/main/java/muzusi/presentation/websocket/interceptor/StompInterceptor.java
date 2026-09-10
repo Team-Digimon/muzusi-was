@@ -58,7 +58,9 @@ public class StompInterceptor implements ChannelInterceptor {
                 stockSearchService.increaseStockSearchCount(stockCode);
                 stockQuoteSubscriptionService.subscribe(stockCode);
             } catch (Exception e) {
-                log.error("[ERROR] Failed to subscribe stock {} - {}", stockCode, e.getMessage());
+                if (e instanceof StockQuoteException ex) {
+                    log.warn("[Error/StockQuote] 주식 실시간 체결가 구독 실패 (stockCode: {}, message: {})", stockCode, ex.getMessage());
+                }
                 sendError(sessionId, e);
                 return null;
             }
@@ -69,7 +71,9 @@ public class StompInterceptor implements ChannelInterceptor {
             try {
                 stockQuoteSubscriptionService.unsubscribe(stockCode);
             } catch (Exception e) {
-                log.error("[ERROR] Failed to unsubscribe stock {} - {}", stockCode, e.getMessage());
+                if (e instanceof StockQuoteException ex) {
+                    log.warn("[Error/StockQuote] 주식 실시간 체결가 구독 해제 실패 (stockCode: {}, message: {})", stockCode, e.getMessage());
+                }
                 sendError(sessionId, e);
                 return null;
             }
