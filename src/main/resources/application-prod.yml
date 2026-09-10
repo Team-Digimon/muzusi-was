@@ -7,3 +7,8 @@ logging:
   level:
     org.springframework: warn
     org.hibernate: warn
+
+sentry:
+  dsn: ${SENTRY_DSN}
+  environment: prod
+  send-default-pii: false
