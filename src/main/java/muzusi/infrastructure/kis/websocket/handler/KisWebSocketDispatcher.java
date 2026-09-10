@@ -73,7 +73,7 @@ public class KisWebSocketDispatcher extends TextWebSocketHandler {
         KisWebSocketHandler kisWebSocketHandler = kisWebSocketHandlerMap.get(response.trId());
         
         if (kisWebSocketHandler == null) {
-            log.error("[Error] No KIS websocket handler registered for TR_ID: {}", response.trId());
+            log.warn("[Error/KisWebSocket] 한국투자증권 웹소켓 응답을 처리할 핸들러가 없습니다. (TR_ID: {})", response.trId());
             return;
         }
         
@@ -88,7 +88,7 @@ public class KisWebSocketDispatcher extends TextWebSocketHandler {
      */
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        log.error("[Error] KIS Websocket transport error - session id: {}, message: {}", session.getId(), exception.getMessage());
+        log.error("[Error/KisWebSocket] 한국투자증권 웹소켓 전송(Transport) 계층 오류 (session id: {})", session.getId(), exception);
         super.handleTransportError(session, exception);
     }
 

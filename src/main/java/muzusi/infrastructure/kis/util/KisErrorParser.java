@@ -39,7 +39,7 @@ public class KisErrorParser {
             
             return false;
         } catch (JsonProcessingException e) {
-            log.error("[JSON PARSING ERROR] Failed to parse a KIS error message");
+            log.warn("[Error/KisError] 한국투자증권 API 응답 파싱에 실패하였습니다.");
             return false;
         }
     }

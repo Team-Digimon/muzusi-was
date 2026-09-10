@@ -61,7 +61,7 @@ public class KisStockQuoteWebSocketHandler implements KisWebSocketHandler {
                 .filter(tradeNotification -> tradeNotification.tradeType() != null)
                 .toList();
         } catch (Exception e) {
-            log.error("[Error] Failed to parse KIS stock quote response - data: {}, message: {}", response.data(), e.getMessage());
+            log.error("[Error/StockQuote] 한국투자증권 웹소켓 실시간 체결가 응답 파싱 실패", e);
             return;
         }
 
