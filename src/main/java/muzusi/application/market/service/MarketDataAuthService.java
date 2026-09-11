@@ -19,7 +19,7 @@ public class MarketDataAuthService {
     @PostConstruct
     public void init() {
         if (!marketDataAuthPort.isApiCredentialsExists()) {
-            marketDataAuthPort.isApiCredentialsExists();
+            marketDataAuthPort.issueApiCredentials();
         }
         marketDataAuthPort.issueWebSocketCredentials();
     }
