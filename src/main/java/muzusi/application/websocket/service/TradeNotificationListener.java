@@ -26,7 +26,7 @@ public class TradeNotificationListener implements MessageListener {
 
             messagingTemplate.convertAndSend("/sub/" + tradeNotification.stockCode(), tradeNotification);
         } catch(Exception e) {
-            log.error(e.getMessage());
+            log.error("[Error/TradeNotification] 실시간 체결가 알림 처리 실패", e);
         }
     }
 }

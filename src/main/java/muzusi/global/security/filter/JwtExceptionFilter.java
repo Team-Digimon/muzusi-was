@@ -47,7 +47,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         ErrorResponse error = ErrorResponse.from(errorType);
         String messageBody = objectMapper.writeValueAsString(error);
 
-        log.error("[Error occurred] {}", error.message());
+        log.warn("[Error/JWT] {}", error.message());
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

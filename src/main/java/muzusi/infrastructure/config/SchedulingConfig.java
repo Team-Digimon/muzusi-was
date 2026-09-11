@@ -19,7 +19,7 @@ public class SchedulingConfig {
         taskScheduler.setPoolSize(THREAD_POOL_SIZE);
         taskScheduler.setThreadNamePrefix("Scheduling-thread-");
         taskScheduler.setErrorHandler(throwable -> {
-            log.error("[Scheduling Error Occurred] {}", throwable.getMessage(), throwable);
+            log.error("[Error/Scheduling] {}", throwable.getMessage(), throwable);
         });
         taskScheduler.initialize();
         return taskScheduler;

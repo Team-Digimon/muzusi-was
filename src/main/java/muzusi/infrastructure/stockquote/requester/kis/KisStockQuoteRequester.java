@@ -62,7 +62,7 @@ public class KisStockQuoteRequester {
      */
     private void request(WebSocketSession session, String webSocketKey, String stockCode, TradeType tradeType) {
         if (session == null || !session.isOpen()) {
-            log.error("[Error] Failed to send request KIS Websocket - Session is null or closed.");
+            log.error("[Error/StockQuote] 한국투자증권 실시간 체결가 웹소켓 {} 요청 실패 (session is null or closed)", (tradeType == TradeType.SUBSCRIPTION) ? "구독" : "구독 해제");
             return;
         }
         
@@ -71,7 +71,8 @@ public class KisStockQuoteRequester {
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(request)));
         } catch (Exception e) {
-            log.error("[Error] Failed to send request KIS Websocket - {} / {}", stockCode, e.getMessage());
+            String trade = (tradeType == TradeType.SUBSCRIPTION) ? "구독" : "구독 해제";
+            log.error("[Error/StockQuote] 한국투자증권 웹소켓 {} 요청 실패 (stockCode: {})", trade, stockCode, e);
         }
     }
     

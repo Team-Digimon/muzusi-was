@@ -40,7 +40,7 @@ public class KisStockQuoteAdapter implements StockQuotePort {
                 String connectedSessionId = kisWebSocketSessionStore.save(session, webSocketKey);
                 connectedSessionIds.add(connectedSessionId);
             } catch (Exception e) {
-                log.error("[Error] Failed to connect to KIS Websocket - {}", e.getMessage(), e);
+                log.error("[Error/WebSocket] 한국투자증권 웹소켓 연결 초기화 실패", e);
             }
         }
         
@@ -66,7 +66,7 @@ public class KisStockQuoteAdapter implements StockQuotePort {
         KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession = kisWebSocketSessionStore.findBySessionId(sessionId);
 
         if (kisWebSocketSession == null) {
-            log.error("[Error] Can not find WebSocketSession to subscribe - {}", sessionId);
+            log.warn("[Error/StockQuote] 해당 웹소켓 세션을 찾을 수 없습니다. (session id: {})", sessionId);
             return;
         }
 
@@ -87,7 +87,7 @@ public class KisStockQuoteAdapter implements StockQuotePort {
         KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession = kisWebSocketSessionStore.findBySessionId(sessionId);
         
         if (kisWebSocketSession == null) {
-            log.error("[Error] Can not find WebSocketSession to unsubscribe - {}", sessionId);
+            log.warn("[Error/StockQuote] 해당 웹소켓 세션을 찾을 수 없습니다. (session id: {})", sessionId);
             return;
         }
         

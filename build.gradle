@@ -2,6 +2,15 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.0'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id "io.sentry.jvm.gradle" version "6.21.0"
+}
+
+sentry {
+  includeSourceContext = System.getenv("SENTRY_AUTH_TOKEN") != null;
+
+  org = "team-digimon"
+  projectName = "muzusi"
+  authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }
 
 group = 'project'
@@ -56,22 +65,4 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
-}
-
-def querydslDir = 'src/main/generated'
-
-sourceSets {
-	main.java.srcDirs += [querydslDir]
-}
-
-configurations {
-	querydsl.extendsFrom compileClasspath
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
-}
-
-clean.doLast {
-	file(querydslDir).deleteDir()
 }

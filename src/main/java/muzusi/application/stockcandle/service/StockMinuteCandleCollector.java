@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -37,31 +39,57 @@ public class StockMinuteCandleCollector {
      */
     public void collectAllStockMinuteCandle() throws InterruptedException {
         Map<String, StockMinuteCandleDto> stockMinuteCandleDtoMap = new HashMap<>();
+        List<String> failedStockCodes = new ArrayList<>();
+        Map<String, Integer> failureReason = new HashMap<>();
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+
+        List<String> stockCodes = stockCodePort.getAllStockCodes();
         int count = 0;
-        
-        for (String stockCode : stockCodePort.getAllStockCodes()) {
+
+        for (String stockCode : stockCodes) {
             try {
-                fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP)
+                fetchStockMinuteCandle(stockCode, now)
                         .ifPresent(dto -> stockMinuteCandleDtoMap.put(stockCode, dto));
-            } catch (Exception exception) {
-                if (exception instanceof ExternalApiRateLimitExceededException e) {
-                    Thread.sleep(1000L);
-                    fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP)
-                            .ifPresent(dto -> stockMinuteCandleDtoMap.put(stockCode, dto));
-                } else {
-                    log.error("[Error] Failed to fetch '{}' StockMinuteCandle - {}", stockCode, exception.getMessage());
-                }
+            } catch (ExternalApiRateLimitExceededException e) {
+                throw e;
             }
-            
+            catch (RuntimeException e) {
+                String reason = e.getClass().getSimpleName();
+                failedStockCodes.add(stockCode);
+                failureReason.put(reason, failureReason.getOrDefault(reason, 0) + 1);
+            }
+
             if (++count >= BATCH_SIZE) {
                 flush(stockMinuteCandleDtoMap);
                 count = 0;
             }
         }
-        
+
         if (!stockMinuteCandleDtoMap.isEmpty()) {
             flush(stockMinuteCandleDtoMap);
+        }
+
+        if (!failedStockCodes.isEmpty()) {
+            log.error("[Error/StockMinuteCandle] 분봉 수집 실패 {}/{}건 - 원인: {} / 종목: {}",
+                    failedStockCodes.size(), stockCodes.size(), failureReason, failedStockCodes);
+        }
+    }
+
+    /**
+     * 단일 종목의 분봉을 조회한다. 유량 초과 시 1초 대기 후 1회 재시도한다.
+     *
+     * @param stockCode 조회할 주식 종목 코드
+     * @param now       조회 기준 시각
+     * @return 분봉 DTO ({@code Optional}), 조회 결과가 없으면 비어 있음
+     * @throws InterruptedException             유량 초과 재시도 대기 중 인터럽트된 경우
+     * @throws ExternalApiRateLimitExceededException 재시도 후에도 유량 초과인 경우
+     */
+    private Optional<StockMinuteCandleDto> fetchStockMinuteCandle(String stockCode, LocalDateTime now) throws InterruptedException {
+        try {
+            return fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
+        } catch (ExternalApiRateLimitExceededException e) {
+            Thread.sleep(1000L);
+            return fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
         }
     }
     
