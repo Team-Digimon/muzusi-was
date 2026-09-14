@@ -14,9 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 public class KisOAuthClient {
@@ -34,12 +31,7 @@ public class KisOAuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Map<String, String> body = new HashMap<>();
-        body.put("grant_type", "client_credentials");
-        body.put("appkey", appKey);
-        body.put("appsecret", appSecret);
-        
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+        HttpEntity<KisAccessTokenRequest> request = new HttpEntity<>(KisAccessTokenRequest.from(appKey, appSecret), headers);
         
         RestTemplate restTemplate = new RestTemplate();
         
@@ -69,12 +61,9 @@ public class KisOAuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         
-        Map<String, String> body = new HashMap<>();
-        body.put("grant_type", "client_credentials");
-        body.put("appkey", appKey);
-        body.put("secretkey", appSecret);
+        KisWebSocketKeyRequest body = KisWebSocketKeyRequest.from(appKey, appSecret);
         
-        HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
+        HttpEntity<KisWebSocketKeyRequest> request = new HttpEntity<>(body, headers);
         
         RestTemplate restTemplate = new RestTemplate();
         
@@ -89,6 +78,26 @@ public class KisOAuthClient {
             return response.webSocketKey();
         } catch (Exception e) {
             throw new KisOAuthApiException("한국투자증권 웹소켓 접속키 발급 API 호출 중 에러가 발생하였습니다.", e);
+        }
+    }
+    
+    private record KisAccessTokenRequest(
+            @JsonProperty(value = "grant_type") String grantType,
+            @JsonProperty(value = "appkey") String appKey,
+            @JsonProperty(value = "appsecret") String appSecret
+    ) {
+        public static KisAccessTokenRequest from(String appKey, String appSecret) {
+            return new KisAccessTokenRequest("client_credentials", appKey, appSecret);
+        }
+    }
+    
+    private record KisWebSocketKeyRequest(
+            @JsonProperty(value = "grant_type") String grantType,
+            @JsonProperty(value = "appkey") String appKey,
+            @JsonProperty(value = "secretkey") String appSecret
+    ) {
+        public static KisWebSocketKeyRequest from(String appKey, String appSecret) {
+            return new KisWebSocketKeyRequest("client_credentials", appKey, appSecret);
         }
     }
     
