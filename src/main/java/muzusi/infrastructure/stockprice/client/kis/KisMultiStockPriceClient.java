@@ -1,17 +1,17 @@
 package muzusi.infrastructure.stockprice.client.kis;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
+import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class KisMultiStockPriceClient {
     private final KisRequestFactory kisRequestFactory;
     private final KisProperties kisProperties;
-    private final ObjectMapper objectMapper;
     private final RateLimiter kisRateLimiter;
 
     /**
@@ -80,43 +80,18 @@ public class KisMultiStockPriceClient {
         kisRateLimiter.acquire();
 
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
+            KisMultiStockPriceResponse response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
                     requestInfo,
-                    String.class
-            );
+                    KisMultiStockPriceResponse.class
+            ).getBody();
             
-            JsonNode rootNode = objectMapper.readTree(response.getBody());
-            
-            return parseMultiStockPrice(rootNode);
+            return response.output().stream()
+                .collect(Collectors.toMap(KisMultiStockPriceResponse.Output::code, KisMultiStockPriceResponse.Output::price));
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
-    }
-    
-    /**
-     * 한국투자증권 멀티종목 시세 조회 API 응답을 주식 종목 별 현재가 Map으로 변환하는 메서드
-     *
-     * @param rootNode 한국투자증권 멀티종목 시세 조회 API 응답({@code JsonNode})
-     * @return         주식 종목 별 현재가 Map
-     */
-    private Map<String, Long> parseMultiStockPrice(JsonNode rootNode) {
-        JsonNode output = rootNode.get("output");
-        Map<String, Long> stockPriceMap = new HashMap<>(BATCH_SIZE);
-        
-        
-        for (int i = 0; i < output.size(); i++) {
-            JsonNode node = output.get(i);
-            String stockCode = node.get("inter_shrn_iscd").asText();
-            long price = node.get("inter2_prpr").asLong();
-            
-            if (stockCode == null || stockCode.isEmpty()) continue;
-            
-            stockPriceMap.put(stockCode, price);
-        }
-        
-        return stockPriceMap;
     }
     
     /**
@@ -141,5 +116,19 @@ public class KisMultiStockPriceClient {
         }
         
         return uriBuilder.build().toUriString();
+    }
+    
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private record KisMultiStockPriceResponse(
+            @JsonProperty("rt_cd") String rtCd,
+            @JsonProperty("msg_cd") String msgCd,
+            @JsonProperty("msg1") String msg1,
+            @JsonProperty("output") List<Output> output
+    ) implements KisResponse {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        private record Output(
+                @JsonProperty(value = "inter_shrn_iscd") String code,
+                @JsonProperty(value = "inter2_prpr") long price
+        ) { }
     }
 }
