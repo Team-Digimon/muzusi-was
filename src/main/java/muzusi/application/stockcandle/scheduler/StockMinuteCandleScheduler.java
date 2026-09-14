@@ -20,7 +20,7 @@ public class StockMinuteCandleScheduler {
             @Scheduled(cron = "0 0/10 10-14 * * 1-5"),
             @Scheduled(cron = "0 0,10,20,30 15 * * 1-5")
     })
-    public void runCollectStockMinuteCandleJob() throws InterruptedException {
+    public void runCollectStockMinuteCandleJob() {
         if (marketService.isMarketOpen()) {
             stockMinuteCandleCollector.collectAllStockMinuteCandle();
         }
