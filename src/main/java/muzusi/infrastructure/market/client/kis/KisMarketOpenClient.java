@@ -1,18 +1,18 @@
 package muzusi.infrastructure.market.client.kis;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import muzusi.infrastructure.kis.aop.KisRateLimit;
-import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.KisRequestFactory;
+import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
+import muzusi.infrastructure.kis.dto.KisResponse;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -25,7 +25,6 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class KisMarketOpenClient {
-    private final ObjectMapper objectMapper;
     private final KisProperties kisProperties;
     private final KisRequestFactory kisRequestFactory;
     
@@ -46,26 +45,33 @@ public class KisMarketOpenClient {
         RestTemplate restTemplate = new RestTemplate();
         
         try {
-            ResponseEntity<String> response = restTemplate.exchange(
+            KisMarketOpenResponse response = restTemplate.exchange(
                     uri,
                     HttpMethod.GET,
                     requestInfo,
-                    String.class
-            );
+                    KisMarketOpenResponse.class
+            ).getBody();
             
-            JsonNode rootNode = objectMapper.readTree(response.getBody());
-            String result = extractIsMarketOpenResult(rootNode);
-            return isMarketOpen(result);
+            return response.isMarketOpen();
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 국내휴장일 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
     }
     
-    private boolean isMarketOpen(String text) {
-        return "Y".equals(text);
-    }
-    
-    private String extractIsMarketOpenResult(JsonNode rootNode) {
-        return rootNode.get("output").get(0).get("opnd_yn").asText();
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private record KisMarketOpenResponse(
+            @JsonProperty(value = "rt_cd") String rtCd,
+            @JsonProperty(value = "msg_cd") String msgCd,
+            @JsonProperty(value = "msg1") String msg1,
+            @JsonProperty(value = "output") Output output
+    ) implements KisResponse {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        private record Output(
+                @JsonProperty(value = "opnd_yn") String isOpen
+        ) { }
+        
+        private boolean isMarketOpen() {
+            return "Y".equals(output.isOpen());
+        }
     }
 }
