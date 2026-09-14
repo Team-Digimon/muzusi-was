@@ -54,6 +54,7 @@ public class StockMinuteCandleCollector {
                 throw e;
             }
             catch (RuntimeException e) {
+                log.warn("[Warn/StockMinuteCandle] 분봉 수집 실패 - 종목: {}, 원인: {}", stockCode, e.getMessage(), e);
                 String reason = e.getClass().getSimpleName();
                 failedStockCodes.add(stockCode);
                 failureReason.put(reason, failureReason.getOrDefault(reason, 0) + 1);
