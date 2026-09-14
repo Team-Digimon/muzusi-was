@@ -5,7 +5,6 @@ import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.application.stockcode.port.StockCodePort;
 import muzusi.domain.stockcandle.entity.StockMinuteCandle;
 import muzusi.domain.stockcandle.service.StockMinuteCandleService;
-import muzusi.global.exception.ExternalApiRateLimitExceededException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,13 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -89,42 +86,6 @@ class StockMinuteCandleCollectorTest {
     }
 
     @Test
-    @DisplayName("10분봉 수집 - 유량 초과 시 1초 대기 후 1회 재시도하여 성공한다")
-    void retryOnceWhenRateLimitExceeded() throws InterruptedException {
-        // given
-        given(stockCodePort.getAllStockCodes()).willReturn(List.of("005930"));
-
-        given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
-                .willThrow(new ExternalApiRateLimitExceededException("유량 초과"))
-                .willReturn(Optional.of(candleDto("005930")));
-
-        // when
-        stockMinuteCandleCollector.collectAllStockMinuteCandle();
-
-        // then
-        verify(fetchStockChartPort, times(2))
-                .getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP));
-        verify(stockMinuteCandleService).saveAll(argThat(candles ->
-                candles.size() == 1 && containsStockCode(candles, "005930")));
-    }
-
-    @Test
-    @DisplayName("10분봉 수집 - 유량 초과 재시도까지 실패하면 예외가 전파된다")
-    void propagateWhenRetryAlsoFails() {
-        // given
-        given(stockCodePort.getAllStockCodes()).willReturn(List.of("005930"));
-
-        given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
-                .willThrow(new ExternalApiRateLimitExceededException("유량 초과"));
-
-        // when & then
-        assertThatThrownBy(() -> stockMinuteCandleCollector.collectAllStockMinuteCandle())
-                .isInstanceOf(ExternalApiRateLimitExceededException.class);
-
-        verify(stockMinuteCandleService, never()).saveAll(any());
-    }
-
-    @Test
     @DisplayName("10분봉 수집 - 조회에 실패한 종목은 건너뛰고 나머지 종목을 계속 수집한다")
     void skipFailedStockCodeAndContinue() throws InterruptedException {
         // given
@@ -179,25 +140,6 @@ class StockMinuteCandleCollectorTest {
         // then
         verify(stockMinuteCandleService).saveAll(argThat(candles ->
                 candles.size() == 1 && containsStockCode(candles, "000660")));
-    }
-
-    @Test
-    @DisplayName("10분봉 수집 - 유량 초과 재시도 후 조회 결과가 없으면 해당 종목은 저장하지 않는다")
-    void skipWhenRetryReturnsEmpty() throws InterruptedException {
-        // given
-        given(stockCodePort.getAllStockCodes()).willReturn(List.of("005930"));
-
-        given(fetchStockChartPort.getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP)))
-                .willThrow(new ExternalApiRateLimitExceededException("유량 초과"))
-                .willReturn(Optional.empty());
-
-        // when
-        stockMinuteCandleCollector.collectAllStockMinuteCandle();
-
-        // then
-        verify(fetchStockChartPort, times(2))
-                .getStockMinuteCandle(eq("005930"), any(), eq(CHART_MINUTE_GAP));
-        verify(stockMinuteCandleService, never()).saveAll(any());
     }
 
     private boolean containsStockCode(List<StockMinuteCandle> candles, String stockCode) {

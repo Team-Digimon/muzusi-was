@@ -7,7 +7,6 @@ import muzusi.application.stockchart.port.FetchStockChartPort;
 import muzusi.application.stockcode.port.StockCodePort;
 import muzusi.domain.stockcandle.entity.StockMinuteCandle;
 import muzusi.domain.stockcandle.service.StockMinuteCandleService;
-import muzusi.global.exception.ExternalApiRateLimitExceededException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -34,10 +32,8 @@ public class StockMinuteCandleCollector {
      *
      * <p> 분봉 데이터는 {@value CHART_MINUTE_GAP}분 단위로 수집한다.
      * <p> 외부 주식 분봉 데이터 수집 포트를 통해 데이터를 수집하고 이를 {@value BATCH_SIZE} 단위로 저장한다.
-     *
-     * @throws InterruptedException 유량 초과 재시도 대기({@code Thread.sleep}) 중 인터럽트된 경우
      */
-    public void collectAllStockMinuteCandle() throws InterruptedException {
+    public void collectAllStockMinuteCandle() {
         Map<String, StockMinuteCandleDto> stockMinuteCandleDtoMap = new HashMap<>();
         List<String> failedStockCodes = new ArrayList<>();
         Map<String, Integer> failureReason = new HashMap<>();
@@ -48,12 +44,9 @@ public class StockMinuteCandleCollector {
 
         for (String stockCode : stockCodes) {
             try {
-                fetchStockMinuteCandle(stockCode, now)
+                fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP)
                         .ifPresent(dto -> stockMinuteCandleDtoMap.put(stockCode, dto));
-            } catch (ExternalApiRateLimitExceededException e) {
-                throw e;
-            }
-            catch (RuntimeException e) {
+            } catch (RuntimeException e) {
                 log.warn("[Warn/StockMinuteCandle] 분봉 수집 실패 - 종목: {}, 원인: {}", stockCode, e.getMessage(), e);
                 String reason = e.getClass().getSimpleName();
                 failedStockCodes.add(stockCode);
@@ -76,24 +69,6 @@ public class StockMinuteCandleCollector {
         }
     }
 
-    /**
-     * 단일 종목의 분봉을 조회한다. 유량 초과 시 1초 대기 후 1회 재시도한다.
-     *
-     * @param stockCode 조회할 주식 종목 코드
-     * @param now       조회 기준 시각
-     * @return 분봉 DTO ({@code Optional}), 조회 결과가 없으면 비어 있음
-     * @throws InterruptedException             유량 초과 재시도 대기 중 인터럽트된 경우
-     * @throws ExternalApiRateLimitExceededException 재시도 후에도 유량 초과인 경우
-     */
-    private Optional<StockMinuteCandleDto> fetchStockMinuteCandle(String stockCode, LocalDateTime now) throws InterruptedException {
-        try {
-            return fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
-        } catch (ExternalApiRateLimitExceededException e) {
-            Thread.sleep(1000L);
-            return fetchStockChartPort.getStockMinuteCandle(stockCode, now, CHART_MINUTE_GAP);
-        }
-    }
-    
     /**
      * 분봉 DTO를 엔티티로 변환 후 일괄 저장하는 메서드
      *

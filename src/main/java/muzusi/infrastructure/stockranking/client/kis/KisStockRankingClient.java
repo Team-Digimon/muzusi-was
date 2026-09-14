@@ -9,6 +9,7 @@ import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,6 +58,8 @@ public class KisStockRankingClient {
                     requestInfo,
                     KisVolumeRankResponse.class
             ).getBody();
+            
+            KisErrorParser.validate(response);
             
             return response.output().stream()
                     .map(item -> StockRankDto.builder()
@@ -117,6 +120,8 @@ public class KisStockRankingClient {
                     requestInfo,
                     KisFluctuationRankResponse.class
             ).getBody();
+            
+            KisErrorParser.validate(response);
             
             return response.output().stream()
                     .map(item -> StockRankDto.builder()

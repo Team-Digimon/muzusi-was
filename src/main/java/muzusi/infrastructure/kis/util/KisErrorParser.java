@@ -1,60 +1,46 @@
 package muzusi.infrastructure.kis.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
+import muzusi.infrastructure.kis.dto.KisResponse;
+import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiRateLimitExceedException;
 
-@Slf4j
-public class KisErrorParser {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final String ERROR_MSG_KEY = "msg_cd";
-    private static final String API_REQUEST_EXCEEDED_ERROR_CODE = "EGW00201";
-    
+public final class KisErrorParser {
+    private static final String ERROR_RT_CD = "1";
+    private static final String API_RATE_LIMIT_EXCEED_ERROR_MSG_CD = "EGW00201";
+
     private KisErrorParser() { }
-    
+
     /**
-     * 한국투자증권 응답 에러 메시지에서 API 호출 유량 초과 인지를 확인하는 유틸 메서드
+     * 응답의 rt_cd가 에러를 나타내면 msg_cd에 따라 적절한 예외를 던진다.
      *
-     * @param errorMessage  한국투자증권 응답 에러 메시지
-     * @return              API 호출 유량 초과에 따른 에러 발생 여부
+     * @param response                          한국투자증권 REST API 응답
+     * @throws KisApiRateLimitExceedException   유량 초과 에러인 경우 (msg_cd: {@value API_RATE_LIMIT_EXCEED_ERROR_MSG_CD})
+     * @throws KisApiException                  response가 null이거나, 그 외 에러 응답인 경우
      */
-    public static boolean isApiRequestExceeded(String errorMessage) {
-        try {
-            int startIndex = errorMessage.indexOf('{');
-            
-            if (startIndex == -1) {
-                return false;
+    public static void validate(KisResponse response) {
+        if (response == null) {
+            throw new KisApiException("한국투자증권 REST API 응답 본문이 비어있습니다.");
+        }
+        
+        if (isError(response.rtCd())) {
+            if (isRateLimitExceed(response.msgCd())) {
+                throw new KisApiRateLimitExceedException("한국투자증권 REST API 호출 결과 유량 초과 에러가 발생하였습니다.");
             }
             
-            String errorCode = parseErrorCode(errorMessage, startIndex);
-            
-            if (errorCode == null) {
-                return false;
-            }
-            
-            if (API_REQUEST_EXCEEDED_ERROR_CODE.equals(errorCode)) {
-                return true;
-            }
-            
-            return false;
-        } catch (JsonProcessingException e) {
-            log.warn("[Error/KisError] 한국투자증권 API 응답 파싱에 실패하였습니다.");
-            return false;
+            throw new KisApiException(
+                    "한국투자증권 REST API 호출 결과 에러가 발생하였습니다. (msg_cd: %s, msg1: %s)".formatted(
+                            response.msgCd(),
+                            response.msg1()
+                    )
+            );
         }
     }
     
-    /**
-     * 한국투자증권 응답 에러 메시지의 Json 파트 부분에서 에러 응답 코드를 파싱하는 메서드
-     *
-     * @param errorMessage  한국투자증권 응답 에러 메시지
-     * @param startIndex    Json 파트 부분 시작 인덱스
-     * @return              에러 응답 코드
-     */
-    private static String parseErrorCode(String errorMessage, int startIndex) throws JsonProcessingException {
-        JsonNode errorNode = objectMapper.readTree(errorMessage.substring(startIndex));
-        JsonNode errorCode = errorNode.get(ERROR_MSG_KEY);
-        
-        return errorCode == null ? null : errorCode.asText();
+    private static boolean isError(String rtCd) {
+        return ERROR_RT_CD.equals(rtCd);
+    }
+    
+    private static boolean isRateLimitExceed(String msgCd) {
+        return API_RATE_LIMIT_EXCEED_ERROR_MSG_CD.equals(msgCd);
     }
 }
