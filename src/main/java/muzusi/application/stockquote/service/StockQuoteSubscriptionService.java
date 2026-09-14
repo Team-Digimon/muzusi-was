@@ -30,6 +30,7 @@ public class StockQuoteSubscriptionService {
      * 구독 저장소 초기화를 해제하는 메서드
      */
     public void resetSubscription() {
+        stockQuotePort.disconnect();
         registry.reset();
     }
     

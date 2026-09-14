@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stockquote.port.StockQuotePort;
 import muzusi.infrastructure.kis.auth.KisAuthStore;
-import muzusi.infrastructure.stockquote.requester.kis.KisStockQuoteRequester;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
+import muzusi.infrastructure.stockquote.requester.kis.KisStockQuoteRequester;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -52,6 +53,13 @@ public class KisStockQuoteAdapter implements StockQuotePort {
      */
     @Override
     public void disconnect() {
+        kisWebSocketSessionStore.findAll().forEach(session -> {
+            try {
+                kisWebSocketConnector.close(session.getWebSocketSession());
+            } catch (KisApiException e) {
+                log.error("[Error/WebSocket] 한국투자증권 웹소켓 연결 종료 실패", e);
+            }
+        });
         kisWebSocketSessionStore.deleteAll();
     }
 

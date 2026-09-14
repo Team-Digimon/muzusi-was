@@ -1,6 +1,7 @@
 package muzusi.infrastructure.stockquote.adapter.kis;
 
 import muzusi.infrastructure.kis.auth.KisAuthStore;
+import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.stockquote.requester.kis.KisStockQuoteRequester;
 import muzusi.infrastructure.kis.websocket.KisWebSocketConnector;
 import muzusi.infrastructure.kis.websocket.KisWebSocketSessionStore;
@@ -16,6 +17,8 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -89,12 +92,59 @@ class KisStockQuoteAdapterTest {
     @DisplayName("연결 해제")
     class Disconnect {
         @Test
-        @DisplayName("저장소의 모든 웹소켓 세션을 삭제한다")
-        void successDeleteAllSessions() {
+        @DisplayName("저장된 세션이 없으면 세션 종료 없이 저장소만 비운다")
+        void successDeleteAllSessionsWhenNoSessions() {
+            // given
+            when(kisWebSocketSessionStore.findAll()).thenReturn(List.of());
+
             // when
             kisStockQuoteAdapter.disconnect();
 
             // then
+            verify(kisWebSocketConnector, never()).close(any());
+            verify(kisWebSocketSessionStore).deleteAll();
+        }
+
+        @Test
+        @DisplayName("저장된 모든 세션에 대해 웹소켓 연결을 종료한 뒤 저장소를 비운다")
+        void successCloseAllSessionsThenDeleteAll() {
+            // given
+            WebSocketSession session1 = mock(WebSocketSession.class);
+            WebSocketSession session2 = mock(WebSocketSession.class);
+            KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession1 =
+                    new KisWebSocketSessionStore.KisWebSocketSession("webSocketKey1", session1);
+            KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession2 =
+                    new KisWebSocketSessionStore.KisWebSocketSession("webSocketKey2", session2);
+            when(kisWebSocketSessionStore.findAll()).thenReturn(List.of(kisWebSocketSession1, kisWebSocketSession2));
+
+            // when
+            kisStockQuoteAdapter.disconnect();
+
+            // then
+            verify(kisWebSocketConnector).close(session1);
+            verify(kisWebSocketConnector).close(session2);
+            verify(kisWebSocketSessionStore).deleteAll();
+        }
+
+        @Test
+        @DisplayName("일부 세션 종료에 실패해도 나머지 세션은 계속 종료를 시도하고 저장소는 비운다")
+        void successContinueClosingRemainingSessionsWhenOneFails() {
+            // given
+            WebSocketSession session1 = mock(WebSocketSession.class);
+            WebSocketSession session2 = mock(WebSocketSession.class);
+            KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession1 =
+                    new KisWebSocketSessionStore.KisWebSocketSession("webSocketKey1", session1);
+            KisWebSocketSessionStore.KisWebSocketSession kisWebSocketSession2 =
+                    new KisWebSocketSessionStore.KisWebSocketSession("webSocketKey2", session2);
+            when(kisWebSocketSessionStore.findAll()).thenReturn(List.of(kisWebSocketSession1, kisWebSocketSession2));
+            doThrow(new KisApiException("세션 종료 실패")).when(kisWebSocketConnector).close(session1);
+
+            // when
+            kisStockQuoteAdapter.disconnect();
+
+            // then: session1 종료가 실패해도 session2 종료는 정상적으로 시도되고, 저장소는 비워진다.
+            verify(kisWebSocketConnector).close(session1);
+            verify(kisWebSocketConnector).close(session2);
             verify(kisWebSocketSessionStore).deleteAll();
         }
     }

@@ -71,6 +71,41 @@ class StockQuoteSubscriptionRegistryTest {
             assertThat(contextMap.get(sessionId2).getSessionId()).isEqualTo(sessionId2);
             assertThat(getSessionIds()).containsExactly(sessionId1, sessionId2);
         }
+
+        @Test
+        @DisplayName("이미 구독 상태가 존재하는 상태에서 재초기화하면 이전 컨텍스트와 역인덱스가 모두 제거된다")
+        void successClearsPreviousStateOnReinitialize() throws InterruptedException {
+            // given: 기존 세션으로 초기화 후 구독까지 진행된 상태
+            initializeRegistry(2, "session1");
+            registry.subscribe("000001");
+
+            // when: reset() 없이 새로운 세션 목록으로 재초기화한다.
+            registry.initialize(List.of("session2"));
+
+            // then: 이전 세션의 컨텍스트/역인덱스/세션 목록이 모두 제거되고 새 세션만 남는다.
+            assertThat(getSubscriptionContextMap()).containsOnlyKeys("session2");
+            assertThat(getStockSessionIndex()).isEmpty();
+            assertThat(getSessionIds()).containsExactly("session2");
+        }
+
+        @Test
+        @DisplayName("이전 초기화로 커서가 이동한 상태에서 재초기화하면 커서가 리셋되어 인덱스 초과 없이 정상 동작한다")
+        void successResetsCursorOnReinitialize() throws InterruptedException {
+            // given: 세션 2개로 초기화 후 구독 3회로 커서를 1번 인덱스로 이동시킨다.
+            initializeRegistry(5, "session1", "session2");
+            registry.subscribe("000001"); // cursor: 0 -> 1
+            registry.subscribe("000002"); // cursor: 1 -> 0
+            registry.subscribe("000003"); // cursor: 0 -> 1
+
+            // when: reset() 없이 세션이 1개뿐인 목록으로 재초기화한다.
+            // 커서가 리셋되지 않으면 이전 커서(1)가 새 세션 목록(크기 1)의 인덱스 범위를 벗어나 예외가 발생한다.
+            registry.initialize(List.of("sessionA"));
+            StockQuoteSubscriptionResult.Subscription result = registry.subscribe("000004");
+
+            // then
+            assertThat(result.isSuccess()).isTrue();
+            assertThat(result.sessionId()).isEqualTo("sessionA");
+        }
     }
 
     @Nested

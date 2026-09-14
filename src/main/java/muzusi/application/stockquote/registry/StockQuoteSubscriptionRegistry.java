@@ -32,8 +32,13 @@ public class StockQuoteSubscriptionRegistry {
      */
     public void initialize(List<String> connectedSessionIds) {
         lock.lock();
-
+        
         try {
+            subscriptionContextMap.clear();
+            stockSessionIndex.clear();
+            sessionIds.clear();
+            sessionCursor = 0;
+            
             for (String sessionId : connectedSessionIds) {
                 subscriptionContextMap.put(sessionId, new StockQuoteSubscriptionContext(sessionId, capacity));
             }
@@ -53,6 +58,7 @@ public class StockQuoteSubscriptionRegistry {
             subscriptionContextMap.clear();
             stockSessionIndex.clear();
             sessionIds.clear();
+            sessionCursor = 0;
         } finally {
             lock.unlock();
         }
