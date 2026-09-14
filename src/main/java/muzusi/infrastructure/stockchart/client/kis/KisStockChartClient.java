@@ -11,6 +11,7 @@ import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -65,6 +66,8 @@ public class KisStockChartClient {
                     requestInfo,
                     StockMinuteChartResponse.class
             ).getBody();
+            
+            KisErrorParser.validate(response);
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 당일분봉조회 API 호출 중 에러가 발생하였습니다.", e);
         }
@@ -91,7 +94,7 @@ public class KisStockChartClient {
             String stockCode,
             LocalDateTime bucketEnd
     ) {
-        if (response == null || response.output() == null) {
+        if (response.output() == null) {
             throw new KisApiException("한국투자증권 당일분봉조회 API 응답이 비어있습니다. (stockCode: %s)".formatted(stockCode));
         }
         
