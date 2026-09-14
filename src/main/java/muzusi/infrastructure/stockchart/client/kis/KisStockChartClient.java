@@ -9,6 +9,7 @@ import muzusi.application.stockcandle.dto.StockMinuteCandleDto;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
+import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
@@ -156,9 +157,9 @@ public class KisStockChartClient {
     private record StockMinuteChartResponse(
             @JsonProperty("rt_cd") String rtCd,
             @JsonProperty("msg_cd") String msgCd,
-            @JsonProperty("msg1") String msg,
+            @JsonProperty("msg1") String msg1,
             @JsonProperty("output2") List<Output2> output
-    ) {
+    ) implements KisResponse {
         @JsonIgnoreProperties(ignoreUnknown = true)
         private record Output2(
                 @JsonProperty("stck_bsop_date") String date,
