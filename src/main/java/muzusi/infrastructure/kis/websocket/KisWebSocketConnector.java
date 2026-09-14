@@ -1,6 +1,5 @@
 package muzusi.infrastructure.kis.websocket;
 
-import lombok.extern.slf4j.Slf4j;
 import muzusi.infrastructure.kis.exception.KisApiException;
 import muzusi.infrastructure.kis.websocket.handler.KisWebSocketDispatcher;
 import muzusi.infrastructure.properties.KisProperties;
@@ -9,7 +8,8 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 
-@Slf4j
+import java.io.IOException;
+
 @Component
 public class KisWebSocketConnector {
     private final WebSocketClient webSocketClient = new StandardWebSocketClient();
@@ -39,6 +39,20 @@ public class KisWebSocketConnector {
             return session;
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 웹소켓 세션 연결에 실패하였습니다.", e);
+        }
+    }
+    
+    /**
+     * 한국투자증권 웹소켓 세션 연결 종료 메서드
+     *
+     * @param session 웹소켓 세션
+     * @throws KisApiException 웹소켓 세션 연결 종료에 실패한 경우
+     */
+    public void close(WebSocketSession session) {
+        try {
+            session.close();
+        } catch (IOException e) {
+            throw new KisApiException("한국투자증권 웹소켓 세션 연결 종료에 실패하였습니다.", e);
         }
     }
 }
