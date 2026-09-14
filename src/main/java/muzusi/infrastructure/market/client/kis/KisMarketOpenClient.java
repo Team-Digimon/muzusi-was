@@ -19,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -34,7 +33,7 @@ public class KisMarketOpenClient {
     public boolean isMarketOpen() {
         HttpHeaders header = kisRequestFactory.getHttpHeader(TR_ID);
         
-        HttpEntity<Map<String, String>> requestInfo = new HttpEntity<>(header);
+        HttpEntity<Void> requestInfo = new HttpEntity<>(header);
         
         String uri = UriComponentsBuilder.fromUriString(kisProperties.getUrl(KisUrlConstant.MARKET_OPEN))
                 .queryParam("BASS_DT", LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE))
