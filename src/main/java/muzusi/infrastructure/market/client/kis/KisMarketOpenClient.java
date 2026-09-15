@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -65,7 +66,7 @@ public class KisMarketOpenClient {
             @JsonProperty(value = "rt_cd") String rtCd,
             @JsonProperty(value = "msg_cd") String msgCd,
             @JsonProperty(value = "msg1") String msg1,
-            @JsonProperty(value = "output") Output output
+            @JsonProperty(value = "output") List<Output> output
     ) implements KisResponse {
         @JsonIgnoreProperties(ignoreUnknown = true)
         private record Output(
@@ -73,7 +74,7 @@ public class KisMarketOpenClient {
         ) { }
         
         private boolean isMarketOpen() {
-            return "Y".equals(output.isOpen());
+            return "Y".equals(output.get(0).isOpen());
         }
     }
 }
