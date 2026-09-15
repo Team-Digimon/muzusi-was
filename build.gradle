@@ -61,6 +61,8 @@ dependencies {
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	implementation("com.google.guava:guava:33.4.8-jre")
+
+	implementation 'org.springframework.retry:spring-retry'
 }
 
 tasks.named('test') {
