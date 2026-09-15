@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.util.concurrent.RateLimiter;
 import lombok.RequiredArgsConstructor;
 import muzusi.infrastructure.kis.KisRequestFactory;
+import muzusi.infrastructure.kis.constant.KisRetryConstant;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
@@ -14,6 +15,8 @@ import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -70,7 +73,17 @@ public class KisMultiStockPriceClient {
      * @param stockCodes 시세를 조회할 종목 코드 목록 (최대 {@link #BATCH_SIZE}개)
      * @return           주식 종목 별 현재가 Map
      */
-    private Map<String, Long> getMultiStockPriceInBatch(List<String> stockCodes) {
+    @Retryable(
+            retryFor = KisApiRateLimitExceedException.class,
+            maxAttempts = KisRetryConstant.MAX_ATTEMPTS,
+            backoff = @Backoff(
+                    delay = KisRetryConstant.INITIAL_DELAY_MS,
+                    multiplier = KisRetryConstant.MULTIPLIER,
+                    maxDelay = KisRetryConstant.MAX_DELAY_MS,
+                    random = true
+            )
+    )
+    public Map<String, Long> getMultiStockPriceInBatch(List<String> stockCodes) {
         HttpHeaders header = kisRequestFactory.getHttpHeader(TR_ID);
 
         String uri = buildUri(kisProperties.getUrl(KisUrlConstant.MULTI_PRICE), stockCodes);

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import muzusi.application.stockranking.dto.StockRankDto;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.aop.KisRateLimit;
+import muzusi.infrastructure.kis.constant.KisRetryConstant;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
@@ -15,6 +16,8 @@ import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,6 +33,16 @@ public class KisStockRankingClient {
     private final static String FLUCTUATION_RANK_TR_ID = "FHPST01700000";
     
     @KisRateLimit
+    @Retryable(
+            retryFor = KisApiRateLimitExceedException.class,
+            maxAttempts = KisRetryConstant.MAX_ATTEMPTS,
+            backoff = @Backoff(
+                    delay = KisRetryConstant.INITIAL_DELAY_MS,
+                    multiplier = KisRetryConstant.MULTIPLIER,
+                    maxDelay = KisRetryConstant.MAX_DELAY_MS,
+                    random = true
+            )
+    )
     public List<StockRankDto> getVolumeRank() {
         HttpHeaders headers = kisRequestFactory.getHttpHeader(VOLUME_RANK_TR_ID);
         
@@ -82,11 +95,31 @@ public class KisStockRankingClient {
     }
     
     @KisRateLimit
+    @Retryable(
+            retryFor = KisApiRateLimitExceedException.class,
+            maxAttempts = KisRetryConstant.MAX_ATTEMPTS,
+            backoff = @Backoff(
+                    delay = KisRetryConstant.INITIAL_DELAY_MS,
+                    multiplier = KisRetryConstant.MULTIPLIER,
+                    maxDelay = KisRetryConstant.MAX_DELAY_MS,
+                    random = true
+            )
+    )
     public List<StockRankDto> getRisingFluctuationRank() {
         return getFluctuationRank("0");
     }
-    
+
     @KisRateLimit
+    @Retryable(
+            retryFor = KisApiRateLimitExceedException.class,
+            maxAttempts = KisRetryConstant.MAX_ATTEMPTS,
+            backoff = @Backoff(
+                    delay = KisRetryConstant.INITIAL_DELAY_MS,
+                    multiplier = KisRetryConstant.MULTIPLIER,
+                    maxDelay = KisRetryConstant.MAX_DELAY_MS,
+                    random = true
+            )
+    )
     public List<StockRankDto> getFallingFluctuationRank() {
         return getFluctuationRank("1");
     }
