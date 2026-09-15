@@ -8,14 +8,18 @@ import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stockcandle.dto.StockMinuteCandleDto;
 import muzusi.infrastructure.kis.KisRequestFactory;
 import muzusi.infrastructure.kis.aop.KisRateLimit;
+import muzusi.infrastructure.kis.constant.KisRetryConstant;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiRateLimitExceedException;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -40,6 +44,16 @@ public class KisStockChartClient {
     private static final DateTimeFormatter YYYYMMDD_HHMMSS_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
     
     @KisRateLimit
+    @Retryable(
+            retryFor = KisApiRateLimitExceedException.class,
+            maxAttempts = KisRetryConstant.MAX_ATTEMPTS,
+            backoff = @Backoff(
+                    delay = KisRetryConstant.INITIAL_DELAY_MS,
+                    multiplier = KisRetryConstant.MULTIPLIER,
+                    maxDelay = KisRetryConstant.MAX_DELAY_MS,
+                    random = true
+            )
+    )
     public Optional<StockMinuteCandleDto> getStockMinuteChart(String stockCode, LocalDateTime time, int gap) {
         HttpHeaders headers = requestFactory.getHttpHeader(STOCK_MINUTES_CHART_TR_ID);
         
@@ -68,6 +82,8 @@ public class KisStockChartClient {
             ).getBody();
             
             KisErrorParser.validate(response);
+        } catch (KisApiRateLimitExceedException e) {
+            throw e;
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 당일분봉조회 API 호출 중 에러가 발생하였습니다.", e);
         }
