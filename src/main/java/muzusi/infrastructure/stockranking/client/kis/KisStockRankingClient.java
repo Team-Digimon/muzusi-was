@@ -9,6 +9,7 @@ import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiRateLimitExceedException;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
@@ -73,6 +74,8 @@ public class KisStockRankingClient {
                             .build()
                     )
                     .toList();
+        } catch (KisApiRateLimitExceedException e) {
+            throw e;
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 거래량 순위 API 호출 중 에러가 발생하였습니다.", e);
         }
@@ -135,6 +138,8 @@ public class KisStockRankingClient {
                             .build()
                     )
                     .toList();
+        } catch (KisApiRateLimitExceedException e) {
+            throw e;
         } catch (Exception e) {
             String type = fluctuation.equals("0") ? "급상승" : "급하락";
             throw new KisApiException("한국투자증권 %s 순위 API 호출 중 에러가 발생하였습니다.".formatted(type), e);

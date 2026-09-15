@@ -9,6 +9,7 @@ import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiRateLimitExceedException;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
@@ -56,6 +57,8 @@ public class KisMarketOpenClient {
             KisErrorParser.validate(response);
             
             return response.isMarketOpen();
+        } catch (KisApiRateLimitExceedException e) {
+            throw e;
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 국내휴장일 조회 API 호출 중 에러가 발생하였습니다.", e);
         }

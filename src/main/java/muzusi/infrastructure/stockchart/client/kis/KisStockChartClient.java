@@ -11,6 +11,7 @@ import muzusi.infrastructure.kis.aop.KisRateLimit;
 import muzusi.infrastructure.kis.constant.KisUrlConstant;
 import muzusi.infrastructure.kis.dto.KisResponse;
 import muzusi.infrastructure.kis.exception.KisApiException;
+import muzusi.infrastructure.kis.exception.KisApiRateLimitExceedException;
 import muzusi.infrastructure.kis.util.KisErrorParser;
 import muzusi.infrastructure.properties.KisProperties;
 import org.springframework.http.HttpEntity;
@@ -68,6 +69,8 @@ public class KisStockChartClient {
             ).getBody();
             
             KisErrorParser.validate(response);
+        } catch (KisApiRateLimitExceedException e) {
+            throw e;
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 당일분봉조회 API 호출 중 에러가 발생하였습니다.", e);
         }
