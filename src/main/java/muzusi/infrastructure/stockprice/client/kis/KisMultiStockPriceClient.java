@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -101,13 +102,16 @@ public class KisMultiStockPriceClient {
                     requestInfo,
                     KisMultiStockPriceResponse.class
             ).getBody();
-            
+
             KisErrorParser.validate(response);
             
             return response.output().stream()
                 .collect(Collectors.toMap(KisMultiStockPriceResponse.Output::code, KisMultiStockPriceResponse.Output::price));
-        } catch (KisApiRateLimitExceedException e) {
+        } catch (KisApiException e) {
             throw e;
+        } catch (HttpStatusCodeException e) {
+            KisErrorParser.validate(e.getResponseBodyAsString());
+            throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 호출 중 에러가 발생하였습니다.", e);
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 멀티종목 시세 조회 API 호출 중 에러가 발생하였습니다.", e);
         }
