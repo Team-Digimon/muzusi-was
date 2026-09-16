@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -72,7 +73,7 @@ public class KisStockRankingClient {
                     requestInfo,
                     KisVolumeRankResponse.class
             ).getBody();
-            
+
             KisErrorParser.validate(response);
             
             return response.output().stream()
@@ -87,8 +88,11 @@ public class KisStockRankingClient {
                             .build()
                     )
                     .toList();
-        } catch (KisApiRateLimitExceedException e) {
+        } catch (KisApiException e) {
             throw e;
+        } catch (HttpStatusCodeException e) {
+            KisErrorParser.validate(e.getResponseBodyAsString());
+            throw new KisApiException("한국투자증권 거래량 순위 API 호출 중 에러가 발생하였습니다.", e);
         } catch (Exception e) {
             throw new KisApiException("한국투자증권 거래량 순위 API 호출 중 에러가 발생하였습니다.", e);
         }
@@ -156,7 +160,7 @@ public class KisStockRankingClient {
                     requestInfo,
                     KisFluctuationRankResponse.class
             ).getBody();
-            
+
             KisErrorParser.validate(response);
             
             return response.output().stream()
@@ -171,8 +175,12 @@ public class KisStockRankingClient {
                             .build()
                     )
                     .toList();
-        } catch (KisApiRateLimitExceedException e) {
+        } catch (KisApiException e) {
             throw e;
+        } catch (HttpStatusCodeException e) {
+            KisErrorParser.validate(e.getResponseBodyAsString());
+            String type = fluctuation.equals("0") ? "급상승" : "급하락";
+            throw new KisApiException("한국투자증권 %s 순위 API 호출 중 에러가 발생하였습니다.".formatted(type), e);
         } catch (Exception e) {
             String type = fluctuation.equals("0") ? "급상승" : "급하락";
             throw new KisApiException("한국투자증권 %s 순위 API 호출 중 에러가 발생하였습니다.".formatted(type), e);
