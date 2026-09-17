@@ -17,7 +17,7 @@ public class StockSearchController implements StockSearchApi {
     private final StockSearchService stockSearchService;
 
     @Override
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<?> searchStock(@RequestParam String keyword) {
         return ResponseEntity.ok(
                 SuccessResponse.from(stockSearchService.searchStocks(keyword))
