@@ -22,7 +22,7 @@ public class StockChartController implements StockChartApi {
     private final StockChartQueryService stockChartQueryService;
 
     @Override
-    @GetMapping("/{stockCode}")
+    @GetMapping("/{stockCode}/chart")
     public ResponseEntity<?> getStockHistory(
             @PathVariable String stockCode,
             @RequestParam StockPeriodType period,
