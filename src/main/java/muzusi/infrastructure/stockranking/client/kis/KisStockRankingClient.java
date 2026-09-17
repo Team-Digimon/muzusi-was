@@ -84,7 +84,7 @@ public class KisStockRankingClient {
                             .price(item.price())
                             .prdyVrss(item.changeFromPreviousDay())
                             .prdyCtrt(item.changeRateFromPreviousDay())
-                            .avrgVol(item.averageTradingVolume())
+                            .avrgVol(item.accumulatedTradingVolume())
                             .build()
                     )
                     .toList();
@@ -203,7 +203,7 @@ public class KisStockRankingClient {
                 @JsonProperty(value = "stck_prpr") long price,
                 @JsonProperty(value = "prdy_vrss") long changeFromPreviousDay,
                 @JsonProperty(value = "prdy_ctrt") double changeRateFromPreviousDay,
-                @JsonProperty(value = "avgr_vol") long averageTradingVolume,
+                @JsonProperty(value = "avrg_vol") long averageTradingVolume,
                 @JsonProperty(value = "acml_vol") long accumulatedTradingVolume
         ) {
         }
