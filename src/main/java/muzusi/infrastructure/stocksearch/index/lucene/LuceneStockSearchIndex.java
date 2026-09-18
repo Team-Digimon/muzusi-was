@@ -53,6 +53,7 @@ public class LuceneStockSearchIndex {
     private Document parseStockToDocument(Stock stock) {
         Document document = new Document();
         document.add(new StringField(StockSearchIndexField.FIELD_STOCK_CODE, stock.getStockCode(), Field.Store.YES));
+        document.add(new StringField(StockSearchIndexField.FIELD_STOCK_NAME, stock.getStockName(), Field.Store.YES));
         document.add(new StringField(StockSearchIndexField.FIELD_STOCK_NAME_LOWER, stock.getStockName().trim().toLowerCase(), Field.Store.YES));
         document.add(new StringField(StockSearchIndexField.FIELD_STOCK_NAME_CHOSUNG, HangulChosungExtractor.extract(stock.getStockName().trim()), Field.Store.NO));
         return document;
@@ -60,6 +61,7 @@ public class LuceneStockSearchIndex {
     
     private static class StockSearchIndexField {
         private static final String FIELD_STOCK_CODE = "stockCode";
+        private static final String FIELD_STOCK_NAME = "stockName";
         private static final String FIELD_STOCK_NAME_LOWER = "stockNameLower";
         private static final String FIELD_STOCK_NAME_CHOSUNG = "stockNameChosung";
     }
