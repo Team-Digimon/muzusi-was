@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class StockSearchIndex {
+public class LuceneStockSearchIndex {
     private IndexSearcher indexSearcher;
     
     /**
