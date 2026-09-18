@@ -13,12 +13,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class StockSearchIndexTest {
-    private StockSearchIndex stockSearchIndex;
+class LuceneStockSearchIndexTest {
+    private LuceneStockSearchIndex luceneStockSearchIndex;
 
     @BeforeEach
     void setUp() {
-        stockSearchIndex = new StockSearchIndex();
+        luceneStockSearchIndex = new LuceneStockSearchIndex();
     }
 
     @Test
@@ -31,7 +31,7 @@ class StockSearchIndexTest {
         );
 
         // when
-        stockSearchIndex.build(stocks);
+        luceneStockSearchIndex.build(stocks);
 
         // then
         IndexSearcher indexSearcher = getIndexSearcher();
@@ -47,7 +47,7 @@ class StockSearchIndexTest {
         );
 
         // when
-        stockSearchIndex.build(stocks);
+        luceneStockSearchIndex.build(stocks);
 
         // then
         IndexSearcher indexSearcher = getIndexSearcher();
@@ -62,13 +62,13 @@ class StockSearchIndexTest {
     @DisplayName("build를 다시 호출하면 이전 색인은 사라지고 새 데이터로 완전히 교체된다")
     void rebuildingReplacesPreviousIndex() throws IOException {
         // given
-        stockSearchIndex.build(List.of(
+        luceneStockSearchIndex.build(List.of(
                 Stock.builder().stockCode("005930").stockName("삼성전자").build(),
                 Stock.builder().stockCode("000660").stockName("SK하이닉스").build()
         ));
 
         // when
-        stockSearchIndex.build(List.of(
+        luceneStockSearchIndex.build(List.of(
                 Stock.builder().stockCode("035420").stockName("NAVER").build()
         ));
 
@@ -80,9 +80,9 @@ class StockSearchIndexTest {
 
     private IndexSearcher getIndexSearcher() {
         try {
-            Field field = StockSearchIndex.class.getDeclaredField("indexSearcher");
+            Field field = LuceneStockSearchIndex.class.getDeclaredField("indexSearcher");
             field.setAccessible(true);
-            return (IndexSearcher) field.get(stockSearchIndex);
+            return (IndexSearcher) field.get(luceneStockSearchIndex);
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException(e);
         }
