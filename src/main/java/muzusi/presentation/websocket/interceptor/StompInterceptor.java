@@ -1,7 +1,6 @@
 package muzusi.presentation.websocket.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import muzusi.application.stocksearch.service.StockSearchService;
 import muzusi.application.stockquote.exception.StockQuoteException;
 import muzusi.application.stockquote.service.StockQuoteSubscriptionService;
 import muzusi.global.response.error.ErrorResponse;
@@ -19,15 +18,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class StompInterceptor implements ChannelInterceptor {
-    private final StockSearchService stockSearchService;
     private final StockQuoteSubscriptionService stockQuoteSubscriptionService;
     
     public StompInterceptor(
-            StockSearchService stockSearchService,
             StockQuoteSubscriptionService stockQuoteSubscriptionService,
             @Lazy SimpMessagingTemplate messagingTemplate
     ) {
-        this.stockSearchService = stockSearchService;
         this.stockQuoteSubscriptionService = stockQuoteSubscriptionService;
         this.messagingTemplate = messagingTemplate;
     }
@@ -55,7 +51,6 @@ public class StompInterceptor implements ChannelInterceptor {
 
         if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             try {
-                stockSearchService.increaseStockSearchCount(stockCode);
                 stockQuoteSubscriptionService.subscribe(stockCode);
             } catch (Exception e) {
                 if (e instanceof StockQuoteException ex) {
