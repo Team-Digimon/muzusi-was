@@ -5,6 +5,7 @@ import muzusi.domain.stock.entity.Stock;
 import muzusi.domain.stock.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,5 +15,9 @@ public class StockService {
     
     public Optional<Stock> readByStockCode(String stockCode) {
         return stockRepository.findByStockCode(stockCode);
+    }
+    
+    public List<Stock> readAll() {
+        return stockRepository.findAll();
     }
 }
