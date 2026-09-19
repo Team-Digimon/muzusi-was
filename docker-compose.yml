@@ -28,20 +28,6 @@ services:
     volumes:
       - redis-data:/data
 
-  mongodb:
-    image: mongo:6
-    container_name: muzusi-mongo
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
-    ports:
-      - "${MONGODB_PORT}:27017"
-    volumes:
-      - mongo-data:/data/db
-
 volumes:
   mysql-data:
   redis-data:
-  mongo-data:
