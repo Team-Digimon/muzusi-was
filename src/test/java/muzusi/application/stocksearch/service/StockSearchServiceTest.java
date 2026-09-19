@@ -16,6 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class StockSearchServiceTest {
@@ -106,6 +107,16 @@ class StockSearchServiceTest {
         assertThat(results).hasSize(1);
         assertThat(results.get(0).stockCode()).isEqualTo("005930");
         assertThat(results.get(0).stockName()).isEqualTo("삼성전자");
+    }
+
+    @Test
+    @DisplayName("검색 빈도 증가를 주식 통계 도메인 서비스에 위임한다")
+    void increaseSearchCount_delegatesToStatService() {
+        // when
+        stockSearchService.increaseSearchCount("005930");
+
+        // then
+        verify(stockSearchStatService).increaseSearchCount("005930");
     }
 
     private StockSearchStat createStat(String stockCode, int searchCount) {
