@@ -12,6 +12,10 @@ import java.util.List;
 public class StockSearchStatService {
     private final StockSearchStatRepository stockSearchStatRepository;
     
+    public void increaseSearchCount(String stockCode) {
+        stockSearchStatRepository.increaseSearchCount(stockCode);
+    }
+    
     public List<StockSearchStat> readByStockCodeIn(List<String> stockCodes) {
         return stockSearchStatRepository.findByStockCodeIn(stockCodes);
     }

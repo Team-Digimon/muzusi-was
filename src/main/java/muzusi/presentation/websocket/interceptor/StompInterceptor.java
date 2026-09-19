@@ -3,6 +3,7 @@ package muzusi.presentation.websocket.interceptor;
 import lombok.extern.slf4j.Slf4j;
 import muzusi.application.stockquote.exception.StockQuoteException;
 import muzusi.application.stockquote.service.StockQuoteSubscriptionService;
+import muzusi.application.stocksearch.service.StockSearchService;
 import muzusi.global.response.error.ErrorResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
@@ -19,12 +20,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class StompInterceptor implements ChannelInterceptor {
     private final StockQuoteSubscriptionService stockQuoteSubscriptionService;
-    
+    private final StockSearchService stockSearchService;
+
     public StompInterceptor(
             StockQuoteSubscriptionService stockQuoteSubscriptionService,
+            StockSearchService stockSearchService,
             @Lazy SimpMessagingTemplate messagingTemplate
     ) {
         this.stockQuoteSubscriptionService = stockQuoteSubscriptionService;
+        this.stockSearchService = stockSearchService;
         this.messagingTemplate = messagingTemplate;
     }
     
@@ -59,7 +63,8 @@ public class StompInterceptor implements ChannelInterceptor {
                 sendError(sessionId, e);
                 return null;
             }
-            
+
+            increaseSearchCount(stockCode);
         }
         
         if (StompCommand.UNSUBSCRIBE.equals(accessor.getCommand())) {
@@ -77,6 +82,21 @@ public class StompInterceptor implements ChannelInterceptor {
         return message;
     }
     
+    /**
+     * 주식 종목의 검색 빈도를 증가시키는 메서드
+     *
+     * <p> 검색 빈도 증가에 실패하더라도 구독 흐름에 영향을 주지 않도록 예외를 로깅만 하고 무시한다.
+     *
+     * @param stockCode 주식 종목 코드
+     */
+    private void increaseSearchCount(String stockCode) {
+        try {
+            stockSearchService.increaseSearchCount(stockCode);
+        } catch (Exception e) {
+            log.warn("[Error/StockSearch] 주식 검색 빈도 증가 실패 (stockCode: {}, message: {})", stockCode, e.getMessage());
+        }
+    }
+
     /**
      * 특정 세션을 통해 에러 메시지를 전달하는 메서드
      *
