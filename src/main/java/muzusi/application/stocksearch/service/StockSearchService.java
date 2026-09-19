@@ -5,7 +5,6 @@ import muzusi.application.stocksearch.dto.StockSearchCandidate;
 import muzusi.application.stocksearch.dto.StockSearchResponse;
 import muzusi.application.stocksearch.port.StockSearchPort;
 import muzusi.application.stocksearch.util.StockSearchRankingScoreCalculator;
-import muzusi.domain.stock.service.StockItemService;
 import muzusi.domain.stocksearch.entity.StockSearchStat;
 import muzusi.domain.stocksearch.service.StockSearchStatService;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class StockSearchService {
-    private final StockItemService stockItemService;
     private final StockSearchPort stockSearchPort;
     private final StockSearchStatService stockSearchStatService;
     
@@ -60,14 +58,5 @@ public class StockSearchService {
         return stockSearchStats.stream().collect(
                 Collectors.toMap(StockSearchStat::getStockCode, StockSearchStat::getSearchCount)
         );
-    }
-    
-    /**
-     * 종목 검색 횟수를 증가시키는 메서드
-     *
-     * @param stockCode : 종목 코드
-     */
-    public void increaseStockSearchCount(String stockCode) {
-        stockItemService.updateSearchCount(stockCode);
     }
 }
