@@ -3,7 +3,6 @@ package muzusi.application.stocksearch.service;
 import muzusi.application.stocksearch.dto.StockSearchCandidate;
 import muzusi.application.stocksearch.dto.StockSearchResponse;
 import muzusi.application.stocksearch.port.StockSearchPort;
-import muzusi.domain.stock.service.StockItemService;
 import muzusi.domain.stocksearch.entity.StockSearchStat;
 import muzusi.domain.stocksearch.service.StockSearchStatService;
 import org.junit.jupiter.api.DisplayName;
@@ -17,12 +16,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class StockSearchServiceTest {
-    @Mock
-    private StockItemService stockItemService;
 
     @Mock
     private StockSearchPort stockSearchPort;
@@ -110,19 +106,6 @@ class StockSearchServiceTest {
         assertThat(results).hasSize(1);
         assertThat(results.get(0).stockCode()).isEqualTo("005930");
         assertThat(results.get(0).stockName()).isEqualTo("삼성전자");
-    }
-
-    @Test
-    @DisplayName("종목 검색 횟수 증가 요청을 위임한다")
-    void increaseStockSearchCount_delegatesToStockItemService() {
-        // given
-        String stockCode = "005930";
-
-        // when
-        stockSearchService.increaseStockSearchCount(stockCode);
-
-        // then
-        verify(stockItemService).updateSearchCount(stockCode);
     }
 
     private StockSearchStat createStat(String stockCode, int searchCount) {
