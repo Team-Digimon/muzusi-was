@@ -8,6 +8,7 @@ import muzusi.application.stocksearch.util.StockSearchRankingScoreCalculator;
 import muzusi.domain.stocksearch.entity.StockSearchStat;
 import muzusi.domain.stocksearch.service.StockSearchStatService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -25,8 +26,8 @@ public class StockSearchService {
     /**
      * 검색어 자동완성을 위한 주식 검색 메서드
      *
-     * @param keyword : 사용자 입력한 값
-     * @return : 자동완성 리스트
+     * @param keyword   사용자 입력한 값
+     * @return          자동완성 리스트
      */
     public List<StockSearchResponse> searchStocks(String keyword) {
         List<StockSearchCandidate> candidates = stockSearchPort.search(keyword, SEARCH_RESULT_LIMIT);
@@ -58,5 +59,15 @@ public class StockSearchService {
         return stockSearchStats.stream().collect(
                 Collectors.toMap(StockSearchStat::getStockCode, StockSearchStat::getSearchCount)
         );
+    }
+    
+    /**
+     * 주식 통계에서 검색 빈도({@code searchCount})를 증가시키는 메서드
+     *
+     * @param stockCode 주식 종목 코드
+     */
+    @Transactional
+    public void increaseSearchCount(String stockCode) {
+        stockSearchStatService.increaseSearchCount(stockCode);
     }
 }
